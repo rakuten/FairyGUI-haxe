@@ -150,7 +150,7 @@ class GComponent extends GObject
                 if (index == cnt)
                     _children.push(child);
                 else
-                    _children.insert(index, child);
+                    _children.insert(index+1, child);
                 
                 childStateChanged(child);
                 setBoundsChangedFlag();
@@ -343,7 +343,7 @@ class GComponent extends GObject
             return index;
         
         _children.splice(oldIndex, 1);
-        _children.insert(index, child);
+        _children.insert(index+1, child);
 
         if (child.inContainer) 
         {
