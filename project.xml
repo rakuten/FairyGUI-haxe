@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+	
+	<meta title="FairyGUIHaxe" package="com.fairygui" version="1.0.0" company="FairyGUI" />
+	<app main="Main" path="Export" file="FairyGUIHaxe" />
+	
+	<source path="src" />
+	
+	<haxelib name="openfl" />
+	
+	<assets path="Assets" rename="assets" />
+	
+</project>

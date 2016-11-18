@@ -1,0 +1,13 @@
+{
+  "name": "FairyGUI-haxe",
+  "url": "https://github.com/rakuten/FairyGUI-haxe",
+  "license": "MIT",
+  "tags": [ "fairygui", "openfl", "ui", "flash", "js", "web"],
+  "description": "A flexible UI framework for Haxe",
+  "version": "1.0.0-alpha",
+  "releasenote": "0",
+  "contributors": [ "Rakutens" ],
+  "dependencies": {
+    "openfl": "3.6.1"
+  }
+}
