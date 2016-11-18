@@ -20,7 +20,7 @@ import fairygui.utils.ToolSet;
 class GButton extends GComponent
 {
     public var selectedIcon(get, set) : String;
-    public var title(get, set) : String;
+    @:isVar public var title(get, set) : String;
     public var selectedTitle(get, set) : String;
     public var titleColor(get, set) : Int;
     public var sound(get, set) : String;

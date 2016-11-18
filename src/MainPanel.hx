@@ -187,7 +187,7 @@ class MainPanel
     
     private function __clickMenuBtn(evt : Event) : Void
     {
-        _pm.show(cast((evt.currentTarget), GObject), true);
+        _pm.show(cast(evt.currentTarget, GObject), true);
     }
     
     private function __rightClick(evt : MouseEvent) : Void

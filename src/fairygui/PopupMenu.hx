@@ -25,10 +25,10 @@ class PopupMenu
                 throw new Error("UIConfig.popupMenu not defined");
         }
         
-        _contentPane = cast((UIPackage.createObjectFromURL(resourceURL)), GComponent);
+        _contentPane = cast(UIPackage.createObjectFromURL(resourceURL), GComponent);
         _contentPane.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
         
-        _list = cast((_contentPane.getChild("list")), GList);
+        _list = cast(_contentPane.getChild("list"), GList);
         _list.removeChildrenToPool();
         
         _list.addRelation(_contentPane, RelationType.Width);

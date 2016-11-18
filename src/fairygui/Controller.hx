@@ -190,8 +190,8 @@ class Controller extends EventDispatcher
         }
         else 
         {
-            _pageIds.insert(index, nid);
-            _pageNames.insert(index, name);
+            _pageIds.insert(index+1, nid);
+            _pageNames.insert(index+1, name);
         }
     }
     
