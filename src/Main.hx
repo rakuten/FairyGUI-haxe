@@ -48,8 +48,8 @@ class Main extends Sprite {
         UIConfig.defaultScrollTouchEffect=false;
 
         //等待图片资源全部解码，也可以选择不等待，这样图片会在用到的时候才解码
-        UIPackage.waitToLoadCompleted(continueInit);
-//        continueInit();
+//        UIPackage.waitToLoadCompleted(continueInit);
+        continueInit();
     }
 
     private var _mainPanel:MainPanel;

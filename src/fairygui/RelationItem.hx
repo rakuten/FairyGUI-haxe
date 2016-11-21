@@ -136,7 +136,7 @@ class RelationItem
         var oy : Float = _owner.y;
         for (info in _defs)
         {
-            var _sw0_ = (info.type);            
+            var _sw0_ = info.type;
 
             switch (_sw0_)
             {
@@ -171,7 +171,7 @@ class RelationItem
     private function applyOnXYChanged(info : RelationDef, dx : Float, dy : Float) : Void
     {
         var tmp : Float;
-        var _sw1_ = (info.type);        
+        var _sw1_ = info.type;
 
         switch (_sw1_)
         {
@@ -212,7 +212,7 @@ class RelationItem
         var v : Float;
         var tmp : Float;
         
-        var _sw2_ = (info.type);        
+        var _sw2_ = info.type;
 
         switch (_sw2_)
         {
@@ -371,7 +371,10 @@ class RelationItem
     
     private function __targetXYChanged(target : GObject) : Void
     {
-        if (_owner.relations.handling != null || _owner.group != null && _owner.group._updating || _owner._dispatcher._dispatchingType == GObject.XY_CHANGED) 
+        if (_owner.relations.handling != null
+        || _owner.group != null
+        && _owner.group._updating
+        || _owner._dispatcher._dispatchingType == GObject.XY_CHANGED)
         {
             _targetX = _target.x;
             _targetY = _target.y;

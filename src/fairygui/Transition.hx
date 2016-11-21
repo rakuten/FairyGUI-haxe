@@ -512,11 +512,10 @@ class Transition
             startValue = item.startValue;
             endValue = item.endValue;
         }
-        var _sw4_ = (item.type);
+        var _sw4_ = item.type;
         switch(_sw4_)
         {
-            case TransitionActionType.XY:
-            case TransitionActionType.Size:
+            case TransitionActionType.XY,TransitionActionType.Size:
                 if(item.type==TransitionActionType.XY)
                 {
                     if (item.target == _owner)
@@ -533,7 +532,6 @@ class Transition
                         if(!startValue.b2)
                             startValue.f2 = item.target.y;
                     }
-
                 }
                 else
                 {
@@ -554,8 +552,7 @@ class Transition
 
                 parms.f1 = item.endValue.f1;
                 parms.f2 = item.endValue.f2;
-            case TransitionActionType.Scale:
-            case TransitionActionType.Skew:
+            case TransitionActionType.Scale,TransitionActionType.Skew:
                 item.value.f1 = startValue.f1;
                 item.value.f2 = startValue.f2;
                 parms.f1 = endValue.f1;
@@ -712,7 +709,7 @@ class Transition
     {
         item.target._gearLocked = true;
         
-        var _sw6_ = (item.type);        
+        var _sw6_ = item.type;
 
         switch (_sw6_)
         {
