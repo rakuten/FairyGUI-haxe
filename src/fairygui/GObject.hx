@@ -55,7 +55,7 @@ class GObject extends EventDispatcher
     public var name(get, set) : String;
     @:isVar public var x(get, set) : Float;
     @:isVar public var y(get, set) : Float;
-    public var pixelSnapping(get, set) : Bool;
+    @:isVar public var pixelSnapping(get, set) : Bool;
     @:isVar public var width(get, set) : Float;
     @:isVar public var height(get, set) : Float;
     public var sourceHeight(get, never) : Int;
@@ -74,7 +74,7 @@ class GObject extends EventDispatcher
     @:isVar public var rotation(get, set) : Int;
     public var normalizeRotation(get, never) : Int;
     @:isVar public var alpha(get, set) : Float;
-    public var visible(get, set) : Bool;
+    @:isVar public var visible(get, set) : Bool;
     @:allow(fairygui)
     private var internalVisible(get, set) : Int;
     public var finalVisible(get, never) : Bool;
@@ -82,7 +82,7 @@ class GObject extends EventDispatcher
     public var focusable(get, set) : Bool;
     public var focused(get, never) : Bool;
     public var tooltips(get, set) : String;
-    public var blendMode(get, set) : String;
+    @:isVar public var blendMode(get, set) : String;
     public var filters(get, set) : Array<Dynamic>;
     public var inContainer(get, never) : Bool;
     public var onStage(get, never) : Bool;
@@ -360,9 +360,10 @@ class GObject extends EventDispatcher
                 hv = 0;
             var dWidth : Float = wv - _width;
             var dHeight : Float = hv - _height;
+
             _width = wv;
             _height = hv;
-            
+
             handleSizeChanged();
             if (_pivotX != 0 || _pivotY != 0) 
             {
@@ -1552,14 +1553,14 @@ class GObject extends EventDispatcher
         
         if (!GRoot.touchPointInput) 
         {
-            _touchDownPoint.x = cast((evt), MouseEvent).stageX;
-            _touchDownPoint.y = cast((evt), MouseEvent).stageY;
+            _touchDownPoint.x = cast(evt, MouseEvent).stageX;
+            _touchDownPoint.y = cast(evt, MouseEvent).stageY;
             triggerDown();
         }
         else 
         {
-            _touchDownPoint.x = cast((evt), TouchEvent).stageX;
-            _touchDownPoint.y = cast((evt), TouchEvent).stageY;
+            _touchDownPoint.x = cast(evt, TouchEvent).stageX;
+            _touchDownPoint.y = cast(evt, TouchEvent).stageY;
             triggerDown(cast(evt, TouchEvent).touchPointID);
         }
     }
@@ -1607,7 +1608,7 @@ class GObject extends EventDispatcher
         }
         else 
         {
-            if (_touchPointId != cast((evt), TouchEvent).touchPointID) 
+            if (_touchPointId != cast(evt, TouchEvent).touchPointID)
                 return;
             
             evt.currentTarget.removeEventListener(TouchEvent.TOUCH_END, __stageMouseup);

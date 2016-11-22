@@ -337,7 +337,9 @@ class GList extends GComponent
         if (endIndex < 0 || endIndex >= _children.length)
             endIndex = _children.length - 1;
 
-        for (i in beginIndex...endIndex + 1){removeChildToPoolAt(beginIndex);
+        for (i in beginIndex...endIndex + 1)
+        {
+            removeChildToPoolAt(beginIndex);
         }
     }
 

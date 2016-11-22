@@ -9,7 +9,7 @@ class GProgressBar extends GComponent
 {
     public var titleType(get, set) : Int;
     public var max(get, set) : Int;
-    public var value(get, set) : Int;
+    @:isVar public var value(get, set) : Int;
 
     private var _max : Int;
     private var _value : Int;

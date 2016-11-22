@@ -41,17 +41,17 @@ class GTouchEvent extends Event
     {
         if (Std.is(evt, MouseEvent)) 
         {
-            _stageX = cast((evt), MouseEvent).stageX;
-            _stageY = cast((evt), MouseEvent).stageY;
-            _shiftKey = cast((evt), MouseEvent).shiftKey;
-            _ctrlKey = cast((evt), MouseEvent).ctrlKey;
+            _stageX = cast(evt, MouseEvent).stageX;
+            _stageY = cast(evt, MouseEvent).stageY;
+            _shiftKey = cast(evt, MouseEvent).shiftKey;
+            _ctrlKey = cast(evt, MouseEvent).ctrlKey;
         }
         else 
         {
-            _stageX = cast((evt), TouchEvent).stageX;
-            _stageY = cast((evt), TouchEvent).stageY;
-            _shiftKey = cast((evt), TouchEvent).shiftKey;
-            _ctrlKey = cast((evt), TouchEvent).ctrlKey;
+            _stageX = cast(evt, TouchEvent).stageX;
+            _stageY = cast(evt, TouchEvent).stageY;
+            _shiftKey = cast(evt, TouchEvent).shiftKey;
+            _ctrlKey = cast(evt, TouchEvent).ctrlKey;
             _touchPointID = cast((evt), TouchEvent).touchPointID;
         }
         _realTarget = try cast(evt.target, DisplayObject) catch(e:Dynamic) null;
