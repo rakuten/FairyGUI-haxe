@@ -690,11 +690,11 @@ class GComponent extends GObject
         {
             _opaque = value;
             if (_opaque) {
-                cast((this.displayObject), Sprite).mouseEnabled = this.touchable;
+                cast(this.displayObject, Sprite).mouseEnabled = this.touchable;
                 updateOpaque();
             }
             else {
-                cast((this.displayObject), Sprite).mouseEnabled = false;
+                cast(this.displayObject, Sprite).mouseEnabled = false;
                 _rootContainer.graphics.clear();
             }
         }

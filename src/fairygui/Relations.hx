@@ -218,7 +218,7 @@ class Relations
             targetId = cxml.att.target;
             if (_owner.parent != null)
             {
-                if (targetId != null) 
+                if (targetId != null && targetId != "")
                     target = _owner.parent.getChildById(targetId)
                 else 
                 target = _owner.parent;

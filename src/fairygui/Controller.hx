@@ -319,7 +319,7 @@ class Controller extends EventDispatcher
         }
         
         str = xml.att.transitions;
-        if (str != null) 
+        if (str != null)
         {
             _pageTransitions = new Array<PageTransition>();
             arr = str.split(",");

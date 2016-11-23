@@ -22,7 +22,7 @@ class UIObjectFactory
     
     public static function newObject(pi : PackageItem) : GObject
     {
-        var _sw7_ = (pi.type);        
+        var _sw7_ = pi.type;
 
         switch (_sw7_)
         {

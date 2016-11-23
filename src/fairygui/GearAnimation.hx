@@ -47,8 +47,8 @@ class GearAnimation extends GearBase
         if (gv == null) 
             gv = _default;
         
-        cast((_owner), IAnimationGear).playing = gv.playing;
-        cast((_owner), IAnimationGear).frame = gv.frame;
+        cast(_owner, IAnimationGear).playing = gv.playing;
+        cast(_owner, IAnimationGear).frame = gv.frame;
         
         _owner._gearLocked = false;
     }

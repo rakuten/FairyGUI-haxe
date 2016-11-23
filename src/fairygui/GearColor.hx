@@ -38,9 +38,9 @@ class GearColor extends GearBase
         
         var data : Dynamic = _storage[_controller.selectedPageId];
         if (data != null) 
-            cast((_owner), IColorGear).color = Std.parseInt(data)
+            cast(_owner, IColorGear).color = Std.parseInt(data)
         else 
-        cast((_owner), IColorGear).color = _default;
+        cast(_owner, IColorGear).color = _default;
         
         _owner._gearLocked = false;
     }

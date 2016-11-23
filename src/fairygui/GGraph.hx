@@ -232,7 +232,7 @@ class GGraph extends GObject implements IColorGear
         
         if (displayObject != null) 
         {
-            _graphics = cast((this.displayObject), Sprite).graphics;
+            _graphics = cast(this.displayObject, Sprite).graphics;
             
             str = xml.att.lineSize;
             if (str != null) 
