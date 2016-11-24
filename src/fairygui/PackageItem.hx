@@ -77,7 +77,7 @@ class PackageItem
         loaded = true;
         var arr : Array<Dynamic> = callbacks.copy();
         for (callback in arr)
-        callback(this);
+            callback(this);
         callbacks.splice(0, -1);
     }
     

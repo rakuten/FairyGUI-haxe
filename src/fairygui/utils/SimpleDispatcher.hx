@@ -69,6 +69,6 @@ class SimpleDispatcher
     }
     
     public function copy(source : SimpleDispatcher) : Void{
-        _elements = source._elements.copy();
+        _elements = source._elements.concat([]);
     }
 }

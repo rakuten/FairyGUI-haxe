@@ -144,7 +144,7 @@ class GComboBox extends GComponent
             _items.splice(0, -1);
 
         else 
-        _items = value.copy();
+        _items = value.concat([]);
         if (_items.length > 0) 
         {
             if (_selectedIndex >= _items.length) 
@@ -190,7 +190,7 @@ class GComboBox extends GComponent
         if (value == null)
             _values.splice(0, -1);
         else 
-        _values = value.copy();
+        _values = value.concat([]);
         return value;
     }
     
