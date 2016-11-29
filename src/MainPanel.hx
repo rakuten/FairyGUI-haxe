@@ -78,7 +78,7 @@ class MainPanel
             
             case "Window":
                 playWindow();
-            
+
             case "PopupMenu":
                 playPopupMenu();
             
@@ -215,12 +215,12 @@ class MainPanel
         //取消对原目标的拖动，换成一个替代品
         evt.preventDefault();
         
-        var btn : GButton = cast((evt.currentTarget), GButton);
+        var btn : GButton = cast(evt.currentTarget, GButton);
         DragDropManager.inst.startDrag(btn, btn.icon, btn.icon, evt.touchPointID);
     }
     
     private function __drop(evt : DropEvent) : Void
     {
-        cast((evt.currentTarget), GButton).icon = Std.string(evt.source);
+        cast(evt.currentTarget, GButton).icon = Std.string(evt.source);
     }
 }

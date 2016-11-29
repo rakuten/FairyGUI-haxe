@@ -25,7 +25,7 @@ class WindowA extends Window
         for (i in 0...6){
             var item : GButton = list.addItemFromPool().asButton;
             item.title = "" + i;
-            item.icon = UIPackage.getItemURL("Demo", "r4");
+            item.icon = UIPackage.getItemURL("Basic", "r4");
         }
     }
 }
