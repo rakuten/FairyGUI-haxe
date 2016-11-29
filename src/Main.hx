@@ -6,12 +6,8 @@ import fairygui.GRoot;
 import fairygui.UIConfig;
 import fairygui.UIPackage;
 import openfl.utils.ByteArray;
-import openfl.events.Event;
-import openfl.net.URLRequest;
 import openfl.net.URLLoader;
 import openfl.display.StageAlign;
-import openfl.net.URLLoaderDataFormat;
-
 
 import openfl.display.Sprite;
 
@@ -28,17 +24,12 @@ class Main extends Sprite {
 //        stage.scaleMode=StageScaleMode.NO_SCALE;
 
 
-//        uiLoader=new URLLoader();
-//        uiLoader.dataFormat=URLLoaderDataFormat.BINARY;
-//        uiLoader.addEventListener(Event.COMPLETE, uiLoader_completeHandler);
-//        uiLoader.load(new URLRequest(path));
-        uiLoader_completeHandler();
+        Assets.loadBytes(path, assetsCompleteHandler);
     }
 
-    private function uiLoader_completeHandler(event:Event=null):Void
+    private function assetsCompleteHandler(by:ByteArray):Void
     {
-//        UIPackage.addPackage(cast(uiLoader.data), null);
-        UIPackage.addPackage(Assets.getBytes(path), null);
+        UIPackage.addPackage(by, null);
 
         UIConfig.defaultFont="Tahoma";
         UIConfig.verticalScrollBar=UIPackage.getItemURL("Basic", "ScrollBar_VT");
@@ -48,8 +39,8 @@ class Main extends Sprite {
         UIConfig.defaultScrollTouchEffect=false;
 
         //等待图片资源全部解码，也可以选择不等待，这样图片会在用到的时候才解码
-//        UIPackage.waitToLoadCompleted(continueInit);
-        continueInit();
+        UIPackage.waitToLoadCompleted(continueInit);
+//        continueInit();
     }
 
     private var _mainPanel:MainPanel;

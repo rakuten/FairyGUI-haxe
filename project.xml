@@ -2,12 +2,13 @@
 <project>
 	
 	<meta title="FairyGUIHaxe" package="com.fairygui" version="1.0.0" company="FairyGUI" />
+	<window width="640" height="960" />
 	<app main="Main" path="Export" file="FairyGUIHaxe" />
 	
 	<source path="src" />
 	
 	<haxelib name="openfl" />
 	
-	<assets path="Assets" rename="assets" />
-	
+	<assets path="Assets" rename="assets" embed="false" />
+
 </project>
