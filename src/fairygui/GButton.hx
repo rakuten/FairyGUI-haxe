@@ -91,7 +91,7 @@ class GButton extends GComponent
     override private function set_icon(value : String) : String
     {
         _icon = value;
-        value = ((_selected && _selectedIcon != null)) ? _selectedIcon : _icon;
+        value = (_selected && _selectedIcon != null) ? _selectedIcon : _icon;
         if (_iconObject != null) 
             _iconObject.icon = value;
         updateGear(7);
