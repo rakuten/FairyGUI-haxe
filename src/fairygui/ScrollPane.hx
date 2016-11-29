@@ -491,12 +491,12 @@ class ScrollPane extends EventDispatcher
     
     private function getDeltaX(move : Float) : Float
     {
-        return ((_pageMode) ? _pageSizeH : move) / (_contentWidth - _viewWidth);
+        return (_pageMode ? _pageSizeH : move) / (_contentWidth - _viewWidth);
     }
     
     private function getDeltaY(move : Float) : Float
     {
-        return ((_pageMode) ? _pageSizeV : move) / (_contentHeight - _viewHeight);
+        return (_pageMode ? _pageSizeV : move) / (_contentHeight - _viewHeight);
     }
     
     public function scrollTop(ani : Bool = false) : Void
@@ -1048,7 +1048,6 @@ class ScrollPane extends EventDispatcher
                 
                 _maskContainer.mouseChildren = false;
                 _tweening = 1;
-                
                 _tweener = TweenX.to(_container, {
                                     x : toX,
                                     y : toY

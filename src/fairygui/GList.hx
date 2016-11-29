@@ -923,13 +923,21 @@ class GList extends GComponent
             var i : Int;
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
             {
-                for (i in 0...index){pos += _virtualItems[i].height + _lineGap;
+                i = 0;
+                while (i<index)
+                {
+                    pos += _virtualItems[i].height + _lineGap;
+                    i += _curLineItemCount;
                 }
                 rect = new Rectangle(0, pos, _itemSize.x, ii.height);
             }
             else if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.FlowVertical)
             {
-                for (i in 0...index){pos += _virtualItems[i].width + _columnGap;
+                i = 0;
+                while (i<index)
+                {
+                    pos += _virtualItems[i].width + _columnGap;
+                    i += _curLineItemCount;
                 }
                 rect = new Rectangle(pos, 0, ii.width, _itemSize.y);
             }
@@ -1200,8 +1208,7 @@ class GList extends GComponent
                 if (_curLineItemCount <= 0)
                     _curLineItemCount = 1;
             }
-                //pagination
-            else
+            else //pagination
             {
                 _curLineItemCount = Math.floor((_scrollPane.viewWidth + _columnGap) / (_itemSize.x + _columnGap));
                 if (_curLineItemCount <= 0)
@@ -1224,7 +1231,11 @@ class GList extends GComponent
             var len : Int = Math.ceil(_realNumItems / _curLineItemCount) * _curLineItemCount;
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
             {
-                for (i in 0...len){ch += _virtualItems[i].height + _lineGap;
+                i = 0;
+                while (i < len)
+                {
+                    ch += _virtualItems[i].height + _lineGap;
+                    i+=_curLineItemCount;
                 }
                 if (ch > 0)
                     ch -= _lineGap;
@@ -1232,7 +1243,11 @@ class GList extends GComponent
             }
             else if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.FlowVertical)
             {
-                for (i in 0...len){cw += _virtualItems[i].width + _columnGap;
+                i = 0;
+                while (i < len)
+                {
+                    cw += _virtualItems[i].width + _columnGap;
+                    i+=_curLineItemCount;
                 }
                 if (cw > 0)
                     cw -= _columnGap;
@@ -2150,8 +2165,7 @@ class GList extends GComponent
             cw = curX + maxWidth;
             ch = maxHeight;
         }
-            //pagination
-        else
+        else //pagination
         {
             for (i in 0...cnt){
                 child = getChildAt(i);
