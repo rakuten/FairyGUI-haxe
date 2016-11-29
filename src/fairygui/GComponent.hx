@@ -1127,7 +1127,7 @@ class GComponent extends GObject
         }
         
         str = xml.att.opaque;
-        if (str != "false") 
+        if (str != "false")
             this.opaque = true;
         
         var overflow : Int;
@@ -1135,10 +1135,10 @@ class GComponent extends GObject
         if (str != null) 
             overflow = OverflowType.parse(str)
         else 
-        overflow = OverflowType.Visible;
+            overflow = OverflowType.Visible;
         
         str = xml.att.margin;
-        if (str != null) 
+        if (str != null && str != "")
             _margin.parse(str);
         
         if (overflow == OverflowType.Scroll) 

@@ -440,7 +440,6 @@ class UIPackage
 //            for (i in 0...dcnt){
 //                var cxml : FastXML = col.get(i);
                 var tagName : String = cxml.name;
-
                 var src : String = cxml.att.src;
                 if (src != null) 
                 {

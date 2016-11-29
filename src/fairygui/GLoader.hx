@@ -667,7 +667,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         if (str != null) 
             this.color = ToolSet.convertFromHtmlColor(str);
         
-        if (_url != null) 
+        if (_url != null && _url != "")
             loadContent();
     }
 }
