@@ -45,8 +45,9 @@ class ZipReader
             if (lastChar == "/" || lastChar == "\\")
                 continue;
 
-            var regexp:EReg = new EReg("\\", "g");
-            name = regexp.replace(name, "/");
+            name = name.split("\\").join("/");
+//            var regexp:EReg = new EReg("\\", "g");
+//            name = regexp.replace(name, "/");
             var e : ZipEntry = new ZipEntry();
             e.name = name;
             buf.position = 10;
