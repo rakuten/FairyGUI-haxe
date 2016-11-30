@@ -42,14 +42,14 @@ class ScrollPane extends EventDispatcher
     public var posY(get, set) : Float;
     public var isBottomMost(get, never) : Bool;
     public var isRightMost(get, never) : Bool;
-    @:isVar public var currentPageX(get, set) : Int;
-    @:isVar public var currentPageY(get, set) : Int;
-    @:isVar public var scrollingPosX(get, never) : Float;
-    @:isVar public var scrollingPosY(get, never) : Float;
-    @:isVar public var contentWidth(get, never) : Float;
-    @:isVar public var contentHeight(get, never) : Float;
-    @:isVar public var viewWidth(get, set) : Int;
-    @:isVar public var viewHeight(get, set) : Int;
+    public var currentPageX(get, set) : Int;
+    public var currentPageY(get, set) : Int;
+    public var scrollingPosX(get, never) : Float;
+    public var scrollingPosY(get, never) : Float;
+    public var contentWidth(get, never) : Float;
+    public var contentHeight(get, never) : Float;
+    public var viewWidth(get, set) : Int;
+    public var viewHeight(get, set) : Int;
 
     private var _owner : GComponent;
     private var _container : Sprite;

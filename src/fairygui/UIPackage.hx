@@ -641,7 +641,7 @@ class UIPackage
     
     private function __imageLoaded(evt : Event) : Void
     {
-        var loader : PackageItemLoader = cast((cast((evt.currentTarget), LoaderInfo).loader), PackageItemLoader);
+        var loader : PackageItemLoader = cast(cast(evt.currentTarget, LoaderInfo).loader, PackageItemLoader);
         var i : Int = Lambda.indexOf(_loadingQueue, loader);
         if (i == -1) 
             return;
@@ -649,7 +649,7 @@ class UIPackage
         _loadingQueue.splice(i, 1);
         
         var pi : PackageItem = loader.item;
-        pi.image = cast((loader.content), Bitmap).bitmapData;
+        pi.image = cast(loader.content, Bitmap).bitmapData;
         pi.completeLoading();
     }
     
@@ -768,7 +768,7 @@ class UIPackage
         var lines : Array<Dynamic> = str.split("\n");
         var lineCount : Int = lines.length;
         var i : Int;
-        var kv : Dynamic = { };
+        var kv : Dynamic = {};
         var ttf : Bool = false;
         var size : Int = 0;
         var xadvance : Int = 0;
@@ -782,10 +782,10 @@ class UIPackage
                 continue;
             
             str = ToolSet.trim(str);
-            var arr : Array<Dynamic> = str.split(" ");
+            var arr : Array<String> = str.split(" ");
             for (j in 1...arr.length){
-                var arr2 : Array<Dynamic> = arr[j].split("=");
-                Reflect.setField(kv, Std.string(arr2[0]), arr2[1]);
+                var arr2 : Array<String> = arr[j].split("=");
+                Reflect.setField(kv, arr2[0], arr2[1]);
             }
             
             str = arr[0];
