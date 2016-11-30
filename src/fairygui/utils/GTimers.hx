@@ -10,7 +10,7 @@ import openfl.utils.Timer;
 class GTimers
 {
     private var _items : Array<TimerItem>;
-    private var _itemMap : Dictionary<Dynamic, TimerItem>;
+    private var _itemMap : Dictionary<{}, TimerItem>;
     private var _itemPool : Array<TimerItem>;
     private var _timer : Timer;
     
@@ -30,7 +30,7 @@ class GTimers
     public function new()
     {
         _items = new Array<TimerItem>();
-        _itemMap = new Dictionary<Dynamic, TimerItem>(true);
+        _itemMap = new Dictionary<{}, TimerItem>(true);
         _itemPool = new Array<TimerItem>();
         
         deltaTime = 1;

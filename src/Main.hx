@@ -24,7 +24,7 @@ class Main extends Sprite {
 //        stage.scaleMode=StageScaleMode.NO_SCALE;
 
 
-        Assets.loadBytes(path, assetsCompleteHandler);
+        Assets.loadBytes(path).onComplete(assetsCompleteHandler);
     }
 
     private function assetsCompleteHandler(by:ByteArray):Void
