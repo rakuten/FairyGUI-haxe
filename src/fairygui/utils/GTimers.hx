@@ -10,7 +10,7 @@ import openfl.utils.Timer;
 class GTimers
 {
     private var _items : Array<TimerItem>;
-    private var _itemMap : Dictionary<String, TimerItem>;
+    private var _itemMap : Dictionary<Dynamic, TimerItem>;
     private var _itemPool : Array<TimerItem>;
     private var _timer : Timer;
     
@@ -30,7 +30,7 @@ class GTimers
     public function new()
     {
         _items = new Array<TimerItem>();
-        _itemMap = new Dictionary<String, TimerItem>(true);
+        _itemMap = new Dictionary<Dynamic, TimerItem>(true);
         _itemPool = new Array<TimerItem>();
         
         deltaTime = 1;
@@ -51,13 +51,13 @@ class GTimers
     }
     
     public function add(delayInMiniseconds : Int, repeat : Int, callback : Dynamic, callbackParam : Dynamic = null) : Void{
-        var item : TimerItem = Reflect.field(_itemMap, Std.string(callback));
+        var item : TimerItem = Reflect.field(_itemMap, callback);
         if (item == null) 
         {
             item = getItem();
             item.callback = callback;
             item.hasParam = callback.length == 1;
-            Reflect.setField(_itemMap, Std.string(callback), item);
+            Reflect.setField(_itemMap, callback, item);
             _items.push(item);
         }
         item.delay = delayInMiniseconds;
@@ -83,11 +83,11 @@ class GTimers
     }
     
     public function exists(callback : Dynamic) : Bool{
-        return Reflect.field(_itemMap, Std.string(callback)) != null;
+        return Reflect.field(_itemMap, callback) != null;
     }
     
     public function remove(callback : Dynamic) : Void{
-        var item : TimerItem = Reflect.field(_itemMap, Std.string(callback));
+        var item : TimerItem = Reflect.field(_itemMap, callback);
         if (item != null) 
         {
             var i : Int = _items.indexOf(item);
