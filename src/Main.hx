@@ -1,6 +1,7 @@
 package ;
 
 
+import flash.display.StageScaleMode;
 import openfl.Assets;
 import fairygui.GRoot;
 import fairygui.UIConfig;
@@ -21,7 +22,7 @@ class Main extends Sprite {
         stage.frameRate=24;
 
         stage.align=StageAlign.TOP_LEFT;
-//        stage.scaleMode=StageScaleMode.NO_SCALE;
+        stage.scaleMode=StageScaleMode.NO_SCALE;
 
 
         Assets.loadBytes(path).onComplete(assetsCompleteHandler);
