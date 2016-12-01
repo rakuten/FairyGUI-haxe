@@ -22,6 +22,7 @@ class ZipUIPackageReader implements IUIPackageReader
     public function readDescFile(fileName : String) : String
     {
         var ba : ByteArray = _desc.getEntryData(fileName);
+        ba.position = 0;
         var str : String = ba.readUTFBytes(ba.length);
         ba.clear();
         
