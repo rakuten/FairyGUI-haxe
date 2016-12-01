@@ -10,7 +10,6 @@ import openfl.utils.Timer;
 class GTimers
 {
     private var _items : Array<TimerItem>;
-    private var _itemMap : Dictionary<{}, TimerItem>;
     private var _itemPool : Array<TimerItem>;
     private var _timer : Timer;
     
@@ -30,7 +29,6 @@ class GTimers
     public function new()
     {
         _items = new Array<TimerItem>();
-        _itemMap = new Dictionary<{}, TimerItem>(true);
         _itemPool = new Array<TimerItem>();
         
         deltaTime = 1;
@@ -49,15 +47,26 @@ class GTimers
         else 
         return new TimerItem();
     }
+
+    private function findItem(callback: Dynamic): TimerItem
+    {
+        var len: Int = this._items.length;
+        for (i in 0...len)
+        {
+            var item: TimerItem = this._items[i];
+            if (item.callback == callback)
+                return item;
+        }
+        return null;
+    }
     
     public function add(delayInMiniseconds : Int, repeat : Int, callback : Dynamic, callbackParam : Dynamic = null) : Void{
-        var item : TimerItem = Reflect.field(_itemMap, callback);
+        var item : TimerItem = findItem(callback);
         if (item == null) 
         {
             item = getItem();
             item.callback = callback;
             item.hasParam = callback.length == 1;
-            Reflect.setField(_itemMap, callback, item);
             _items.push(item);
         }
         item.delay = delayInMiniseconds;
@@ -83,11 +92,11 @@ class GTimers
     }
     
     public function exists(callback : Dynamic) : Bool{
-        return Reflect.field(_itemMap, callback) != null;
+        return findItem(callback) != null;
     }
     
     public function remove(callback : Dynamic) : Void{
-        var item : TimerItem = Reflect.field(_itemMap, callback);
+        var item : TimerItem = findItem(callback);
         if (item != null) 
         {
             var i : Int = _items.indexOf(item);
@@ -98,7 +107,6 @@ class GTimers
             
             item.callback = null;
             item.param = null;
-            Reflect.deleteField(_itemMap, callback);
             _itemPool.push(item);
         }
     }
@@ -127,7 +135,6 @@ class GTimers
                     _enumI--;
                     _enumCount--;
                     _items.splice(_enumI, 1);
-                    Reflect.deleteField(_itemMap, item.callback);
                     _itemPool.push(item);
                 }
                 
