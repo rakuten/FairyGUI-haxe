@@ -1,9 +1,6 @@
 package fairygui.utils;
 
-
-
 import openfl.events.TimerEvent;
-import openfl.utils.Dictionary;
 import openfl.utils.Timer;
 
 

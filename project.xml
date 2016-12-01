@@ -12,6 +12,7 @@
 	<haxelib name="hxcpp-debugger" if="cpp" />
 
     <haxedef name="HXCPP_DEBUGGER" if="cpp"/>
+	<haxedef name="debug" if="cpp"/>
 	
 	<assets path="Assets" rename="assets" embed="false" />
 
