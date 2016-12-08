@@ -1,5 +1,6 @@
 package fairygui;
 
+import openfl.Lib;
 import fairygui.ZipUIPackageReader;
 
 import openfl.display.Bitmap;
@@ -579,7 +580,7 @@ class UIPackage
     
     public function addItemCallback(pi : PackageItem, callback :Dynamic) : Void
     {
-        pi.lastVisitTime = Math.round(haxe.Timer.stamp() * 1000);
+        pi.lastVisitTime = Lib.getTimer();
         if (pi.type == PackageItemType.Image) 
         {
             if (pi.loaded) 

@@ -2,6 +2,7 @@ package fairygui.utils;
 
 import openfl.events.TimerEvent;
 import openfl.utils.Timer;
+import openfl.Lib;
 
 
 class GTimers
@@ -10,13 +11,13 @@ class GTimers
     private var _itemPool : Array<TimerItem>;
     private var _timer : Timer;
     
-    private var _lastTime : Float;
+    private var _lastTime : Int;
     
     private var _enumI : Int;
     private var _enumCount : Int;
     
     public static var deltaTime : Int;
-    public static var time : Float;
+    public static var time : Int;
     public static var workCount : Int;
     
     public static var inst : GTimers = new GTimers();
@@ -29,7 +30,7 @@ class GTimers
         _itemPool = new Array<TimerItem>();
         
         deltaTime = 1;
-        _lastTime = Math.round(haxe.Timer.stamp() * 1000);
+        _lastTime = Lib.getTimer();
         time = _lastTime;
         
         _timer = new Timer(10);
@@ -109,7 +110,7 @@ class GTimers
     }
     
     private function __timer(evt : TimerEvent) : Void{
-        time = Math.round(haxe.Timer.stamp() * 1000);
+        time = Lib.getTimer();
         workCount++;
         
         deltaTime = Std.int(time - _lastTime);

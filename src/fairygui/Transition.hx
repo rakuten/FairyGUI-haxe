@@ -5,6 +5,7 @@ import tweenxcore.Tools.Easing;
 
 import openfl.filters.ColorMatrixFilter;
 import openfl.media.Sound;
+import openfl.Lib;
 
 import fairygui.utils.ColorMatrix;
 import fairygui.utils.GTimers;
@@ -809,7 +810,7 @@ class Transition
                 item.startValue.f1 = 0;  //offsetX  
                 item.startValue.f2 = 0;  //offsetY  
                 item.startValue.f3 = item.value.f2;  //shakePeriod  
-                item.startValue.i = Math.round(haxe.Timer.stamp() * 1000);  //startTime  
+                item.startValue.i = Lib.getTimer();  //startTime
                 GTimers.inst.add(1, 0, item.__shake, this.shakeItem);
                 _totalTasks++;
                 item.completed = false;
@@ -854,7 +855,7 @@ class Transition
         item.startValue.f1 = rx;
         item.startValue.f2 = ry;
         
-        var t : Int = Math.round(haxe.Timer.stamp() * 1000);
+        var t : Int = Lib.getTimer();
         item.startValue.f3 -= (t - item.startValue.i) / 1000;
         item.startValue.i = t;
         if (item.startValue.f3 <= 0) 

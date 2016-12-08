@@ -1,5 +1,6 @@
 package fairygui;
 
+import openfl.Lib;
 import fairygui.DisplayListItem;
 import fairygui.GObject;
 import fairygui.PackageItem;
@@ -125,7 +126,7 @@ class AsyncOperation
         var di : DisplayListItem;
         var poolStart : Int;
         var k : Int;
-        var t : Int = Math.round(haxe.Timer.stamp() * 1000);
+        var t : Int = Lib.getTimer();
         var frameTime : Int = UIConfig.frameTimeForAsyncUIConstruction;
         var totalItems : Int = _itemList.length;
         
@@ -171,7 +172,7 @@ class AsyncOperation
             }
             
             _index++;
-            if ((_index % 5 == 0) && Math.round(haxe.Timer.stamp() * 1000) - t >= frameTime) 
+            if ((_index % 5 == 0) && Lib.getTimer() - t >= frameTime)
                 return;
         }
         

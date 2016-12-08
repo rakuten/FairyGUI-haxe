@@ -1,5 +1,6 @@
 package fairygui;
 
+import openfl.Lib;
 import fairygui.utils.CompatUtil;
 import Reflect;
 import fairygui.GProgressBar;
@@ -1619,7 +1620,7 @@ class GObject extends EventDispatcher
         if (_buttonStatus == 2) 
         {
             var cc : Int = 1;
-            var now : Int = Math.round(haxe.Timer.stamp() * 1000);
+            var now : Int = Lib.getTimer();
             if (now - _lastClick < 500) 
             {
                 cc = 2;

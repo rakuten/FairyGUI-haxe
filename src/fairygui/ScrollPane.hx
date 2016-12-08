@@ -1,5 +1,7 @@
 package fairygui;
 
+import openfl.Lib;
+import openfl.Lib;
 import tweenx909.TweenX;
 
 import openfl.errors.Error;
@@ -1146,7 +1148,7 @@ class ScrollPane extends EventDispatcher
         _xOffset = _maskContainer.mouseX - _container.x;
         _yOffset = _maskContainer.mouseY - _container.y;
         
-        _time1 = _time2 = Math.round(haxe.Timer.stamp() * 1000);
+        _time1 = _time2 = Lib.getTimer();
         _holdAreaPoint.x = _maskContainer.mouseX;
         _holdAreaPoint.y = _maskContainer.mouseY;
         _isHoldAreaDone = false;
@@ -1234,7 +1236,7 @@ class ScrollPane extends EventDispatcher
             sv = sh = true;
         }
         
-        var t : UInt = Math.round(haxe.Timer.stamp() * 1000);
+        var t : Int = Lib.getTimer();
         if (t - _time2 > 50) 
         {
             _time2 = _time1;
@@ -1327,7 +1329,7 @@ class ScrollPane extends EventDispatcher
         }
 
         isDragged = false;
-        var time : Float = (Math.round(haxe.Timer.stamp() * 1000) - _time2) / 1000;
+        var time : Float = (Lib.getTimer() - _time2) / 1000;
         if (time == 0) 
             time = 0.001;
         var yVelocity : Float = (_container.y - _y2) / time;
