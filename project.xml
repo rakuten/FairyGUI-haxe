@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 	
-	<meta title="FairyGUIHaxe" package="com.fairygui" version="1.0.0" company="FairyGUI" />
+	<meta title="FairyGUI-Haxe" package="com.fairygui" version="1.0.0" company="FairyGUI" />
 	<window width="640" height="960" if="flash||desktop"/>
     <window width="0" height="0" if="html5" />
 	<app main="Main" path="Export" file="FairyGUI" />
@@ -12,9 +12,11 @@
 	<haxelib name="monsterdebugger" if="flash" />
 	<haxelib name="hxcpp-debugger" if="cpp" />
 
-    <haxeflag name="-debug" if="cpp||html5" />
+    <!-- <haxeflag name="-debug" if="html5" /> -->
+    <haxeflag name="-debug" if="cpp" />
     <haxedef name="HXCPP_DEBUGGER" if="cpp" />
-    <haxedef name="dom" if="html5" />
+    <!-- <haxedef name="dom" if="html5" /> -->
+    <haxedef name="modular" if="html5" />
 
     <assets path="Assets" rename="assets" embed="false" />
 
