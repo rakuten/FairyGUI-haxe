@@ -24,8 +24,8 @@ class Controller extends EventDispatcher
     public var previousPageId(get, never) : String;
 
     private var _name : String;
-    private var _selectedIndex : Int;
-    private var _previousIndex : Int;
+    private var _selectedIndex : Int = 0;
+    private var _previousIndex : Int = 0;
     private var _pageIds : Array<Dynamic>;
     private var _pageNames : Array<Dynamic>;
     private var _pageTransitions : Array<PageTransition>;
@@ -34,9 +34,9 @@ class Controller extends EventDispatcher
     @:allow(fairygui)
     private var _parent : GComponent;
     @:allow(fairygui)
-    private var _autoRadioGroupDepth : Bool;
+    private var _autoRadioGroupDepth : Bool = false;
     
-    private static var _nextPageId : Int;
+    private static var _nextPageId : Int = 0;
     
     public function new()
     {

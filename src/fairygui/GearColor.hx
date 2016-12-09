@@ -7,7 +7,7 @@ import fairygui.utils.ToolSet;
 class GearColor extends GearBase
 {
     private var _storage : Map<String, Int>;
-    private var _default : Int;
+    private var _default : Int = 0;
     
     public function new(owner : GObject)
     {
@@ -16,7 +16,7 @@ class GearColor extends GearBase
     
     override private function init() : Void
     {
-        _default = cast((_owner), IColorGear).color;
+        _default = cast(_owner, IColorGear).color;
         _storage = new Map<String, Int>();
     }
     

@@ -42,7 +42,7 @@ class RichTextField extends Sprite
     private var _lineInfo : Array<Dynamic>;
     private var _linkButtonCache : Array<LinkButton>;
     private var _nodeCache : Array<HtmlNode>;
-    private var _needUpdateNodePos : Bool;
+    private var _needUpdateNodePos : Bool = false;
     
     private static inline var PLACEHOLDER_FONT : String = "Arial";
     

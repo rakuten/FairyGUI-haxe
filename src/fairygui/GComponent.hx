@@ -37,16 +37,16 @@ class GComponent extends GObject
     public var viewWidth(get, set) : Int;
     public var viewHeight(get, set) : Int;
 
-    private var _sortingChildCount : Int;
-    private var _opaque : Bool;
+    private var _sortingChildCount : Int = 0;
+    private var _opaque : Bool = false;
     
     private var _margin : Margin;
-    private var _trackBounds : Bool;
+    private var _trackBounds : Bool = false;
     private var _clipMask : Shape;
-    private var _boundsChanged : Bool;
+    private var _boundsChanged : Bool = false;
     
     @:allow(fairygui)
-    private var _buildingDisplayList : Bool;
+    private var _buildingDisplayList : Bool = false;
     @:allow(fairygui)
     private var _children : Array<GObject>;
     @:allow(fairygui)
@@ -62,8 +62,8 @@ class GComponent extends GObject
     @:allow(fairygui)
     private var _alignOffset : Point;
     
-    private var _childrenRenderOrder : Int;
-    private var _apexIndex : Int;
+    private var _childrenRenderOrder : Int = 0;
+    private var _apexIndex : Int = 0;
     
     public function new()
     {
@@ -1021,7 +1021,7 @@ class GComponent extends GObject
                     else 
                     {
                         prev = _children[i - 1];
-                        if (yValue < prev.y + prev.height / 2)                               //top half part  
+                        if (yValue < prev.y + prev.height / 2)  //top half part
                         yValue = prev.y
                         //bottom half part
                         else 
@@ -1052,7 +1052,7 @@ class GComponent extends GObject
                     else 
                     {
                         prev = _children[i - 1];
-                        if (xValue < prev.x + prev.width / 2)                               //top half part  
+                        if (xValue < prev.x + prev.width / 2) //top half part
                         xValue = prev.x
                         //bottom half part
                         else 

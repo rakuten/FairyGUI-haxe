@@ -12,10 +12,10 @@ import openfl.geom.Rectangle;
 class BitmapFont
 {
     public var id : String;
-    public var size : Int;
-    public var ttf : Bool;
-    public var resizable : Bool;
-    public var colored : Bool;
+    public var size : Int = 0;
+    public var ttf : Bool = false;
+    public var resizable : Bool = false;
+    public var colored : Bool = false;
     public var atlas : BitmapData;
     public var glyphs : Map<String, BMGlyph>;
     

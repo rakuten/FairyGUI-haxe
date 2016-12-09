@@ -19,12 +19,12 @@ class GGraph extends GObject implements IColorGear
 
     private var _graphics : Graphics;
     
-    private var _type : Int;
-    private var _lineSize : Int;
-    private var _lineColor : Int;
-    private var _lineAlpha : Float;
-    private var _fillColor : Int;
-    private var _fillAlpha : Float;
+    private var _type : Int = 0;
+    private var _lineSize : Int = 0;
+    private var _lineColor : Int = 0;
+    private var _lineAlpha : Float = 0;
+    private var _fillColor : Int = 0;
+    private var _fillAlpha : Float = 0;
     private var _corner : Array<Dynamic>;
     
     public function new()

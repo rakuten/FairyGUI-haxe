@@ -7,7 +7,7 @@ class DisplayListItem
     public var packageItem : PackageItem;
     public var type : String;
     public var desc : FastXML;
-    public var listItemCount : Int;
+    public var listItemCount : Int = 0;
     
     public function new(packageItem : PackageItem, type : String)
     {

@@ -47,33 +47,33 @@ class GList extends GComponent
      * itemProvider(index:int):String;
      */
     public var itemProvider :Dynamic;
-    public var scrollItemToViewOnClick : Bool;
-    public var foldInvisibleItems : Bool;
+    public var scrollItemToViewOnClick : Bool = false;
+    public var foldInvisibleItems : Bool = false;
 
-    private var _layout : Int;
-    private var _lineItemCount : Int;
-    private var _lineGap : Int;
+    private var _layout : Int = 0;
+    private var _lineItemCount : Int = 0;
+    private var _lineGap : Int = 0;
     private var _columnGap : Int = 0;
     private var _defaultItem : String;
-    private var _autoResizeItem : Bool;
-    private var _selectionMode : Int;
-    private var _align : Int;
-    private var _verticalAlign : Int;
+    private var _autoResizeItem : Bool = false;
+    private var _selectionMode : Int = 0;
+    private var _align : Int = 0;
+    private var _verticalAlign : Int = 0;
 
-    private var _lastSelectedIndex : Int;
+    private var _lastSelectedIndex : Int = 0;
     private var _pool : GObjectPool;
 
     //Virtual List support
-    private var _virtual : Bool;
-    private var _loop : Bool;
-    private var _numItems : Int;
-    private var _realNumItems : Int;
-    private var _firstIndex : Int;  //the top left index
-    private var _curLineItemCount : Int;  //item count in one line
-    private var _curLineItemCount2 : Int;  //只用在页面模式，表示垂直方向的项目数
+    private var _virtual : Bool = false;
+    private var _loop : Bool = false;
+    private var _numItems : Int = 0;
+    private var _realNumItems : Int = 0;
+    private var _firstIndex : Int = 0;  //the top left index
+    private var _curLineItemCount : Int = 0;  //item count in one line
+    private var _curLineItemCount2 : Int = 0;  //只用在页面模式，表示垂直方向的项目数
     private var _itemSize : Point;
-    private var _virtualListChanged : Int;  //1-content changed, 2-size changed
-    private var _eventLocked : Bool;
+    private var _virtualListChanged : Int = 0;  //1-content changed, 2-size changed
+    private var _eventLocked : Bool = false;
     private var _virtualItems : Array<ItemInfo>;
 
     public function new()
@@ -2332,7 +2332,7 @@ class ItemInfo
     public var width : Float = 0;
     public var height : Float = 0;
     public var obj : GObject;
-    public var updateFlag : Int;
+    public var updateFlag : Int = 0;
 
     public function new()
     {

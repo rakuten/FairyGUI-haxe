@@ -5,14 +5,14 @@ import openfl.text.TextFormat;
 
 class HtmlElement
 {
-    public var type : Int;  //0-none, 1-link, 2-image  
+    public var type : Int = 0;  //0-none, 1-link, 2-image
     
-    public var start : Int;
-    public var end : Int;
+    public var start : Int = 0;
+    public var end : Int = 0;
     public var textformat : TextFormat;
     public var id : String;
-    public var width : Int;
-    public var height : Int;
+    public var width : Int = 0;
+    public var height : Int = 0;
     
     //link
     public var href : String;

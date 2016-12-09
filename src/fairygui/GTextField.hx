@@ -40,25 +40,25 @@ class GTextField extends GObject implements IColorGear
     public var autoSize(get, set) : Int;
     public var textWidth(get, never) : Int;
 
-    private var _ubbEnabled : Bool;
-    private var _autoSize : Int;
-    private var _widthAutoSize : Bool;
-    private var _heightAutoSize : Bool;
+    private var _ubbEnabled : Bool = false;
+    private var _autoSize : Int = 0;
+    private var _widthAutoSize : Bool = false;
+    private var _heightAutoSize : Bool = false;
     private var _textFormat : TextFormat;
     private var _text : String;
     private var _font : String;
-    private var _fontSize : Int;
-    private var _align : Int;
-    private var _verticalAlign : Int;
-    private var _color : Int;
-    private var _leading : Int;
-    private var _letterSpacing : Int;
-    private var _underline : Bool;
-    private var _bold : Bool;
-    private var _italic : Bool;
-    private var _singleLine : Bool;
-    private var _stroke : Int;
-    private var _strokeColor : Int;
+    private var _fontSize : Int = 0;
+    private var _align : Int = 0;
+    private var _verticalAlign : Int = 0;
+    private var _color : Int = 0;
+    private var _leading : Int = 0;
+    private var _letterSpacing : Int = 0;
+    private var _underline : Bool = false;
+    private var _bold : Bool = false;
+    private var _italic : Bool = false;
+    private var _singleLine : Bool = false;
+    private var _stroke : Int = 0;
+    private var _strokeColor : Int = 0;
     private var _shadowOffset : Point;
     private var _textFilters : Array<BitmapFilter>;
     
@@ -66,13 +66,13 @@ class GTextField extends GObject implements IColorGear
     private var _bitmap : UIImage;
     private var _bitmapData : BitmapData;
     
-    private var _updatingSize : Bool;
-    private var _requireRender : Bool;
-    private var _sizeDirty : Bool;
-    private var _textWidth : Int;
-    private var _textHeight : Int;
-    private var _fontAdjustment : Int;
-    private var _minHeight : Int;
+    private var _updatingSize : Bool = false;
+    private var _requireRender : Bool = false;
+    private var _sizeDirty : Bool = false;
+    private var _textWidth : Int = 0;
+    private var _textHeight : Int = 0;
+    private var _fontAdjustment : Int = 0;
+    private var _minHeight : Int = 0;
     
     private var _bitmapFont : BitmapFont;
     private var _lines : Array<LineInfo>;
@@ -991,11 +991,11 @@ class GTextField extends GObject implements IColorGear
 
 class LineInfo
 {
-    public var width : Int;
-    public var height : Int;
-    public var textHeight : Int;
+    public var width : Int = 0;
+    public var height : Int = 0;
+    public var textHeight : Int = 0;
     public var text : String;
-    public var y : Int;
+    public var y : Int = 0;
     
     private static var pool : Array<Dynamic> = [];
     

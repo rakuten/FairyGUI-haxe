@@ -21,23 +21,23 @@ class Transition
     public var timeScale(get, set) : Float;
 
     public var name : String;
-    public var autoPlayRepeat : Int;
-    public var autoPlayDelay : Float;
+    public var autoPlayRepeat : Int = 0;
+    public var autoPlayDelay : Float = 0;
     
     private var _owner : GComponent;
-    private var _ownerBaseX : Float;
-    private var _ownerBaseY : Float;
+    private var _ownerBaseX : Float = 0;
+    private var _ownerBaseY : Float = 0;
     private var _items : Array<TransitionItem>;
-    private var _totalTimes : Int;
-    private var _totalTasks : Int;
-    private var _playing : Bool;
+    private var _totalTimes : Int = 0;
+    private var _totalTasks : Int = 0;
+    private var _playing : Bool = false;
     private var _onComplete : Dynamic;
     private var _onCompleteParam : Dynamic;
-    private var _options : Int;
-    private var _reversed : Bool;
-    private var _maxTime : Float;
-    private var _autoPlay : Bool;
-    private var _timeScale : Float;
+    private var _options : Int = 0;
+    private var _reversed : Bool = false;
+    private var _maxTime : Float = 0;
+    private var _autoPlay : Bool = false;
+    private var _timeScale : Float = 0;
     
     public var OPTION_IGNORE_DISPLAY_CONTROLLER : Int = 1;
     
@@ -1103,25 +1103,25 @@ class TransitionActionType
 
 class TransitionItem
 {
-    public var time : Float;
+    public var time : Float = 0;
     public var targetId : String;
-    public var type : Int;
-    public var duration : Float;
+    public var type : Int = 0;
+    public var duration : Float = 0;
     public var value : TransitionValue;
     public var startValue : TransitionValue;
     public var endValue : TransitionValue;
     public var easeType : Float->Float;
-    public var repeat : Int;
-    public var yoyo : Bool;
-    public var tween : Bool;
+    public var repeat : Int = 0;
+    public var yoyo : Bool = false;
+    public var tween : Bool = false;
     public var label : String;
     public var label2 : String;
     public var hook :Dynamic;
     public var hook2 :Dynamic;
     public var tweener : TweenX;
-    public var completed : Bool;
+    public var completed : Bool = false;
     public var target : GObject;
-    public var filterCreated : Bool;
+    public var filterCreated : Bool = false;
     
     public var params : Array<Dynamic>;
     public function new()
@@ -1141,13 +1141,13 @@ class TransitionItem
 
 class TransitionValue
 {
-    public var f1 : Float;  //x, scalex, pivotx,alpha,shakeAmplitude  
-    public var f2 : Float;  //y, scaley, pivoty, shakePeriod  
-    public var f3 : Float;
-    public var f4 : Float;
-    public var i : Int;  //rotation,frame  
-    public var c : Int;  //color  
-    public var b : Bool;  //playing  
+    public var f1 : Float = 0;  //x, scalex, pivotx,alpha,shakeAmplitude
+    public var f2 : Float = 0;  //y, scaley, pivoty, shakePeriod
+    public var f3 : Float = 0;
+    public var f4 : Float = 0;
+    public var i : Int = 0;  //rotation,frame
+    public var c : Int = 0;  //color
+    public var b : Bool = false;  //playing
     public var s : String;  //sound,transName  
     
     public var b1 : Bool = true;

@@ -38,7 +38,7 @@ class GButton extends GComponent
     private var _relatedController : Controller;
     
     private var _mode : Int;
-    private var _selected : Bool;
+    private var _selected : Bool = false;
     private var _title : String;
     private var _selectedTitle : String;
     private var _icon : String;
@@ -49,12 +49,12 @@ class GButton extends GComponent
     private var _buttonController : Controller;
     private var _changeStateOnClick : Bool;
     private var _linkedPopup : GObject;
-    private var _hasDisabledPage : Bool;
-    private var _downEffect : Int;
+    private var _hasDisabledPage : Bool = false;
+    private var _downEffect : Int = 0;
     private var _downEffectValue : Float;
     private var _useHandCursor : Bool;
     
-    private var _over : Bool;
+    private var _over : Bool = false;
     
     public static inline var UP : String = "up";
     public static inline var DOWN : String = "down";
@@ -66,7 +66,7 @@ class GButton extends GComponent
     public function new()
     {
         super();
-        
+
         _mode = ButtonMode.Common;
         _title = "";
         _icon = "";
@@ -78,8 +78,8 @@ class GButton extends GComponent
         _useHandCursor = UIConfig.buttonUseHandCursor;
         if (_useHandCursor) 
         {
-            cast((this.displayObject), Sprite).buttonMode = true;
-            cast((this.displayObject), Sprite).useHandCursor = true;
+            cast(this.displayObject, Sprite).buttonMode = true;
+            cast(this.displayObject, Sprite).useHandCursor = true;
         }
     }
     
@@ -258,8 +258,8 @@ class GButton extends GComponent
     private function set_useHandCursor(value : Bool) : Bool
     {
         _useHandCursor = value;
-        cast((this.displayObject), Sprite).buttonMode = _useHandCursor;
-        cast((this.displayObject), Sprite).useHandCursor = _useHandCursor;
+        cast(this.displayObject, Sprite).buttonMode = _useHandCursor;
+        cast(this.displayObject, Sprite).useHandCursor = _useHandCursor;
         return value;
     }
     
@@ -343,7 +343,7 @@ class GButton extends GComponent
                 for (i in 0...cnt){
                     obj = this.getChildAt(i);
                     if ((Std.is(obj, IColorGear)) && !(Std.is(obj, GTextField))) 
-                        cast((obj), IColorGear).color = color;
+                        cast(obj, IColorGear).color = color;
                 }
             }
             else 
@@ -351,7 +351,7 @@ class GButton extends GComponent
                 for (i in 0...cnt){
                     obj = this.getChildAt(i);
                     if ((Std.is(obj, IColorGear)) && !(Std.is(obj, GTextField))) 
-                        cast((obj), IColorGear).color = 0xFFFFFF;
+                        cast(obj, IColorGear).color = 0xFFFFFF;
                 }
             }
         }

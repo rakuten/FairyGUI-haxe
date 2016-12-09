@@ -15,21 +15,21 @@ class GSlider extends GComponent
     public var max(get, set) : Int;
     public var value(get, set) : Int;
 
-    private var _max : Int;
-    private var _value : Int;
-    private var _titleType : Int;
+    private var _max : Int = 0;
+    private var _value : Int = 0;
+    private var _titleType : Int = 0;
     
     private var _titleObject : GTextField;
     private var _aniObject : GObject;
     private var _barObjectH : GObject;
     private var _barObjectV : GObject;
-    private var _barMaxWidth : Int;
-    private var _barMaxHeight : Int;
-    private var _barMaxWidthDelta : Int;
-    private var _barMaxHeightDelta : Int;
+    private var _barMaxWidth : Int = 0;
+    private var _barMaxHeight : Int = 0;
+    private var _barMaxWidthDelta : Int = 0;
+    private var _barMaxHeightDelta : Int = 0;
     private var _gripObject : GObject;
     private var _clickPos : Point;
-    private var _clickPercent : Float;
+    private var _clickPercent : Float = 0;
     
     public function new()
     {

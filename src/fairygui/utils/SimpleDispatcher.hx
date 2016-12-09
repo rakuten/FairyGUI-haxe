@@ -4,9 +4,9 @@ package fairygui.utils;
 class SimpleDispatcher
 {
     private var _elements : Array<Dynamic>;
-    private var _enumI : Int;
+    private var _enumI : Int = 0;
     
-    public var _dispatchingType : Int;
+    public var _dispatchingType : Int = 0;
     
     public function new()
     {

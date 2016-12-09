@@ -41,22 +41,22 @@ class GRoot extends GComponent
     private var _focusedObject : GObject;
     private var _tooltipWin : GObject;
     private var _defaultTooltipWin : GObject;
-    private var _hitUI : Bool;
-    private var _contextMenuDisabled : Bool;
+    private var _hitUI : Bool = false;
+    private var _contextMenuDisabled : Bool = false;
     private var _volumeScale : Float;
-    private var _designResolutionX : Int;
-    private var _designResolutionY : Int;
-    private var _screenMatchMode : Int;
+    private var _designResolutionX : Int = 0;
+    private var _designResolutionY : Int = 0;
+    private var _screenMatchMode : Int = 0;
     
     private static var _inst : GRoot;
     
-    public var buttonDown : Bool;
-    public var ctrlKeyDown : Bool;
-    public var shiftKeyDown : Bool;
+    public var buttonDown : Bool = false;
+    public var ctrlKeyDown : Bool = false;
+    public var shiftKeyDown : Bool = false;
     
-    public static var touchScreen : Bool;
-    public static var touchPointInput : Bool;
-    public static var eatUIEvents : Bool;
+    public static var touchScreen : Bool = false;
+    public static var touchPointInput : Bool = false;
+    public static var eatUIEvents : Bool = false;
     public static var contentScaleFactor : Float = 1;
     
     private static function get_inst() : GRoot
@@ -83,7 +83,7 @@ class GRoot extends GComponent
     {
         return _nativeStage;
     }
-    
+
     public function setContentScaleFactor(designResolutionX : Int, designResolutionY : Int,
             screenMatchMode : Int = ScreenMatchMode.MatchWidthOrHeight) : Void
     {
@@ -127,9 +127,9 @@ class GRoot extends GComponent
             contentScaleFactor = Math.min(s1, s2);
         }
         else if (_screenMatchMode == ScreenMatchMode.MatchWidth) 
-            contentScaleFactor = screenWidth / dx
+            contentScaleFactor = screenWidth / dx;
         else 
-        contentScaleFactor = screenHeight / dy;
+            contentScaleFactor = screenHeight / dy;
         
         this.setSize(Math.round(screenWidth / contentScaleFactor), Math.round(screenHeight / contentScaleFactor));
         this.scaleX = contentScaleFactor;
@@ -561,7 +561,7 @@ class GRoot extends GComponent
         _nativeStage = displayObject.stage;
 
         var osStr:String = Capabilities.os.toLowerCase().substr(0,3);
-        touchScreen = osStr != "win" && osStr != "mac" && Capabilities.touchscreenType != TouchscreenType.NONE;
+        touchScreen = (osStr == "ios" || osStr == "and" || osStr == "bla" || osStr == "tiz") && Capabilities.touchscreenType != TouchscreenType.NONE;
         
         if (touchScreen) 
         {
@@ -585,10 +585,10 @@ class GRoot extends GComponent
         _modalLayer.addRelation(this, RelationType.Size);
 
         var osStr:String = Capabilities.os.toLowerCase().substr( 0, 3);
-        if (osStr == "win" || osStr == "mac")
-            _nativeStage.addEventListener(Event.RESIZE, __winResize)
-        else 
-        _nativeStage.addEventListener("orientationChange", __orientationChange);
+        if (osStr == "ios" || osStr == "and" || osStr == "bla" || osStr == "tiz")
+            _nativeStage.addEventListener("orientationChange", __orientationChange);
+        else
+            _nativeStage.addEventListener(Event.RESIZE, __winResize);
         __winResize(null);
     }
     

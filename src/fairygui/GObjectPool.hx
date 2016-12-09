@@ -7,7 +7,7 @@ class GObjectPool
     public var count(get, never) : Int;
 
     private var _pool : Map<String, Array<GObject>>;
-    private var _count : Int;
+    private var _count : Int = 0;
     private var _initCallback : Dynamic;
     
     public function new()

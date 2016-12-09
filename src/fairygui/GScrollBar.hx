@@ -19,9 +19,9 @@ class GScrollBar extends GComponent
     private var _bar : GObject;
     private var _target : ScrollPane;
     
-    private var _vertical : Bool;
-    private var _scrollPerc : Float;
-    private var _fixedGripSize : Bool;
+    private var _vertical : Bool = false;
+    private var _scrollPerc : Float = 0;
+    private var _fixedGripSize : Bool = false;
     
     private var _dragOffset : Point;
     

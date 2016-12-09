@@ -20,8 +20,8 @@ class GImage extends GObject implements IColorGear
 
     private var _content : Bitmap;
     private var _bmdAfterFlip : BitmapData;
-    private var _color : Int;
-    private var _flip : Int;
+    private var _color : Int = 0;
+    private var _flip : Int = 0;
     
     public function new()
     {

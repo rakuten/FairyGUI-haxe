@@ -19,7 +19,7 @@ class TextInputHistory
     private var _redoBuffer : Array<String>;
     private var _currentText : String;
     private var _textField : TextField;
-    private var _lock : Bool;
+    private var _lock : Bool = false;
     
     public var maxHistoryLength : Int = 5;
     

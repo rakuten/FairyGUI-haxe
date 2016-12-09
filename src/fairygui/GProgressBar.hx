@@ -13,22 +13,22 @@ class GProgressBar extends GComponent
 
     private var _max : Int;
     private var _value : Int;
-    private var _titleType : Int;
-    private var _reverse : Bool;
+    private var _titleType : Int = 0;
+    private var _reverse : Bool = false;
     
     private var _titleObject : GTextField;
     private var _aniObject : GObject;
     private var _barObjectH : GObject;
     private var _barObjectV : GObject;
-    private var _barMaxWidth : Int;
-    private var _barMaxHeight : Int;
-    private var _barMaxWidthDelta : Int;
-    private var _barMaxHeightDelta : Int;
-    private var _barStartX : Int;
-    private var _barStartY : Int;
+    private var _barMaxWidth : Int = 0;
+    private var _barMaxHeight : Int = 0;
+    private var _barMaxWidthDelta : Int = 0;
+    private var _barMaxHeightDelta : Int = 0;
+    private var _barStartX : Int = 0;
+    private var _barStartY : Int = 0;
     
     private var _tweener : TweenX;
-    public var _tweenValue : Int;
+    public var _tweenValue : Int = 0;
     
     public function new()
     {

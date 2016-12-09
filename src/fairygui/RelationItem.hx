@@ -11,10 +11,10 @@ class RelationItem
     private var _owner : GObject;
     private var _target : GObject;
     private var _defs : Array<RelationDef>;
-    private var _targetX : Float;
-    private var _targetY : Float;
-    private var _targetWidth : Float;
-    private var _targetHeight : Float;
+    private var _targetX : Float = 0;
+    private var _targetY : Float = 0;
+    private var _targetWidth : Float = 0;
+    private var _targetHeight : Float = 0;
     
     @:allow(fairygui)
     private function new(owner : GObject)
@@ -471,8 +471,8 @@ class RelationItem
 
 class RelationDef
 {
-    public var percent : Bool;
-    public var type : Int;
+    public var percent : Bool = false;
+    public var type : Int = 0;
     
     public function new()
     {

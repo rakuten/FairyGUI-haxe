@@ -33,28 +33,28 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
     public var showErrorSign(get, set) : Bool;
 
     private var _url : String;
-    private var _align : Int;
-    private var _verticalAlign : Int;
-    private var _autoSize : Bool;
-    private var _fill : Int;
-    private var _showErrorSign : Bool;
-    private var _playing : Bool;
-    private var _frame : Int;
-    private var _color : Int;
+    private var _align : Int = 0;
+    private var _verticalAlign : Int = 0;
+    private var _autoSize : Bool = false;
+    private var _fill : Int = 0;
+    private var _showErrorSign : Bool = false;
+    private var _playing : Bool = false;
+    private var _frame : Int = 0;
+    private var _color : Int = 0;
     
     private var _contentItem : PackageItem;
-    private var _contentSourceWidth : Int;
-    private var _contentSourceHeight : Int;
-    private var _contentWidth : Int;
-    private var _contentHeight : Int;
+    private var _contentSourceWidth : Int = 0;
+    private var _contentSourceHeight : Int = 0;
+    private var _contentWidth : Int = 0;
+    private var _contentHeight : Int = 0;
     
     private var _container : Sprite;
     private var _content : DisplayObject;
     private var _errorSign : GObject;
     
-    private var _updatingLayout : Bool;
+    private var _updatingLayout : Bool = false;
     
-    private var _loading : Int;
+    private var _loading : Int = 0;
     private var _externalLoader : Loader;
     
     private static var _errorSignPool : GObjectPool = new GObjectPool();

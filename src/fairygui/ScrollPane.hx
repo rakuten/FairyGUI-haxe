@@ -58,62 +58,62 @@ class ScrollPane extends EventDispatcher
     private var _maskContainer : Sprite;
     private var _mask : Sprite;
     
-    private var _viewWidth : Float;
-    private var _viewHeight : Float;
-    private var _contentWidth : Float;
-    private var _contentHeight : Float;
+    private var _viewWidth : Float = 0;
+    private var _viewHeight : Float = 0;
+    private var _contentWidth : Float = 0;
+    private var _contentHeight : Float = 0;
     
-    private var _scrollType : Int;
-    private var _scrollSpeed : Int;
-    private var _mouseWheelSpeed : Int;
+    private var _scrollType : Int = 0;
+    private var _scrollSpeed : Int = 0;
+    private var _mouseWheelSpeed : Int = 0;
     private var _scrollBarMargin : Margin;
-    private var _bouncebackEffect : Bool;
-    private var _touchEffect : Bool;
-    private var _scrollBarDisplayAuto : Bool;
-    private var _vScrollNone : Bool;
-    private var _hScrollNone : Bool;
+    private var _bouncebackEffect : Bool = false;
+    private var _touchEffect : Bool = false;
+    private var _scrollBarDisplayAuto : Bool = false;
+    private var _vScrollNone : Bool = false;
+    private var _hScrollNone : Bool = false;
     
-    private var _displayOnLeft : Bool;
-    private var _snapToItem : Bool;
-    private var _displayInDemand : Bool;
-    private var _mouseWheelEnabled : Bool;
-    private var _pageMode : Bool;
-    private var _pageSizeH : Float;
-    private var _pageSizeV : Float;
-    private var _inertiaDisabled : Bool;
-    private var _maskDisabled : Bool;
+    private var _displayOnLeft : Bool = false;
+    private var _snapToItem : Bool = false;
+    private var _displayInDemand : Bool = false;
+    private var _mouseWheelEnabled : Bool = false;
+    private var _pageMode : Bool = false;
+    private var _pageSizeH : Float = 0;
+    private var _pageSizeV : Float = 0;
+    private var _inertiaDisabled : Bool = false;
+    private var _maskDisabled : Bool = false;
     
-    private var _xPerc : Float;
-    private var _yPerc : Float;
-    private var _xPos : Float;
-    private var _yPos : Float;
-    private var _xOverlap : Float
-    ;private var _yOverlap : Float;
+    private var _xPerc : Float = 0;
+    private var _yPerc : Float = 0;
+    private var _xPos : Float = 0;
+    private var _yPos : Float = 0;
+    private var _xOverlap : Float = 0;
+    private var _yOverlap : Float = 0;
     
     private static var _easeTypeFunc : Float -> Float;
     private var _throwTween : ThrowTween;
-    private var _tweening : Int;
+    private var _tweening : Int = 0;
     private var _tweener : TweenX;
     
-    private var _time1 : UInt;
-    private var _time2 : UInt;
-    private var _y1 : Float;
-    private var _y2 : Float;
-    private var _x1 : Float;
-    private var _x2 : Float;
-    private var _xOffset : Float;
-    private var _yOffset : Float;
+    private var _time1 : UInt = 0;
+    private var _time2 : UInt = 0;
+    private var _y1 : Float = 0;
+    private var _y2 : Float = 0;
+    private var _x1 : Float = 0;
+    private var _x2 : Float = 0;
+    private var _xOffset : Float = 0;
+    private var _yOffset : Float = 0;
     
-    private var _needRefresh : Bool;
+    private var _needRefresh : Bool = false;
     private var _holdAreaPoint : Point;
-    private var _isHoldAreaDone : Bool;
-    private var _aniFlag : Int;
-    private var _scrollBarVisible : Bool;
+    private var _isHoldAreaDone : Bool = false;
+    private var _aniFlag : Int = 0;
+    private var _scrollBarVisible : Bool = false;
     
     private var _hzScrollBar : GScrollBar;
     private var _vtScrollBar : GScrollBar;
 
-    public var isDragged : Bool;
+    public var isDragged : Bool = false;
     public static var draggingPane : ScrollPane;
     private static var _gestureFlag : Int = 0;
     
@@ -1577,7 +1577,7 @@ class ScrollPane extends EventDispatcher
 
 class ThrowTween
 {
-    public var value : Float;
+    public var value : Float = 0;
     public var start : Point;
     public var change1 : Point;
     public var change2 : Point;

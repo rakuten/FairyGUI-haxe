@@ -12,7 +12,7 @@ class Relations
     @:allow(fairygui)
     private var handling : GObject;
     @:allow(fairygui)
-    private var sizeDirty : Bool;
+    private var sizeDirty : Bool = false;
     
     private static var RELATION_NAMES : Array<Dynamic> = 
         [

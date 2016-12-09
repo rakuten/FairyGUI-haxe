@@ -11,14 +11,14 @@ class GTimers
     private var _itemPool : Array<TimerItem>;
     private var _timer : Timer;
     
-    private var _lastTime : Int;
+    private var _lastTime : Int = 0;
     
-    private var _enumI : Int;
-    private var _enumCount : Int;
+    private var _enumI : Int = 0;
+    private var _enumCount : Int = 0;
     
-    public static var deltaTime : Int;
-    public static var time : Int;
-    public static var workCount : Int;
+    public static var deltaTime : Int = 0;
+    public static var time : Int = 0;
+    public static var workCount : Int = 0;
     
     public static var inst : GTimers = new GTimers();
     

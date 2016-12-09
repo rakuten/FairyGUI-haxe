@@ -3,10 +3,10 @@ package fairygui;
 
 class Margin
 {
-    public var left : Int;
-    public var right : Int;
-    public var top : Int;
-    public var bottom : Int;
+    public var left : Int = 0;
+    public var right : Int = 0;
+    public var top : Int = 0;
+    public var bottom : Int = 0;
     
     public function new()
     {

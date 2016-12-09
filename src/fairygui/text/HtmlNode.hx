@@ -5,16 +5,16 @@ import openfl.display.DisplayObject;
 
 class HtmlNode
 {
-    public var charStart : Int;
-    public var charEnd : Int;
-    public var lineIndex : Int;
-    public var nodeIndex : Int;
+    public var charStart : Int = 0;
+    public var charEnd : Int = 0;
+    public var lineIndex : Int = 0;
+    public var nodeIndex : Int = 0;
     
     public var element : HtmlElement;
     
     public var displayObject : DisplayObject;
-    public var topY : Float;
-    public var posUpdated : Bool;
+    public var topY : Float = 0;
+    public var posUpdated : Bool = false;
     
     @:allow(fairygui.text)
     private function new()

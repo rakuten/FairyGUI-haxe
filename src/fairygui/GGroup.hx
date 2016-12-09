@@ -6,8 +6,8 @@ import fairygui.utils.CompatUtil;
 class GGroup extends GObject
 {
     @:allow(fairygui)
-    private var _updating : Bool;
-    private var _empty : Bool;
+    private var _updating : Bool = false;
+    private var _empty : Bool = false;
     
     public function new()
     {

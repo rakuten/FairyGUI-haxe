@@ -41,7 +41,7 @@ class UIPackage
     private var _reader : IUIPackageReader;
     
     @:allow(fairygui)
-    private static var _constructing : Int;
+    private static var _constructing : Int = 0;
     
     private static var _packageInstById : Map<String, UIPackage> = new Map<String, UIPackage>();
     private static var _packageInstByName : Map<String, UIPackage> = new Map<String, UIPackage>();

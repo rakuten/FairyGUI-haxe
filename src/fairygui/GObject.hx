@@ -122,28 +122,28 @@ class GObject extends EventDispatcher
     public var packageItem : PackageItem;
     public static var draggingObject : GObject;
     
-    private var _x : Float;
-    private var _y : Float;
-    private var _width : Float;
-    private var _height : Float;
-    private var _alpha : Float;
-    private var _rotation : Int;
-    private var _visible : Bool;
-    private var _touchable : Bool;
-    private var _grayed : Bool;
-    private var _draggable : Bool;
-    private var _scaleX : Float;
-    private var _scaleY : Float;
-    private var _pivotX : Float;
-    private var _pivotY : Float;
-    private var _pivotAsAnchor : Bool;
-    private var _pivotOffsetX : Float;
-    private var _pivotOffsetY : Float;
-    private var _sortingOrder : Int;
-    private var _internalVisible : Int;
-    private var _focusable : Bool;
+    private var _x : Float = 0;
+    private var _y : Float = 0;
+    private var _width : Float = 0;
+    private var _height : Float = 0;
+    private var _alpha : Float = 0;
+    private var _rotation : Int = 0;
+    private var _visible : Bool = false;
+    private var _touchable : Bool = false;
+    private var _grayed : Bool = false;
+    private var _draggable : Bool = false;
+    private var _scaleX : Float = 0;
+    private var _scaleY : Float = 0;
+    private var _pivotX : Float = 0;
+    private var _pivotY : Float = 0;
+    private var _pivotAsAnchor : Bool = false;
+    private var _pivotOffsetX : Float = 0;
+    private var _pivotOffsetY : Float = 0;
+    private var _sortingOrder : Int = 0;
+    private var _internalVisible : Int = 0;
+    private var _focusable : Bool = false;
     private var _tooltips : String;
-    private var _pixelSnapping : Bool;
+    private var _pixelSnapping : Bool = false;
     
     private var _relations : Relations;
     private var _group : GGroup;
@@ -151,37 +151,37 @@ class GObject extends EventDispatcher
     private var _displayObject : DisplayObject;
     private var _dragBounds : Rectangle;
     
-    private var _yOffset : Int;
+    private var _yOffset : Int = 0;
     //Size的实现方式，有两种，0-GObject的w/h等于DisplayObject的w/h。1-GObject的sourceWidth/sourceHeight等于DisplayObject的w/h，剩余部分由scale实现
-    private var _sizeImplType : Int;
+    private var _sizeImplType : Int = 0;
     
     @:allow(fairygui)
     private var _parent : GComponent;
     @:allow(fairygui)
     private var _dispatcher : SimpleDispatcher;
     @:allow(fairygui)
-    private var _rawWidth : Float;
+    private var _rawWidth : Float = 0;
     @:allow(fairygui)
-    private var _rawHeight : Float;
+    private var _rawHeight : Float = 0;
     @:allow(fairygui)
-    private var _sourceWidth : Int;
+    private var _sourceWidth : Int = 0;
     @:allow(fairygui)
-    private var _sourceHeight : Int;
+    private var _sourceHeight : Int = 0;
     @:allow(fairygui)
-    private var _initWidth : Int;
+    private var _initWidth : Int = 0;
     @:allow(fairygui)
-    private var _initHeight : Int;
+    private var _initHeight : Int = 0;
     @:allow(fairygui)
     private var _id : String;
     @:allow(fairygui)
     private var _name : String;
     @:allow(fairygui)
-    private var _underConstruct : Bool;
+    private var _underConstruct : Bool = false;
     @:allow(fairygui)
-    private var _gearLocked : Bool;
+    private var _gearLocked : Bool = false;
     
     @:allow(fairygui)
-    private static var _gInstanceCounter : Int;
+    private static var _gInstanceCounter : Int = 0;
     
     @:allow(fairygui)
     private static inline var XY_CHANGED : Int = 1;
@@ -1487,9 +1487,9 @@ class GObject extends EventDispatcher
     
     //touch support
     //-------------------------------------------------------------------
-    private var _touchPointId : Int;
-    private var _lastClick : Int;
-    private var _buttonStatus : Int;
+    private var _touchPointId : Int = 0;
+    private var _lastClick : Int = 0;
+    private var _buttonStatus : Int = 0;
     private var _touchDownPoint : Point;
     private static var MTOUCH_EVENTS : Array<String> =
         [GTouchEvent.BEGIN, GTouchEvent.DRAG, GTouchEvent.END, GTouchEvent.CLICK];
@@ -1527,7 +1527,7 @@ class GObject extends EventDispatcher
         {  /*GComponent is by default not opaque for optimization.
             if a click listener registered, we set opaque to true
             */
-            cast((this), GComponent).opaque = true;
+            cast(this, GComponent).opaque = true;
         }
         if (!GRoot.touchPointInput) 
         {
@@ -1594,7 +1594,7 @@ class GObject extends EventDispatcher
 
     @:final private function p__mouseup(evt : Event) : Void
     {
-        if (_buttonStatus != 1 || GRoot.touchPointInput && _touchPointId != cast((evt), TouchEvent).touchPointID) 
+        if (_buttonStatus != 1 || GRoot.touchPointInput && _touchPointId != cast((evt), TouchEvent).touchPointID)
             return;
         
         _buttonStatus = 2;
@@ -1649,7 +1649,7 @@ class GObject extends EventDispatcher
     private static var sGlobalRect : Rectangle = new Rectangle();
     private static var sHelperPoint : Point = new Point();
     private static var sDragHelperRect : Rectangle = new Rectangle();
-    private static var sUpdateInDragging : Bool;
+    private static var sUpdateInDragging : Bool = false;
     
     private function initDrag() : Void
     {

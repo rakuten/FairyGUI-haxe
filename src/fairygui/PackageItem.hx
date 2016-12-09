@@ -13,29 +13,29 @@ class PackageItem
 {
     public var owner : UIPackage;
     
-    public var type : Int;
+    public var type : Int = 0;
     public var id : String;
     public var name : String;
-    public var width : Int;
-    public var height : Int;
+    public var width : Int = 0;
+    public var height : Int = 0;
     public var file : String;
-    public var lastVisitTime : Int;
+    public var lastVisitTime : Int = 0;
     
     public var callbacks : Array<Dynamic> = [];
-    public var loading : Int;
-    public var loaded : Bool;
+    public var loading : Int = 0;
+    public var loaded : Bool = false;
     
     //image
     public var scale9Grid : Rectangle;
-    public var scaleByTile : Bool;
-    public var smoothing : Bool;
-    public var tileGridIndice : Int;
+    public var scaleByTile : Bool = false;
+    public var smoothing : Bool = false;
+    public var tileGridIndice : Int = 0;
     public var image : BitmapData;
     
     //movieclip
-    public var interval : Float;
-    public var repeatDelay : Float;
-    public var swing : Bool;
+    public var interval : Float = 0;
+    public var repeatDelay : Float = 0;
+    public var swing : Bool = false;
     public var frames : Array<Frame>;
     
     //componenet

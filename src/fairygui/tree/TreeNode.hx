@@ -22,10 +22,10 @@ class TreeNode
     
     private var _parent : TreeNode;
     private var _children : Array<TreeNode>;
-    private var _expanded : Bool;
+    private var _expanded : Bool = false;
     private var _tree : TreeView;
     private var _cell : GComponent;
-    private var _level : Int;
+    private var _level : Int = 0;
     
     public function new(hasChild : Bool)
     {

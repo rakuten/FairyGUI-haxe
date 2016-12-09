@@ -86,11 +86,11 @@ class ZipReader
 class ZipEntry
 {
     public var name : String;
-    public var offset : Int;
-    public var size : Int;
-    public var sourceSize : Int;
-    public var compress : Int;
-    public var crc : Int;
+    public var offset : Int = 0;
+    public var size : Int = 0;
+    public var sourceSize : Int = 0;
+    public var compress : Int = 0;
+    public var crc : Int = 0;
     
     public function new()
     {

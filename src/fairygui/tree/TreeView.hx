@@ -18,7 +18,7 @@ class TreeView
     private var _list : GList;
     private var _root : TreeNode;
     private var _listener : ITreeListener;
-    private var _indent : Int;
+    private var _indent : Int = 0;
     
     public function new(list : GList)
     {

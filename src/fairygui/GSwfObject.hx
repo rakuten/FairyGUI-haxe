@@ -17,8 +17,8 @@ class GSwfObject extends GObject implements IAnimationGear
 
     private var _container : Sprite;
     private var _content : DisplayObject;
-    private var _playing : Bool;
-    private var _frame : Int;
+    private var _playing : Bool = false;
+    private var _frame : Int = 0;
     
     public function new()
     {

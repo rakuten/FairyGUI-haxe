@@ -1,5 +1,8 @@
 package ;
 
+import openfl.events.MouseEvent;
+import openfl.events.Event;
+import fairygui.display.UISprite;
 import openfl.Assets;
 import fairygui.GRoot;
 import fairygui.UIConfig;
@@ -47,6 +50,7 @@ class Main extends Sprite {
         UIConfig.popupMenu=UIPackage.getItemURL("Basic", "PopupMenu");
         UIConfig.defaultScrollBounceEffect=false;
         UIConfig.defaultScrollTouchEffect=false;
+        UIConfig.buttonUseHandCursor = true;
 
         //等待图片资源全部解码，也可以选择不等待，这样图片会在用到的时候才解码
         UIPackage.waitToLoadCompleted(continueInit);
@@ -56,7 +60,8 @@ class Main extends Sprite {
     private var _mainPanel:MainPanel;
     private function continueInit():Void
     {
-        stage.addChild(new GRoot().displayObject);
+        stage.addChild(GRoot.inst.displayObject);
+
         GRoot.inst.setFlashContextMenuDisabled(true);
 
         _mainPanel=new MainPanel();

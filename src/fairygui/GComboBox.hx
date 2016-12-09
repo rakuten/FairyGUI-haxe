@@ -39,11 +39,11 @@ class GComboBox extends GComponent
     private var _values : Array<String>;
     private var _popupDownward : Dynamic;
     
-    private var _visibleItemCount : Int;
-    private var _itemsUpdated : Bool;
-    private var _selectedIndex : Int;
+    private var _visibleItemCount : Int = 0;
+    private var _itemsUpdated : Bool = false;
+    private var _selectedIndex : Int = 0;
     private var _buttonController : Controller;
-    private var _over : Bool;
+    private var _over : Bool = false;
     
     public function new()
     {

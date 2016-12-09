@@ -15,10 +15,10 @@ class GearBase
 
     public static var disableAllTweenEffect : Bool = false;
     
-    private var _tween : Bool;
+    private var _tween : Bool = false;
     private var _easeType : Float->Float;
-    private var _tweenTime : Float;
-    private var _delay : Float;
+    private var _tweenTime : Float = 0;
+    private var _delay : Float = 0;
     
     private var _owner : GObject;
     private var _controller : Controller;

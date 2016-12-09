@@ -16,9 +16,9 @@ class GTextInput extends GTextField
     public var restrict(get, set) : String;
     public var password(get, set) : Bool;
 
-    private var _changed : Bool;
+    private var _changed : Bool = false;
     private var _promptText : String;
-    private var _password : Bool;
+    private var _password : Bool = false;
     
     public function new()
     {

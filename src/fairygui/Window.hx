@@ -25,15 +25,15 @@ class Window extends GComponent
     private var _dragArea : GObject;
     private var _contentArea : GObject;
     private var _frame : GComponent;
-    private var _modal : Bool;
+    private var _modal : Bool = false;
     
     private var _uiSources : Array<IUISource>;
-    private var _inited : Bool;
-    private var _loading : Bool;
+    private var _inited : Bool = false;
+    private var _loading : Bool = false;
     
-    private var _requestingCmd : Int;
+    private var _requestingCmd : Int = 0;
     
-    public var bringToFontOnClick : Bool;
+    public var bringToFontOnClick : Bool = false;
     
     public function new()
     {

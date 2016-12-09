@@ -4,7 +4,7 @@ package fairygui.utils;
 class UBBParser
 {
     private var _text : String;
-    private var _readPos : Int;
+    private var _readPos : Int = 0;
     
     private var _handlers : Dynamic;
     
