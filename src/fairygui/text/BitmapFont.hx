@@ -56,6 +56,7 @@ class BitmapFont
     public function draw(target : BitmapData, glyph : BMGlyph, charPosX : Float, charPosY : Float, color : Int, fontScale : Float) : Void
     {
         charPosX += Math.ceil(glyph.offsetX * fontScale);
+        charPosY += Math.ceil(glyph.offsetY * fontScale);
         
         var drawBmd : BitmapData = null;
         
@@ -82,7 +83,7 @@ class BitmapFont
                     sHelperBmd.copyPixels(atlas, sHelperRect, sPoint0)
                 else 
                     sHelperBmd.copyChannel(atlas, sHelperRect, sPoint0, glyph.channel, BitmapDataChannel.ALPHA);
-                
+
                 drawBmd = sHelperBmd;
             }
         }

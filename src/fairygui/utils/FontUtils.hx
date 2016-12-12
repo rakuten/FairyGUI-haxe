@@ -7,7 +7,7 @@ import openfl.text.TextFormat;
 
 class FontUtils
 {
-    private static var sEmbeddedFonts : Array<Dynamic> = null;
+    private static var sEmbeddedFonts : Array<Font> = null;
     
     public function new()
     {
@@ -30,7 +30,7 @@ class FontUtils
             var isBold : Bool = style == FontStyle.BOLD || style == FontStyle.BOLD_ITALIC;
             var isItalic : Bool = style == FontStyle.ITALIC || style == FontStyle.BOLD_ITALIC;
             
-            if (format.font == font.fontName && format.italic == isItalic && format.bold == isBold) 
+            if (format.font == font.fontName /*&& format.italic == isItalic && format.bold == isBold*/)
                 return true;
         }
         
