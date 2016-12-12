@@ -551,6 +551,9 @@ class Transition
                 if (!item.endValue.b2)
                     item.endValue.f2 = item.value.f2;
 
+                item.value.b1 = startValue.b1 || endValue.b1;
+                item.value.b2 = startValue.b2 || endValue.b2;
+
                 parms.f1 = item.endValue.f1;
                 parms.f2 = item.endValue.f2;
             case TransitionActionType.Scale,TransitionActionType.Skew:
