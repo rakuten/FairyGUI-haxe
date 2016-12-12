@@ -299,7 +299,7 @@ class Transition
                     value.f1 = Std.parseFloat(args[0]);
                 
                 case TransitionActionType.Rotation:
-                    value.i = Std.parseInt(args[0]);
+                    value.f1 = Std.parseInt(args[0]);
                 
                 case TransitionActionType.Color:
                     value.c = Std.parseInt(args[0]);
@@ -567,8 +567,8 @@ class Transition
                 parms.f1 = endValue.f1;
 
             case TransitionActionType.Rotation:
-                item.value.i = startValue.i;
-                parms.i = endValue.i;
+                item.value.f1 = startValue.f1;
+                parms.f1 = endValue.f1;
 
             case TransitionActionType.Color:
                 item.value.c = startValue.c;
@@ -759,7 +759,7 @@ class Transition
                 item.target.alpha = value.f1;
             
             case TransitionActionType.Rotation:
-                item.target.rotation = value.i;
+                item.target.rotation = value.f1;
             
             case TransitionActionType.Scale:
                 item.target.setScale(value.f1, value.f2);
@@ -1015,7 +1015,7 @@ class Transition
                 value.f1 = Std.parseFloat(str);
             
             case TransitionActionType.Rotation:
-                value.i = Std.parseInt(str);
+                value.f1 = Std.parseInt(str);
             
             case TransitionActionType.Scale:
                 arr = str.split(",");
@@ -1144,11 +1144,11 @@ class TransitionItem
 
 class TransitionValue
 {
-    public var f1 : Float = 0;  //x, scalex, pivotx,alpha,shakeAmplitude
+    public var f1 : Float = 0;  //x, scalex, pivotx,alpha,shakeAmplitude,rotation
     public var f2 : Float = 0;  //y, scaley, pivoty, shakePeriod
     public var f3 : Float = 0;
     public var f4 : Float = 0;
-    public var i : Int = 0;  //rotation,frame
+    public var i : Int = 0;  //frame
     public var c : Int = 0;  //color
     public var b : Bool = false;  //playing
     public var s : String;  //sound,transName  

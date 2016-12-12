@@ -142,10 +142,10 @@ class GearLook extends GearBase
 class GearLookValue
 {
     public var alpha : Float;
-    public var rotation : Int;
+    public var rotation : Float;
     public var grayed : Bool;
     
-    public function new(alpha : Float = 0, rotation : Int = 0, grayed : Bool = false)
+    public function new(alpha : Float = 0, rotation : Float = 0, grayed : Bool = false)
     {
         this.alpha = alpha;
         this.rotation = rotation;

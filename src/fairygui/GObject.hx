@@ -72,8 +72,8 @@ class GObject extends EventDispatcher
     public var touchable(get, set) : Bool;
     public var grayed(get, set) : Bool;
     public var enabled(get, set) : Bool;
-    @:isVar public var rotation(get, set) : Int;
-    public var normalizeRotation(get, never) : Int;
+    @:isVar public var rotation(get, set) : Float;
+    public var normalizeRotation(get, never) : Float;
     @:isVar public var alpha(get, set) : Float;
     @:isVar public var visible(get, set) : Bool;
     @:allow(fairygui)
@@ -122,25 +122,25 @@ class GObject extends EventDispatcher
     public var packageItem : PackageItem;
     public static var draggingObject : GObject;
     
-    private var _x : Float = 0;
-    private var _y : Float = 0;
-    private var _width : Float = 0;
-    private var _height : Float = 0;
-    private var _alpha : Float = 0;
-    private var _rotation : Int = 0;
-    private var _visible : Bool = false;
-    private var _touchable : Bool = false;
+    private var _x : Float;
+    private var _y : Float;
+    private var _width : Float;
+    private var _height : Float;
+    private var _alpha : Float;
+    private var _rotation : Float;
+    private var _visible : Bool;
+    private var _touchable : Bool;
     private var _grayed : Bool = false;
     private var _draggable : Bool = false;
-    private var _scaleX : Float = 0;
-    private var _scaleY : Float = 0;
-    private var _pivotX : Float = 0;
-    private var _pivotY : Float = 0;
+    private var _scaleX : Float;
+    private var _scaleY : Float;
+    private var _pivotX : Float;
+    private var _pivotY : Float;
     private var _pivotAsAnchor : Bool = false;
-    private var _pivotOffsetX : Float = 0;
-    private var _pivotOffsetY : Float = 0;
+    private var _pivotOffsetX : Float;
+    private var _pivotOffsetY : Float;
     private var _sortingOrder : Int = 0;
-    private var _internalVisible : Int = 0;
+    private var _internalVisible : Int;
     private var _focusable : Bool = false;
     private var _tooltips : String;
     private var _pixelSnapping : Bool = false;
@@ -160,9 +160,9 @@ class GObject extends EventDispatcher
     @:allow(fairygui)
     private var _dispatcher : SimpleDispatcher;
     @:allow(fairygui)
-    private var _rawWidth : Float = 0;
+    private var _rawWidth : Float;
     @:allow(fairygui)
-    private var _rawHeight : Float = 0;
+    private var _rawHeight : Float;
     @:allow(fairygui)
     private var _sourceWidth : Int = 0;
     @:allow(fairygui)
@@ -509,7 +509,7 @@ class GObject extends EventDispatcher
     {
         if (_pivotX != 0 || _pivotY != 0) 
         {
-            var rot : Int = this.normalizeRotation;
+            var rot : Float = this.normalizeRotation;
             if (rot != 0 || _scaleX != 1 || _scaleY != 1) 
             {
                 var rotInRad : Float = rot * ToolSet.DEG_TO_RAD;
@@ -598,12 +598,12 @@ class GObject extends EventDispatcher
         return value;
     }
     
-    @:final private function get_rotation() : Int
+    @:final private function get_rotation() : Float
     {
         return _rotation;
     }
     
-    private function set_rotation(value : Int) : Int
+    private function set_rotation(value : Float) : Float
     {
         if (_rotation != value) 
         {
@@ -617,9 +617,9 @@ class GObject extends EventDispatcher
         return value;
     }
     
-    private function get_normalizeRotation() : Int
+    private function get_normalizeRotation() : Float
     {
-        var rot : Int = _rotation % 360;
+        var rot : Float = _rotation % 360;
         if (rot > 180) 
             rot = rot - 360
         else if (rot < -180) 
