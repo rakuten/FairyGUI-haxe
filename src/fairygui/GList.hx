@@ -1546,7 +1546,7 @@ class GList extends GComponent
 
                 if (ii.obj != null && ii.obj.resourceURL != url)
                 {
-                    removeChild(ii.obj);
+                    removeChildToPool(ii.obj);
                     ii.obj = null;
                 }
             }
@@ -1640,7 +1640,7 @@ class GList extends GComponent
             ii = _virtualItems[oldFirstIndex + i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
-                removeChild(ii.obj);
+                removeChildToPool(ii.obj);
                 ii.obj = null;
             }
         }
@@ -1709,7 +1709,7 @@ class GList extends GComponent
 
                 if (ii.obj != null && ii.obj.resourceURL != url)
                 {
-                    removeChild(ii.obj);
+                    removeChildToPool(ii.obj);
                     ii.obj = null;
                 }
             }
@@ -1802,7 +1802,7 @@ class GList extends GComponent
             ii = _virtualItems[oldFirstIndex + i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
-                removeChild(ii.obj);
+                removeChildToPool(ii.obj);
                 ii.obj = null;
             }
         }
@@ -1942,7 +1942,7 @@ class GList extends GComponent
             ii = _virtualItems[i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
-                removeChild(ii.obj);
+                removeChildToPool(ii.obj);
                 ii.obj = null;
             }
         }

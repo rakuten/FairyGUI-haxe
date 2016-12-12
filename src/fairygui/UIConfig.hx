@@ -30,6 +30,8 @@ class UIConfig
     public static var verticalScrollBar : String;
     //Scrolling step in pixels
     public static var defaultScrollSpeed : Int = 25;
+    // Speed ratio of scrollpane when its touch dragging.
+    public static var defaultTouchScrollSpeedRatio:Float = 1;
     //Default scrollbar display mode. Recommened visible for Desktop and Auto for mobile.
     public static var defaultScrollBarDisplay : Int = ScrollBarDisplayType.Visible;
     //Allow dragging the content to scroll. Recommeded true for mobile.

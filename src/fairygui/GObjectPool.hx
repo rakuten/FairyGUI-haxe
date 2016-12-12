@@ -45,7 +45,7 @@ class GObjectPool
         return _count;
     }
     
-    public function getObject(url : String) : GObject
+    public function getObject(url:String):GObject
     {
         var arr : Array<GObject> = _pool[url];
         if (arr == null) 

@@ -371,10 +371,7 @@ class RelationItem
     
     private function __targetXYChanged(target : GObject) : Void
     {
-        if (_owner.relations.handling != null
-        || _owner.group != null
-        && _owner.group._updating
-        || _owner._dispatcher._dispatchingType == GObject.XY_CHANGED)
+        if (_owner.relations.handling!=null || _owner.group!=null && _owner.group._updating)
         {
             _targetX = _target.x;
             _targetY = _target.y;
@@ -415,7 +412,7 @@ class RelationItem
     
     private function __targetSizeChanged(target : GObject) : Void
     {
-        if (_owner.relations.handling != null || _owner._dispatcher._dispatchingType == GObject.SIZE_CHANGED) 
+        if (_owner.relations.handling != null)
         {
             _targetWidth = _target._rawWidth;
             _targetHeight = _target._rawHeight;

@@ -8,9 +8,8 @@ class Relations
 
     private var _owner : GObject;
     private var _items : Array<RelationItem>;
-    
-    @:allow(fairygui)
-    private var handling : GObject;
+
+    public var handling : GObject;
     @:allow(fairygui)
     private var sizeDirty : Bool = false;
     

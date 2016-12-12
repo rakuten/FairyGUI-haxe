@@ -1,17 +1,15 @@
 package fairygui.utils;
 
 
+import Reflect;
 class SimpleDispatcher
 {
     private var _elements : Array<Dynamic>;
-    private var _enumI : Int = 0;
-    
-    public var _dispatchingType : Int = 0;
-    
+    private var _dispatching:Int = 0;
+
     public function new()
     {
         _elements = [];
-        _dispatchingType = -1;
     }
     
     public function addListener(type : Int, e : Dynamic) : Void{
@@ -30,11 +28,8 @@ class SimpleDispatcher
         var arr : Array<Dynamic> = _elements[type];
         if (arr != null) {
             var i : Int = Lambda.indexOf(arr, e);
-            if (i != -1) {
-                arr.splice(i, 1);
-                if (type == _dispatchingType && i <= _enumI) 
-                    _enumI--;
-            }
+            if(i!=-1)
+                arr[i] = null;
         }
     }
     
@@ -48,27 +43,45 @@ class SimpleDispatcher
     
     public function dispatch(source : Dynamic, type : Int) : Void{
         var arr : Array<Dynamic> = _elements[type];
-        if (arr == null || arr.length == 0 || _dispatchingType == type) 
+        if (arr == null || arr.length == 0)
             return;
-        
-        _enumI = 0;
-        _dispatchingType = type;
-        while (_enumI < arr.length){
-            var e : Dynamic = arr[_enumI];
-            if (e.length == 1) 
-                e(source)
-            else 
-            e();
-            _enumI++;
+
+        var hasDeleted:Bool = false;
+        var i:Int = 0;
+        _dispatching++;
+        var e:Dynamic;
+        while(i<arr.length)
+        {
+            e = arr[i];
+            if(e!=null)
+            {
+                if(Reflect.field(e,"length")==1)
+                    e(source);
+                else
+                    e();
+            }
+            else
+                hasDeleted = true;
+            i++;
         }
-        _dispatchingType = -1;
+        _dispatching--;
+
+        if(hasDeleted && _dispatching==0)
+        {
+            i = 0;
+            while(i<arr.length)
+            {
+                e = arr[i];
+                if(e==null)
+                    arr.splice(i, 1);
+                else
+                    i++;
+            }
+        }
     }
     
     public function clear() : Void{
         _elements.splice(0, -1);
     }
-    
-    public function copy(source : SimpleDispatcher) : Void{
-        _elements = source._elements.concat([]);
-    }
+
 }
