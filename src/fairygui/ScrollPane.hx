@@ -813,7 +813,7 @@ class ScrollPane extends EventDispatcher
                     if (!_hScrollNone) 
                     {
                         _hScrollNone = true;
-                        _viewHeight += _vtScrollBar.height;
+                        _viewHeight += _hzScrollBar.height;
                     }
                 }
                 else 
@@ -821,7 +821,7 @@ class ScrollPane extends EventDispatcher
                     if (_hScrollNone) 
                     {
                         _hScrollNone = false;
-                        _viewHeight -= _vtScrollBar.height;
+                        _viewHeight -= _hzScrollBar.height;
                     }
                 }
             }
@@ -1336,10 +1336,12 @@ class ScrollPane extends EventDispatcher
         if (!isDragged || !_touchEffect || _inertiaDisabled)
         {
             isDragged = false;
+            _maskContainer.mouseChildren = true;
             return;
         }
 
         isDragged = false;
+        _maskContainer.mouseChildren = true;
         var time : Float = (Lib.getTimer() - _time2) / 1000;
         if (time == 0) 
             time = 0.001;
