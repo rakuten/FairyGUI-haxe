@@ -1,5 +1,6 @@
 package fairygui;
 
+import FastXML;
 import openfl.Lib;
 import fairygui.ZipUIPackageReader;
 
@@ -413,16 +414,10 @@ class UIPackage
         {
             var xml : FastXML = getXMLDesc(item.id + ".xml");
             
-            if (_stringsSource != null) 
-            {
-                var col : Dynamic = _stringsSource[this.id + item.id];
-                if (col != null) 
-                    translateComponent(xml, col);
-            }
-            
             item.componentData = xml;
             
             loadComponentChildren(item);
+            translateComponent(item);
         }
         
         return item.componentData;
@@ -470,15 +465,25 @@ class UIPackage
             }
         }
         else 
-        item.displayList = new Array<DisplayListItem>();
+            item.displayList = new Array<DisplayListItem>();
     }
     
-    private function translateComponent(xml : FastXML, strings : Map<String,Dynamic>) : Void
+    private function translateComponent(item:PackageItem) : Void
     {
-        var displayList : Iterator<FastXML> = xml.node.resolve("displayList").elements;
-        var value : Dynamic;
-        for (cxml in displayList)
+        if(_stringsSource==null)
+            return;
+
+        var strings:Map<String, Dynamic> = _stringsSource[this.id + item.id];
+        if(strings==null)
+            return;
+
+        var cnt:Int = item.displayList.length;
+        var value:Dynamic;
+        var cxml:FastXML;
+        var dxml:FastXML;
+        for(i in 0...cnt)
         {
+            cxml = item.displayList[i].desc;
             var ename : String = cxml.name;
             var elementId : String = cxml.att.id;
             
@@ -488,6 +493,18 @@ class UIPackage
                 if (value != null) 
                     cxml.setAttribute("tooltips", value);
             }
+            dxml = cxml.node.gearText;
+            if (dxml != null)
+            {
+                value = strings[elementId+"-texts"];
+                if(value!=null)
+                    dxml.setAttribute("values", value);
+
+                value = strings[elementId+"-texts_def"];
+                if(value!=null)
+                    dxml.setAttribute("default", value);
+            }
+
             var items : FastXMLList;
             var j : Int;
             if (ename == "text" || ename == "richtext") 
@@ -513,7 +530,7 @@ class UIPackage
             }
             else if (ename == "component") 
             {
-                var dxml : FastXML = cxml.node.Button;
+                dxml = cxml.node.Button;
                 if (dxml != null) 
                 {
                     value = strings[elementId];
@@ -522,37 +539,38 @@ class UIPackage
                     value = strings[elementId + "-0"];
                     if (value != null) 
                         dxml.setAttribute("selectedTitle", value);
+                    continue;
                 }
-                else 
+
+                dxml = cxml.node.Label;
+                if (dxml != null)
                 {
-                    dxml = cxml.node.Label;
-                    if (dxml != null) 
-                    {
-                        value = strings[elementId];
-                        if (value != null) 
-                            dxml.setAttribute("title", value);
-                    }
-                    else 
-                    {
-                        dxml = cxml.node.ComboBox;
-                        if (dxml != null) 
-                        {
-                            value = strings[elementId];
-                            if (value != null) 
-                                dxml.setAttribute("title", value);
-                            
-                            items = dxml.nodes.item;
-                            j = 0;
-                            for (exml in items.iterator())
-                            {
-                                value = strings[elementId + "-" + j];
-                                if (value != null) 
-                                    exml.setAttribute("title", value);
-                                j++;
-                            }
-                        }
-                    }
+                    value = strings[elementId];
+                    if (value != null)
+                        dxml.setAttribute("title", value);
+                    continue;
                 }
+
+                dxml = cxml.node.ComboBox;
+                if (dxml != null)
+                {
+                    value = strings[elementId];
+                    if (value != null)
+                        dxml.setAttribute("title", value);
+
+                    items = dxml.nodes.item;
+                    j = 0;
+                    for (exml in items.iterator())
+                    {
+                        value = strings[elementId + "-" + j];
+                        if (value != null)
+                            exml.setAttribute("title", value);
+                        j++;
+                    }
+                    continue;
+                }
+
+
             }
         }
     }
