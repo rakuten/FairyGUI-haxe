@@ -18,7 +18,6 @@ import fairygui.utils.CharSize;
 import fairygui.utils.FontUtils;
 import fairygui.utils.GTimers;
 import fairygui.utils.ToolSet;
-import fairygui.utils.CompatUtil;
 
 class GTextField extends GObject implements IColorGear
 {
@@ -72,7 +71,6 @@ class GTextField extends GObject implements IColorGear
     private var _textWidth : Int = 0;
     private var _textHeight : Int = 0;
     private var _fontAdjustment : Int = 0;
-    private var _minHeight : Int = 0;
     
     private var _bitmapFont : BitmapFont;
     private var _lines : Array<LineInfo>;
@@ -435,7 +433,6 @@ class GTextField extends GObject implements IColorGear
         {
             _bitmapFont = UIPackage.getBitmapFontByURL(_font);
             _fontAdjustment = 0;
-            _minHeight = CompatUtil.INT_MAX_VALUE;
         }
         else 
         {
@@ -453,19 +450,20 @@ class GTextField extends GObject implements IColorGear
             if (v2 > 3) 
                 _fontAdjustment = Math.ceil(v2 / 2)
             else 
-            _fontAdjustment = 0;
-            
-            _minHeight = v + 4 - _fontAdjustment;
+                _fontAdjustment = 0;
+
         }
         
         if (this.grayed) 
             _textFormat.color = 0xAAAAAA
         else 
-        _textFormat.color = _color;
+            _textFormat.color = _color;
+
         _textFormat.align = AlignType.toString(_align);
         _textFormat.leading = _leading - _fontAdjustment;
         if (_textFormat.leading < 0) 
             _textFormat.leading = 0;
+
         _textFormat.letterSpacing = _letterSpacing;
         _textFormat.bold = _bold;
         _textFormat.underline = _underline;
@@ -565,14 +563,8 @@ class GTextField extends GObject implements IColorGear
         else 
         {
             h = Std.int(this.height);
-            var h2 : Int = h;
-            if (h2 > 0 && h2 < _minHeight) 
-            {
-                h2 = _minHeight;
-                h = h2;
-            }
-            if (_textHeight > h2) 
-                _textHeight = h2;
+            if(_textHeight>h)
+                _textHeight = h;
             _textField.height = _textHeight + _fontAdjustment + 3;
         }
         
