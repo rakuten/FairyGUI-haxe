@@ -73,7 +73,7 @@ class BitmapFont
                 if (glyph.channel == 0) 
                     sHelperBmd.fillRect(sHelperRect, 0)
                 else 
-                sHelperBmd.fillRect(sHelperRect, 0xFFFFFFFF);
+                    sHelperBmd.fillRect(sHelperRect, 0xFFFFFFFF);
                 
                 sHelperRect.x = glyph.x;
                 sHelperRect.y = glyph.y;
@@ -81,7 +81,9 @@ class BitmapFont
                 if (glyph.channel == 0) 
                     sHelperBmd.copyPixels(atlas, sHelperRect, sPoint0)
                 else 
-                sHelperBmd.copyChannel(atlas, sHelperRect, sPoint0, glyph.channel, BitmapDataChannel.ALPHA);
+                    sHelperBmd.copyChannel(atlas, sHelperRect, sPoint0, glyph.channel, BitmapDataChannel.ALPHA);
+                
+                drawBmd = sHelperBmd;
             }
         }
         else if (glyph.imageItem != null) 
@@ -102,7 +104,7 @@ class BitmapFont
                 target.draw(drawBmd, sHelperMat, sTransform, null, sHelperRect, true);
             }
             else 
-            target.draw(drawBmd, sHelperMat, null, null, sHelperRect, true);
+                target.draw(drawBmd, sHelperMat, null, null, sHelperRect, true);
         }
     }
 }
