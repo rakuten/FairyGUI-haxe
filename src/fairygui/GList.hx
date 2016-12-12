@@ -912,10 +912,16 @@ class GList extends GComponent
     {
         if (_virtual)
         {
+            if(_numItems==0)
+                return;
+
             checkVirtualList();
 
             if (index >= _virtualItems.length)
                 throw new Error("Invalid child index: " + index + ">" + _virtualItems.length);
+
+            if(_loop)
+                index = Math.floor(_firstIndex/_numItems)*_numItems+index;
 
             var rect : Rectangle;
             var ii : ItemInfo = _virtualItems[index];
@@ -2038,6 +2044,9 @@ class GList extends GComponent
 
     override private function updateBounds() : Void
     {
+        if(_virtual)
+            return;
+
         var i : Int = 0;
         var j : Int = 0;
         var child : GObject;

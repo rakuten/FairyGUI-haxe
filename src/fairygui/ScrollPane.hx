@@ -378,9 +378,12 @@ class ScrollPane extends EventDispatcher
     
     public function setPosX(value : Float, ani : Bool = false) : Void
     {
+        _owner.ensureBoundsCorrect();
+
+        value = ToolSet.clamp(value, 0, _xOverlap);
         if (value != _xPos) 
         {
-            _xPos = ToolSet.clamp(value, 0, _xOverlap);
+            _xPos = value;
             _xPerc = (_xOverlap == 0) ? 0 : _xPos / _xOverlap;
             
             posChanged(ani);
@@ -400,9 +403,12 @@ class ScrollPane extends EventDispatcher
     
     public function setPosY(value : Float, ani : Bool = false) : Void
     {
+        _owner.ensureBoundsCorrect();
+
+        value = ToolSet.clamp(value, 0, _yOverlap);
         if (value != _yPos) 
         {
-            _yPos = ToolSet.clamp(value, 0, _yOverlap);
+            _yPos = value;
             _yPerc = (_yOverlap == 0) ? 0 : _yPos / _yOverlap;
             
             posChanged(ani);
@@ -1487,7 +1493,9 @@ class ScrollPane extends EventDispatcher
     
     private function __mouseWheel(evt : MouseEvent) : Void
     {
-        if (!_mouseWheelEnabled) 
+        if (!_mouseWheelEnabled
+        && (_vtScrollBar == null || !_vtScrollBar._rootContainer.hitTestObject(cast evt.target))
+        && (_hzScrollBar == null|| !_hzScrollBar._rootContainer.hitTestObject(cast evt.target)))
             return;
         
         var delta : Float = evt.delta;
