@@ -346,7 +346,7 @@ class UIPackage
         return null;
     }
     
-    
+    @:allow(fairygui)
     private function internalCreateObject(item : PackageItem, userClass : Dynamic) : GObject
     {
         var g : GObject = null;

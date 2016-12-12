@@ -34,6 +34,8 @@ class DragDropManager
         _agent.touchable = false;  //important  
         _agent.setSize(100, 100);
         _agent.setPivot(0.5, 0.5, true);
+        _agent.align = AlignType.Center;
+        _agent.verticalAlign = VertAlignType.Middle;
         _agent.sortingOrder = CompatUtil.INT_MAX_VALUE;
         _agent.addEventListener(DragEvent.DRAG_END, __dragEnd);
     }
