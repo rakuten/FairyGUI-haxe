@@ -1,3 +1,7 @@
+import fairygui.GProgressBar;
+import fairygui.GGraph;
+import openfl.geom.Point;
+import openfl.geom.Rectangle;
 import WindowA;
 import WindowB;
 
@@ -84,6 +88,15 @@ class MainPanel
             
             case "Drag&Drop":
                 playDragDrop();
+
+            case "Depth":
+                this.playDepth();
+
+            case "Grid":
+                this.playGrid();
+
+            case "ProgressBar":
+                this.playProgressBar();
         }
     }
     
@@ -199,15 +212,28 @@ class MainPanel
     private function playDragDrop() : Void
     {
         var obj : GComponent = Reflect.field(_demoObjects, "Drag&Drop");
-        obj.getChild("n0").draggable = true;
+        obj.getChild("a").draggable = true;
         
-        var btn1 : GButton = obj.getChild("n1").asButton;
+        var btn1 : GButton = obj.getChild("b").asButton;
         btn1.draggable = true;
         btn1.addEventListener(DragEvent.DRAG_START, __dragStart);
         
-        var btn2 : GButton = obj.getChild("n2").asButton;
+        var btn2 : GButton = obj.getChild("c").asButton;
         btn2.icon = null;
         btn2.addEventListener(DropEvent.DROP, __drop);
+
+
+        var btnD: fairygui.GObject = obj.getChild("d");
+        btnD.draggable = true;
+        var bounds: fairygui.GObject = obj.getChild("bounds");
+        var rect:Rectangle = new Rectangle();
+        bounds.localToGlobalRect(0,0,bounds.width,bounds.height,rect);
+        GRoot.inst.globalToLocalRect(rect.x,rect.y,rect.width,rect.height,rect);
+
+        //因为这时候面板还在从右往左动，所以rect不准确，需要用相对位置算出最终停下来的范围
+        rect.x -= obj.parent.x;
+
+        btnD.dragBounds = rect;
     }
     
     private function __dragStart(evt : DragEvent) : Void
@@ -222,5 +248,115 @@ class MainPanel
     private function __drop(evt : DropEvent) : Void
     {
         cast(evt.currentTarget, GButton).icon = Std.string(evt.source);
+    }
+
+    private function playDepth(): Void
+    {
+        var obj: GComponent = Reflect.field(_demoObjects, "Depth");
+        var testContainer: GComponent = obj.getChild("n22").asCom;
+        var fixedObj: GObject = testContainer.getChild("n0");
+        fixedObj.sortingOrder = 100;
+        fixedObj.draggable = true;
+
+        var numChildren: Float = testContainer.numChildren;
+        var i: Int = 0;
+        while(i < numChildren)
+        {
+            var child: GObject = testContainer.getChildAt(i);
+            if(child != fixedObj)
+            {
+                testContainer.removeChildAt(i);
+                numChildren--;
+            }
+            else
+                i++;
+        }
+        var startPos: Point = new Point(fixedObj.x,fixedObj.y);
+
+//        obj.getChild("btn0").addEventListener(MouseEvent.CLICK, __click1.bind([MouseEvent.CLICK, obj, startPos]));
+//        obj.getChild("btn1").addEventListener(MouseEvent.CLICK, __click2.bind([MouseEvent.CLICK, obj, startPos]));
+    }
+
+    private function __click1(obj:GComponent, startPos:Point):Void
+    {
+        var graph: GGraph = new GGraph();
+        startPos.x += 10;
+        startPos.y += 10;
+        graph.setXY(startPos.x,startPos.y);
+        graph.setSize(150,150);
+        graph.drawRect(1,0x000000,1,0xFF0000,1);
+        obj.getChild("n22").asCom.addChild(graph);
+    }
+
+    private function __click2(obj:GComponent, startPos:Point):Void
+    {
+        var obj: GComponent = Reflect.field(_demoObjects, "Depth");
+        var graph: fairygui.GGraph = new GGraph();
+        startPos.x += 10;
+        startPos.y += 10;
+        graph.setXY(startPos.x,startPos.y);
+        graph.setSize(150,150);
+        graph.drawRect(1,0x000000,1,0x00FF00,1);
+        graph.sortingOrder = 200;
+        obj.getChild("n22").asCom.addChild(graph);
+    }
+    //------------------------------
+    private function playGrid(): Void
+    {
+        var obj: GComponent = Reflect.field(_demoObjects, "Grid");
+        var list1:fairygui.GList = obj.getChild("list1").asList;
+        list1.removeChildrenToPool();
+        var testNames: Array<String> = ["苹果手机操作系统","安卓手机操作系统","微软手机操作系统","微软桌面操作系统","苹果桌面操作系统","未知操作系统"];
+        var testColors: Array<Int> = [ 0xFFFF00,0xFF0000,0xFFFFFF,0x0000FF ];
+        var cnt:Int = testNames.length;
+        for(i in 0...cnt)
+        {
+            var item:fairygui.GButton = list1.addItemFromPool().asButton;
+            item.getChild("t0").text = "" + (i + 1);
+            item.getChild("t1").text = testNames[i];
+            var index:Int = Math.floor(Math.random()*4);
+            item.getChild("t2").asTextField.color = testColors[index];
+            item.getChild("star").asProgress.value = Std.int((Math.floor(Math.random() * 3)+1) / 3 * 100);
+        }
+
+        var list2: fairygui.GList = obj.getChild("list2").asList;
+        list2.removeChildrenToPool();
+        for(i in 0...cnt)
+        {
+            var item: fairygui.GButton = list2.addItemFromPool().asButton;
+            item.getChild("cb").asButton.selected = false;
+            item.getChild("t1").text = testNames[i];
+            item.getChild("mc").asMovieClip.playing = i % 2 == 0;
+            item.getChild("t3").text = "" + Math.floor(Math.random() * 10000);
+        }
+    }
+
+    //---------------------------------------------
+    private function playProgressBar():Void
+    {
+        var obj:fairygui.GComponent = Reflect.field(_demoObjects, "ProgressBar");
+//        Laya.timer.frameLoop(2, this, this.__playProgress);
+//        obj.on(Event.UNDISPLAY, this, this.__removeTimer);
+    }
+
+    private function __removeTimer():Void
+    {
+//        Laya.timer.clear(this, this.__playProgress);
+    }
+
+    private function __playProgress():Void
+    {
+        var obj:fairygui.GComponent = Reflect.field(_demoObjects, "ProgressBar");
+        var cnt:Int = obj.numChildren;
+        for (i in 0...cnt)
+        {
+            var child:GProgressBar = cast obj.getChildAt(i);
+            if (child != null)
+            {
+                child.value += 1;
+                if (child.value > child.max)
+                child.value = 0;
+            }
+        }
     }
 }
