@@ -30,7 +30,7 @@ class MainPanel
     
     public function new()
     {
-        _view = UIPackage.createObject("Basic", "Demo").asCom;
+        _view = UIPackage.createObject("Basic", "Main").asCom;
         GRoot.inst.addChild(_view);
         
         _backBtn = _view.getChild("btn_Back");

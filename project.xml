@@ -2,7 +2,7 @@
 <project>
 	
 	<meta title="FairyGUI-Haxe" package="com.fairygui" version="1.0.0" company="FairyGUI" />
-	<window width="640" height="960" if="flash||desktop"/>
+	<window width="1136" height="640" if="flash||desktop"/>
     <window width="0" height="0" if="html5" />
 	<app main="Main" path="Export" file="FairyGUI" />
 	
