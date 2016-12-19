@@ -56,6 +56,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
     
     private var _loading : Int = 0;
     private var _externalLoader : Loader;
+    private var _initExternalURLBeforeLoadSuccess:String;
     
     private static var _errorSignPool : GObjectPool = new GObjectPool();
     
@@ -398,6 +399,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
             _externalLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, __externalLoadCompleted);
             _externalLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, __externalLoadFailed);
         }
+        _initExternalURLBeforeLoadSuccess = _url;
         _externalLoader.load(new URLRequest(url));
     }
     
@@ -429,7 +431,11 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
     
     private function __externalLoadCompleted(evt : Event) : Void
     {
-        onExternalLoadSuccess(_externalLoader.content);
+        if (_initExternalURLBeforeLoadSuccess == _url)
+        {
+            onExternalLoadSuccess(_externalLoader.content);
+        }
+        _initExternalURLBeforeLoadSuccess = null;
     }
     
     private function __externalLoadFailed(evt : Event) : Void
