@@ -161,9 +161,9 @@ class GImage extends GObject implements IColorGear
     override private function handleSizeChanged() : Void
     {
         if (packageItem.scale9Grid == null && !packageItem.scaleByTile) 
-            _sizeImplType = 1
+            _sizeImplType = 1;
         else 
-        _sizeImplType = 0;
+            _sizeImplType = 0;
         handleScaleChanged();
         updateBitmap();
     }
@@ -218,11 +218,11 @@ class GImage extends GObject implements IColorGear
             oldBmd = _content.bitmapData;
             
             if (_bmdAfterFlip.width == w && _bmdAfterFlip.height == h) 
-                newBmd = _bmdAfterFlip
+                newBmd = _bmdAfterFlip;
             else if (w == 0 || h == 0) 
-                newBmd = null
+                newBmd = null;
             else 
-            newBmd = ToolSet.tileBitmap(_bmdAfterFlip, _bmdAfterFlip.rect, Std.int(w), Std.int(h));
+                newBmd = ToolSet.tileBitmap(_bmdAfterFlip, _bmdAfterFlip.rect, Std.int(w), Std.int(h));
         }
         else 
         {

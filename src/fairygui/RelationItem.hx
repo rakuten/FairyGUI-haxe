@@ -80,7 +80,13 @@ class RelationItem
         
         //当使用中线关联时，因为需要除以2，很容易因为奇数宽度/高度造成小数点坐标；当使用百分比时，也会造成小数坐标；
         //所以设置了这类关联的对象，自动启用pixelSnapping
-        if (usePercent || relationType == RelationType.Left_Center || relationType == RelationType.Center_Center || relationType == RelationType.Right_Center || relationType == RelationType.Top_Middle || relationType == RelationType.Middle_Middle || relationType == RelationType.Bottom_Middle) 
+        if (usePercent ||
+        relationType == RelationType.Left_Center ||
+        relationType == RelationType.Center_Center ||
+        relationType == RelationType.Right_Center ||
+        relationType == RelationType.Top_Middle ||
+        relationType == RelationType.Middle_Middle ||
+        relationType == RelationType.Bottom_Middle)
             _owner.pixelSnapping = true;
     }
     
@@ -180,6 +186,7 @@ class RelationItem
             case RelationType.Top_Top, RelationType.Top_Middle, RelationType.Top_Bottom, RelationType.Middle_Middle, RelationType.Bottom_Top, RelationType.Bottom_Middle, RelationType.Bottom_Bottom:
                 _owner.y += dy;
             case RelationType.Width, RelationType.Height:
+
             case RelationType.LeftExt_Left, RelationType.LeftExt_Right:
                 tmp = _owner.x;
                 _owner.x += dx;
@@ -217,6 +224,7 @@ class RelationItem
         switch (_sw2_)
         {
             case RelationType.Left_Left:
+
             case RelationType.Left_Center:
                 v = _owner.x - (targetX + _targetWidth / 2);
                 if (info.percent) 
@@ -224,7 +232,7 @@ class RelationItem
                 _owner.x = targetX + _target._rawWidth / 2 + v;
             case RelationType.Left_Right:
                 v = _owner.x - (targetX + _targetWidth);
-                if (info.percent) 
+                if (info.percent)
                     v = v / _targetWidth * _target._rawWidth;
                 _owner.x = targetX + _target._rawWidth + v;
             case RelationType.Center_Center:
@@ -244,11 +252,12 @@ class RelationItem
                 _owner.x = targetX + _target._rawWidth / 2 + v - _owner._rawWidth;
             case RelationType.Right_Right:
                 v = _owner.x + _owner._rawWidth - (targetX + _targetWidth);
-                if (info.percent) 
+                if (info.percent)
                     v = v / _targetWidth * _target._rawWidth;
                 _owner.x = targetX + _target._rawWidth + v - _owner._rawWidth;
             
             case RelationType.Top_Top:
+
             case RelationType.Top_Middle:
                 v = _owner.y - (targetY + _targetHeight / 2);
                 if (info.percent) 
@@ -281,37 +290,39 @@ class RelationItem
                 _owner.y = targetY + _target._rawHeight + v - _owner._rawHeight;
             
             case RelationType.Width:
-                if (_owner._underConstruct && _owner == _target.parent) 
-                    v = _owner.sourceWidth - _target._initWidth
-                else 
-                v = _owner._rawWidth - _targetWidth;
-                if (info.percent) 
+                if (_owner._underConstruct && _owner == _target.parent)
+                    v = _owner.sourceWidth - _target._initWidth;
+                else
+                    v = _owner._rawWidth - _targetWidth;
+                if (info.percent)
                     v = v / _targetWidth * _target._rawWidth;
-                if (_target == _owner.parent) 
+                if (_target == _owner.parent)
                     _owner.setSize(_target._rawWidth + v, _owner._rawHeight, true)
-                else 
-                _owner.width = _target._rawWidth + v;
+                else
+                    _owner.width = _target._rawWidth + v;
             case RelationType.Height:
                 if (_owner._underConstruct && _owner == _target.parent) 
-                    v = _owner.sourceHeight - _target._initHeight
+                    v = _owner.sourceHeight - _target._initHeight;
                 else 
-                v = _owner._rawHeight - _targetHeight;
+                    v = _owner._rawHeight - _targetHeight;
                 if (info.percent) 
                     v = v / _targetHeight * _target._rawHeight;
                 if (_target == _owner.parent) 
                     _owner.setSize(_owner._rawWidth, _target._rawHeight + v, true)
                 else 
-                _owner.height = _target._rawHeight + v;
+                    _owner.height = _target._rawHeight + v;
             
             case RelationType.LeftExt_Left:
+
             case RelationType.LeftExt_Right:
                 v = _owner.x - (targetX + _targetWidth);
-                if (info.percent) 
+                if (info.percent)
                     v = v / _targetWidth * _target._rawWidth;
                 tmp = _owner.x;
                 _owner.x = targetX + _target._rawWidth + v;
                 _owner.width = _owner._rawWidth - (_owner.x - tmp);
             case RelationType.RightExt_Left:
+
             case RelationType.RightExt_Right:
                 if (_owner._underConstruct && _owner == _target.parent) 
                     v = _owner.sourceWidth - (targetX + _target._initWidth)
@@ -322,10 +333,11 @@ class RelationItem
                 if (info.percent) 
                     v = v / _targetWidth * _target._rawWidth;
                 if (_owner != _target.parent) 
-                    _owner.width = targetX + _target._rawWidth + v - _owner.x
+                    _owner.width = targetX + _target._rawWidth + v - _owner.x;
                 else 
-                _owner.width = targetX + _target._rawWidth + v;
+                    _owner.width = targetX + _target._rawWidth + v;
             case RelationType.TopExt_Top:
+
             case RelationType.TopExt_Bottom:
                 v = _owner.y - (targetY + _targetHeight);
                 if (info.percent) 
@@ -334,19 +346,20 @@ class RelationItem
                 _owner.y = targetY + _target._rawHeight + v;
                 _owner.height = _owner._rawHeight - (_owner.y - tmp);
             case RelationType.BottomExt_Top:
+
             case RelationType.BottomExt_Bottom:
                 if (_owner._underConstruct && _owner == _target.parent) 
-                    v = _owner.sourceHeight - (targetY + _target._initHeight)
+                    v = _owner.sourceHeight - (targetY + _target._initHeight);
                 else 
-                v = _owner._rawHeight - (targetY + _targetHeight);
+                    v = _owner._rawHeight - (targetY + _targetHeight);
                 if (_owner != _target.parent) 
                     v += _owner.y;
                 if (info.percent) 
                     v = v / _targetHeight * _target._rawHeight;
                 if (_owner != _target.parent) 
-                    _owner.height = targetY + _target._rawHeight + v - _owner.y
+                    _owner.height = targetY + _target._rawHeight + v - _owner.y;
                 else 
-                _owner.height = targetY + _target._rawHeight + v;
+                    _owner.height = targetY + _target._rawHeight + v;
         }
     }
     

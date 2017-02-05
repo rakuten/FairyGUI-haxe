@@ -341,7 +341,7 @@ class UIPackage
     {
         var pi : PackageItem = _itemsByName[resName];
         if (pi != null) 
-            return internalCreateObject(pi, userClass)
+            return internalCreateObject(pi, userClass);
         else 
         return null;
     }
@@ -442,9 +442,9 @@ class UIPackage
                     var pkgId : String = cxml.att.pkg;
                     var pkg : UIPackage;
                     if (pkgId != null && pkgId != item.owner.id) 
-                        pkg = UIPackage.getById(pkgId)
+                        pkg = UIPackage.getById(pkgId);
                     else 
-                    pkg = item.owner;
+                        pkg = item.owner;
                     
                     var pi : PackageItem = (pkg != null) ? pkg.getItemById(src) : null;
                     if (pi != null) 
@@ -455,9 +455,9 @@ class UIPackage
                 else 
                 {
                     if (tagName == "text" && cxml.att.input == "true")
-                        di = new DisplayListItem(null, "inputtext")
+                        di = new DisplayListItem(null, "inputtext");
                     else 
-                    di = new DisplayListItem(null, tagName);
+                        di = new DisplayListItem(null, tagName);
                 }
                 
                 di.desc = cxml;
@@ -734,9 +734,9 @@ class UIPackage
             
             str = frameNode.att.sprite;
             if (str != null) 
-                str = item.id + "_" + str + ".png"
+                str = item.id + "_" + str + ".png";
             else 
-            str = item.id + "_" + i + ".png";
+                str = item.id + "_" + i + ".png";
             var ba : ByteArray = _reader.readResFile(str);
             if (ba != null) 
             {
@@ -784,7 +784,7 @@ class UIPackage
         font.id = "ui://" + this.id + item.id;
         var str : String = _reader.readDescFile(item.id + ".fnt");
         
-        var lines : Array<Dynamic> = str.split("\n");
+        var lines : Array<String> = str.split("\n");
         var lineCount : Int = lines.length;
         var i : Int;
         var kv : Dynamic = {};
@@ -837,15 +837,15 @@ class UIPackage
                 }
                 
                 if (ttf) 
-                    bg.lineHeight = lineHeight
+                    bg.lineHeight = lineHeight;
                 else 
                 {
                     if (bg.advance == 0) 
                     {
                         if (xadvance == 0) 
-                            bg.advance = bg.offsetX + bg.width
+                            bg.advance = bg.offsetX + bg.width;
                         else 
-                        bg.advance = xadvance;
+                            bg.advance = xadvance;
                     }
                     bg.lineHeight = (bg.offsetY < 0) ? bg.height : (bg.offsetY + bg.height);
                     if (size > 0 && bg.lineHeight < size) 
@@ -877,7 +877,7 @@ class UIPackage
             {
                 lineHeight = kv.lineHeight;
                 if (size == 0) 
-                    size = lineHeight
+                    size = lineHeight;
                 else if (lineHeight == 0) 
                     lineHeight = size;
                 xadvance = kv.xadvance;
@@ -896,7 +896,7 @@ class UIPackage
     
     private function __fontAtlasLoaded(evt : Event) : Void
     {
-        var loader : PackageItemLoader = cast((cast((evt.currentTarget), LoaderInfo).loader), PackageItemLoader);
+        var loader : PackageItemLoader = cast(cast(evt.currentTarget, LoaderInfo).loader, PackageItemLoader);
         var i : Int = Lambda.indexOf(_loadingQueue, loader);
         if (i == -1) 
             return;
@@ -904,7 +904,7 @@ class UIPackage
         _loadingQueue.splice(i, 1);
         
         var pi : PackageItem = loader.item;
-        pi.bitmapFont.atlas = cast((loader.content), Bitmap).bitmapData;
+        pi.bitmapFont.atlas = cast(loader.content, Bitmap).bitmapData;
     }
 }
 

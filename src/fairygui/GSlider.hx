@@ -107,16 +107,16 @@ class GSlider extends GComponent
                     _titleObject.text = "" + _max;
             }
         }
-        
+
         if (_barObjectH != null) 
             _barObjectH.width = (this.width - _barMaxWidthDelta) * percent;
         if (_barObjectV != null) 
             _barObjectV.height = (this.height - _barMaxHeightDelta) * percent;
         
         if (Std.is(_aniObject, GMovieClip)) 
-            cast((_aniObject), GMovieClip).frame = Math.round(percent * 100)
+            cast(_aniObject, GMovieClip).frame = Math.round(percent * 100)
         else if (Std.is(_aniObject, GSwfObject)) 
-            cast((_aniObject), GSwfObject).frame = Math.round(percent * 100);
+            cast(_aniObject, GSwfObject).frame = Math.round(percent * 100);
     }
     
     override private function constructFromXML(xml : FastXML) : Void
@@ -194,13 +194,15 @@ class GSlider extends GComponent
         
         var percent : Float;
         if (_barObjectH != null) 
-            percent = _clickPercent + deltaX / _barMaxWidth
+            percent = _clickPercent + deltaX / _barMaxWidth;
         else 
-        percent = _clickPercent + deltaY / _barMaxHeight;
+            percent = _clickPercent + deltaY / _barMaxHeight;
+
         if (percent > 1) 
-            percent = 1
+            percent = 1;
         else if (percent < 0) 
             percent = 0;
+
         var newValue : Int = Math.round(_max * percent);
         if (newValue != _value) 
         {

@@ -59,7 +59,7 @@ class GScrollBar extends GComponent
     {
         _scrollPerc = val;
         if (_vertical) 
-            _grip.y = _bar.y + (_bar.height - _grip.height) * _scrollPerc
+            _grip.y = _bar.y + (_bar.height - _grip.height) * _scrollPerc;
         else 
             _grip.x = _bar.x + (_bar.width - _grip.width) * _scrollPerc;
         return val;
@@ -69,7 +69,7 @@ class GScrollBar extends GComponent
     {
         var result:Float;
         if (_vertical)
-            result = (_arrowButton1 != null ? _arrowButton1.height : 0) + (_arrowButton2 != null ? _arrowButton2.height : 0)
+            result = (_arrowButton1 != null ? _arrowButton1.height : 0) + (_arrowButton2 != null ? _arrowButton2.height : 0);
         else
             result = (_arrowButton1 != null ? _arrowButton1.width : 0) + (_arrowButton2 != null ? _arrowButton2.width : 0);
 
@@ -133,7 +133,7 @@ class GScrollBar extends GComponent
             var curY : Float = pt.y - _dragOffset.y;
             diff = _bar.height - _grip.height;
             if (diff == 0) 
-                _target.setPercY(0, false)
+                _target.setPercY(0, false);
             else 
                 _target.setPercY((curY - _bar.y) / diff, false);
         }
@@ -142,9 +142,9 @@ class GScrollBar extends GComponent
             var curX : Float = pt.x - _dragOffset.x;
             diff = _bar.width - _grip.width;
             if (diff == 0) 
-                _target.setPercX(0, false)
+                _target.setPercX(0, false);
             else 
-            _target.setPercX((curX - _bar.x) / diff, false);
+                _target.setPercX((curX - _bar.x) / diff, false);
         }
     }
     
@@ -153,9 +153,9 @@ class GScrollBar extends GComponent
         evt.stopPropagation();
         
         if (_vertical) 
-            _target.scrollUp()
+            _target.scrollUp();
         else 
-        _target.scrollLeft();
+            _target.scrollLeft();
     }
     
     private function __arrowButton2Click(evt : Event) : Void
@@ -163,9 +163,9 @@ class GScrollBar extends GComponent
         evt.stopPropagation();
         
         if (_vertical) 
-            _target.scrollDown()
+            _target.scrollDown();
         else 
-        _target.scrollRight();
+            _target.scrollRight();
     }
     
     private function __barMouseDown(evt : GTouchEvent) : Void
@@ -174,14 +174,14 @@ class GScrollBar extends GComponent
         if (_vertical) 
         {
             if (pt.y < 0) 
-                _target.scrollUp(4)
+                _target.scrollUp(4);
             else 
                 _target.scrollDown(4);
         }
         else 
         {
             if (pt.x < 0) 
-                _target.scrollLeft(4)
+                _target.scrollLeft(4);
             else 
                 _target.scrollRight(4);
         }

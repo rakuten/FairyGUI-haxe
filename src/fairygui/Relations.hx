@@ -218,9 +218,9 @@ class Relations
             if (_owner.parent != null)
             {
                 if (targetId != null && targetId != "")
-                    target = _owner.parent.getChildById(targetId)
+                    target = _owner.parent.getChildById(targetId);
                 else 
-                target = _owner.parent;
+                    target = _owner.parent;
             }
             else 
             {

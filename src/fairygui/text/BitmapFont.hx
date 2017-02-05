@@ -72,7 +72,7 @@ class BitmapFont
                 sHelperRect.height = glyph.height;
                 
                 if (glyph.channel == 0) 
-                    sHelperBmd.fillRect(sHelperRect, 0)
+                    sHelperBmd.fillRect(sHelperRect, 0);
                 else 
                     sHelperBmd.fillRect(sHelperRect, 0xFFFFFFFF);
                 
@@ -80,7 +80,7 @@ class BitmapFont
                 sHelperRect.y = glyph.y;
                 
                 if (glyph.channel == 0) 
-                    sHelperBmd.copyPixels(atlas, sHelperRect, sPoint0)
+                    sHelperBmd.copyPixels(atlas, sHelperRect, sPoint0);
                 else 
                     sHelperBmd.copyChannel(atlas, sHelperRect, sPoint0, glyph.channel, BitmapDataChannel.ALPHA);
 

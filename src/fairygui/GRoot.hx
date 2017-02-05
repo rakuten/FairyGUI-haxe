@@ -91,11 +91,17 @@ class GRoot extends GComponent
         _designResolutionY = designResolutionY;
         _screenMatchMode = screenMatchMode;
         
-        if (_designResolutionX == 0)               //backward compability  
-        _screenMatchMode = ScreenMatchMode.MatchWidth
-        else if (_designResolutionY == 0)               //backward compability  
-        _screenMatchMode = ScreenMatchMode.MatchHeight;
-        
+        if (_designResolutionX == 0)
+        {
+            //backward compability
+            _screenMatchMode = ScreenMatchMode.MatchWidth;
+        }
+        else if (_designResolutionY == 0)
+        {
+            //backward compability
+            _screenMatchMode = ScreenMatchMode.MatchHeight;
+        }
+
         applyScaleFactor();
     }
     
@@ -160,12 +166,12 @@ class GRoot extends GComponent
         win.requestFocus();
         
         if (win.x > this.width) 
-            win.x = this.width - win.width
+            win.x = this.width - win.width;
         else if (win.x + win.width < 0) 
             win.x = 0;
         
         if (win.y > this.height) 
-            win.y = this.height - win.height
+            win.y = this.height - win.height;
         else if (win.y + win.height < 0) 
             win.y = 0;
         
@@ -189,11 +195,11 @@ class GRoot extends GComponent
         var cnt : Int = this.numChildren;
         var i : Int;
         if (this._modalLayer.parent != null && !win.modal) 
-            i = this.getChildIndex(this._modalLayer) - 1
+            i = this.getChildIndex(this._modalLayer) - 1;
         else 
-        i = cnt - 1;
+            i = cnt - 1;
         
-                while (i >= 0){
+        while (i >= 0){
             var g : GObject = this.getChildAt(i);
             if (g == win) 
                 return;
@@ -390,9 +396,9 @@ class GRoot extends GComponent
         if (target.parent != null) 
         {
             if (Std.is(target, Window)) 
-                cast(target, Window).hide()
+                cast(target, Window).hide();
             else 
-            removeChild(target);
+                removeChild(target);
         }
     }
     
@@ -474,9 +480,9 @@ class GRoot extends GComponent
     {
         var objs : Array<Dynamic> = _nativeStage.getObjectsUnderPoint(new Point(globalX, globalY));
         if (objs == null || objs.length == 0) 
-            return null
+            return null;
         else 
-        return ToolSet.displayObjectToGObject(objs[objs.length - 1]);
+            return ToolSet.displayObjectToGObject(objs[objs.length - 1]);
     }
     
     private function get_focus() : GObject
@@ -525,9 +531,9 @@ class GRoot extends GComponent
     {
         var vs : Float = _volumeScale * volumeScale;
         if (vs == 1) 
-            sound.play()
+            sound.play();
         else 
-        sound.play(0, 0, new SoundTransform(vs));
+            sound.play(0, 0, new SoundTransform(vs));
     }
     
     private function adjustModalLayer() : Void
@@ -542,9 +548,9 @@ class GRoot extends GComponent
             var g : GObject = this.getChildAt(i);
             if ((Std.is(g, Window)) && (try cast(g, Window) catch(e:Dynamic) null).modal) {
                 if (_modalLayer.parent == null) 
-                    addChildAt(_modalLayer, i)
+                    addChildAt(_modalLayer, i);
                 else 
-                setChildIndexBefore(_modalLayer, i);
+                    setChildIndexBefore(_modalLayer, i);
                 return;
             }
             i--;

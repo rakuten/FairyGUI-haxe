@@ -235,9 +235,9 @@ class GComponent extends GObject
     public function getChildAt(index : Int) : GObject
     {
         if (index >= 0 && index < numChildren) 
-            return _children[index]
+            return _children[index];
         else 
-        throw new RangeError("Invalid child index");
+            throw new RangeError("Invalid child index");
     }
     
     public function getChild(name : String) : GObject
@@ -298,8 +298,11 @@ class GComponent extends GObject
         if (oldIndex == -1) 
             throw new ArgumentError("Not a child of this container");
         
-        if (child.sortingOrder != 0)               //no effect  
-        return;
+        if (child.sortingOrder != 0)
+        {
+            //no effect
+            return;
+        }
         
         var cnt : Int = _children.length;
         if (_sortingChildCount > 0) 
@@ -317,8 +320,11 @@ class GComponent extends GObject
         if (oldIndex == -1) 
             throw new ArgumentError("Not a child of this container");
         
-        if (child.sortingOrder != 0)               //no effect  
-        return oldIndex;
+        if (child.sortingOrder != 0)
+        {
+            //no effect
+            return oldIndex;
+        }
         
         var cnt : Int = _children.length;
         if (_sortingChildCount > 0) 
@@ -328,9 +334,9 @@ class GComponent extends GObject
         }
         
         if (oldIndex < index) 
-            return _setChildIndex(child, oldIndex, index - 1)
+            return _setChildIndex(child, oldIndex, index - 1);
         else 
-        return _setChildIndex(child, oldIndex, index);
+            return _setChildIndex(child, oldIndex, index);
     }
     
     private function _setChildIndex(child : GObject, oldIndex : Int, index : Int) : Int
@@ -459,7 +465,7 @@ class GComponent extends GObject
         _controllers.splice(index, 1);
         
         for (child in _children)
-        child.handleControllerChanged(c);
+            child.handleControllerChanged(c);
     }
     
     @:final private function get_controllers() : Array<Controller>
@@ -622,7 +628,7 @@ class GComponent extends GObject
                 myIndex = i;
             }
             else if ((Std.is(child, GButton))
-                && cast((child), GButton).relatedController == c) 
+                && cast(child, GButton).relatedController == c)
             {
                 if (i > maxIndex) 
                     maxIndex = i;
@@ -956,7 +962,7 @@ class GComponent extends GObject
     private function get_viewWidth() : Int
     {
         if (_scrollPane != null) 
-            return _scrollPane.viewWidth
+            return _scrollPane.viewWidth;
         else 
             return Std.int(this.width - _margin.left - _margin.right);
     }
@@ -964,7 +970,7 @@ class GComponent extends GObject
     private function set_viewWidth(value : Int) : Int
     {
         if (_scrollPane != null) 
-            _scrollPane.viewWidth = value
+            _scrollPane.viewWidth = value;
         else
             this.width = value + _margin.left + _margin.right;
 
@@ -974,7 +980,7 @@ class GComponent extends GObject
     private function get_viewHeight() : Int
     {
         if (_scrollPane != null) 
-            return _scrollPane.viewHeight
+            return _scrollPane.viewHeight;
         else 
             return Std.int(this.height - _margin.top - _margin.bottom);
     }
@@ -982,7 +988,7 @@ class GComponent extends GObject
     private function set_viewHeight(value : Int) : Int
     {
         if (_scrollPane != null) 
-            _scrollPane.viewHeight = value
+            _scrollPane.viewHeight = value;
         else
             Std.int(this.height = value + _margin.top + _margin.bottom);
         return value;
@@ -1021,11 +1027,16 @@ class GComponent extends GObject
                     else 
                     {
                         prev = _children[i - 1];
-                        if (yValue < prev.y + prev.height / 2)  //top half part
-                        yValue = prev.y
-                        //bottom half part
-                        else 
-                        yValue = obj.y;
+                        if (yValue < prev.y + prev.height / 2)
+                        {
+                            //top half part
+                            yValue = prev.y;
+                        }
+                        else
+                        {
+                            //bottom half part
+                            yValue = obj.y;
+                        }
                         break;
                     }
                 }
@@ -1040,7 +1051,8 @@ class GComponent extends GObject
         {
             if (i > 0) 
                 i--;
-                        while (i < cnt){
+
+            while (i < cnt){
                 obj = _children[i];
                 if (xValue < obj.x) 
                 {
@@ -1052,11 +1064,16 @@ class GComponent extends GObject
                     else 
                     {
                         prev = _children[i - 1];
-                        if (xValue < prev.x + prev.width / 2) //top half part
-                        xValue = prev.x
-                        //bottom half part
-                        else 
-                        xValue = obj.x;
+                        if (xValue < prev.x + prev.width / 2)
+                        {
+                            //top half part
+                            xValue = prev.x;
+                        }
+                        else
+                        {
+                            //bottom half part
+                            xValue = obj.x;
+                        }
                         break;
                     }
                 }
@@ -1088,9 +1105,9 @@ class GComponent extends GObject
             var oldIndex : Int = Lambda.indexOf(_children, child);
             var index : Int = getInsertPosForSortingChild(child);
             if (oldIndex < index) 
-                _setChildIndex(child, oldIndex, index - 1)
+                _setChildIndex(child, oldIndex, index - 1);
             else 
-            _setChildIndex(child, oldIndex, index);
+                _setChildIndex(child, oldIndex, index);
         }
     }
     
@@ -1133,7 +1150,7 @@ class GComponent extends GObject
         var overflow : Int;
         str = xml.att.overflow;
         if (str != null) 
-            overflow = OverflowType.parse(str)
+            overflow = OverflowType.parse(str);
         else 
             overflow = OverflowType.Visible;
         
@@ -1146,16 +1163,16 @@ class GComponent extends GObject
             var scroll : Int = ScrollType.Both;
             str = xml.att.scroll;
             if (str != null) 
-                scroll = ScrollType.parse(str)
+                scroll = ScrollType.parse(str);
             else 
-            scroll = ScrollType.Vertical;
+                scroll = ScrollType.Vertical;
             
             var scrollBarDisplay : Int = ScrollBarDisplayType.Default;
             str = xml.att.scrollBar;
             if (str != null) 
-                scrollBarDisplay = ScrollBarDisplayType.parse(str)
+                scrollBarDisplay = ScrollBarDisplayType.parse(str);
             else 
-            scrollBarDisplay = ScrollBarDisplayType.Default;
+                scrollBarDisplay = ScrollBarDisplayType.Default;
             var scrollBarFlags : Int = Std.parseInt(xml.att.scrollBarFlags);
             
             var scrollBarMargin : Margin = new Margin();
@@ -1177,7 +1194,7 @@ class GComponent extends GObject
                     vtScrollBarRes, hzScrollBarRes);
         }
         else 
-        setupOverflow(overflow);
+            setupOverflow(overflow);
         
         _buildingDisplayList = true;
         var col : FastXMLList = xml.descendants("controller");

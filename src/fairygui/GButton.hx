@@ -153,11 +153,11 @@ class GButton extends GComponent
     @:final private function get_titleColor() : Int
     {
         if (Std.is(_titleObject, GTextField)) 
-            return cast((_titleObject), GTextField).color
+            return cast(_titleObject, GTextField).color;
         else if (Std.is(_titleObject, GLabel)) 
-            return cast((_titleObject), GLabel).titleColor
+            return cast(_titleObject, GLabel).titleColor;
         else if (Std.is(_titleObject, GButton)) 
-            return cast((_titleObject), GButton).titleColor
+            return cast(_titleObject, GButton).titleColor;
         else 
         return 0;
     }
@@ -165,11 +165,11 @@ class GButton extends GComponent
     private function set_titleColor(value : Int) : Int
     {
         if (Std.is(_titleObject, GTextField)) 
-            cast((_titleObject), GTextField).color = value
+            cast(_titleObject, GTextField).color = value;
         else if (Std.is(_titleObject, GLabel)) 
-            cast((_titleObject), GLabel).titleColor = value
+            cast(_titleObject, GLabel).titleColor = value;
         else if (Std.is(_titleObject, GButton)) 
-            cast((_titleObject), GButton).titleColor = value;
+            cast(_titleObject, GButton).titleColor = value;
         return value;
     }
     
@@ -358,9 +358,9 @@ class GButton extends GComponent
         else if (_downEffect == 2) 
         {
             if (val == DOWN || val == SELECTED_OVER || val == SELECTED_DISABLED) 
-                setScale(_downEffectValue, _downEffectValue)
+                setScale(_downEffectValue, _downEffectValue);
             else 
-            setScale(1, 1);
+                setScale(1, 1);
         }
     }
     
@@ -369,16 +369,16 @@ class GButton extends GComponent
         if (this.grayed && _buttonController != null && _buttonController.hasPage(DISABLED)) 
         {
             if (_selected) 
-                setState(SELECTED_DISABLED)
+                setState(SELECTED_DISABLED);
             else 
-            setState(DISABLED);
+                setState(DISABLED);
         }
         else 
         {
             if (_selected) 
-                setState((_over) ? SELECTED_OVER : DOWN)
+                setState((_over) ? SELECTED_OVER : DOWN);
             else 
-            setState((_over) ? OVER : UP);
+                setState((_over) ? OVER : UP);
         }
     }
     
@@ -396,16 +396,16 @@ class GButton extends GComponent
         {
             if (this.grayed) {
                 if (_selected) 
-                    setState(SELECTED_DISABLED)
+                    setState(SELECTED_DISABLED);
                 else 
-                setState(DISABLED);
+                    setState(DISABLED);
             }
             else 
             {
                 if (_selected) 
-                    setState(DOWN)
+                    setState(DOWN);
                 else 
-                setState(UP);
+                    setState(UP);
             }
         }
         else 
@@ -538,17 +538,17 @@ class GButton extends GComponent
         if (_mode == ButtonMode.Common) 
         {
             if (this.grayed && _buttonController != null && _buttonController.hasPage(DISABLED)) 
-                setState(SELECTED_DISABLED)
+                setState(SELECTED_DISABLED);
             else 
-            setState(DOWN);
+                setState(DOWN);
         }
         
         if (_linkedPopup != null) 
         {
             if (Std.is(_linkedPopup, Window)) 
-                cast((_linkedPopup), Window).toggleStatus()
+                cast(_linkedPopup, Window).toggleStatus();
             else 
-            this.root.togglePopup(_linkedPopup, this);
+                this.root.togglePopup(_linkedPopup, this);
         }
     }
     
@@ -557,11 +557,11 @@ class GButton extends GComponent
         if (_mode == ButtonMode.Common) 
         {
             if (this.grayed && _buttonController != null && _buttonController.hasPage(DISABLED)) 
-                setState(DISABLED)
+                setState(DISABLED);
             else if (_over) 
-                setState(OVER)
+                setState(OVER);
             else 
-            setState(UP);
+                setState(UP);
         }
         else 
         {

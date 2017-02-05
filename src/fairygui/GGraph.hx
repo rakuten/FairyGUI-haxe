@@ -110,9 +110,9 @@ class GGraph extends GObject implements IColorGear
             return;
         
         if (_lineSize == 0) 
-            _graphics.lineStyle(0, 0, 0, true, LineScaleMode.NONE)
+            _graphics.lineStyle(0, 0, 0, true, LineScaleMode.NONE);
         else 
-        _graphics.lineStyle(_lineSize, _lineColor, _lineAlpha, true, LineScaleMode.NONE);
+            _graphics.lineStyle(_lineSize, _lineColor, _lineAlpha, true, LineScaleMode.NONE);
         
         //flash 画线的方法有点特殊，这里的处理保证了当lineSize是1时，图形的大小是正确的。
         //如果lineSize大于1，则无法保证，线条会在元件区域外显示
@@ -129,7 +129,7 @@ class GGraph extends GObject implements IColorGear
             if (_corner != null) 
             {
                 if (_corner.length == 1) 
-                    _graphics.drawRoundRect(0, 0, w, h, Std.parseInt(_corner[0]), Std.parseInt(_corner[0]))
+                    _graphics.drawRoundRect(0, 0, w, h, Std.parseInt(_corner[0]), Std.parseInt(_corner[0]));
                 else 
                 _graphics.drawRoundRectComplex(0, 0, w, h,
                         Std.parseInt(_corner[0]), Std.parseInt(_corner[1]), Std.parseInt(_corner[2]), Std.parseInt(_corner[3]));
@@ -199,13 +199,13 @@ class GGraph extends GObject implements IColorGear
             displayObject.alpha = this.alpha;
             displayObject.rotation = this.normalizeRotation;
             displayObject.visible = this.visible;
-            cast((displayObject), Sprite).mouseEnabled = this.touchable;
-            cast((displayObject), Sprite).mouseChildren = this.touchable;
+            cast(displayObject, Sprite).mouseEnabled = this.touchable;
+            cast(displayObject, Sprite).mouseChildren = this.touchable;
         }
         else 
         {
-            cast((displayObject), Sprite).graphics.clear();
-            cast((displayObject), Sprite).removeChildren();
+            cast(displayObject, Sprite).graphics.clear();
+            cast(displayObject, Sprite).removeChildren();
             _graphics = null;
         }
     }
