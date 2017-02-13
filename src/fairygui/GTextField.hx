@@ -136,7 +136,7 @@ class GTextField extends GObject implements IColorGear
         updateGear(6);
         
         if (parent != null && parent._underConstruct) 
-            renderNow()
+            renderNow();
         else 
             render();
         return value;
@@ -439,7 +439,7 @@ class GTextField extends GObject implements IColorGear
             _bitmapFont = null;
             
             if (_font != null) 
-                _textFormat.font = _font
+                _textFormat.font = _font;
             else 
             _textFormat.font = UIConfig.defaultFont;
             
@@ -448,14 +448,14 @@ class GTextField extends GObject implements IColorGear
             //像微软雅黑这样的字体，默认的渲染顶部会产生很大的空间，这里加一个调整值，消除这些多余的空间
             var v2 : Float = v - _textFormat.size;
             if (v2 > 3) 
-                _fontAdjustment = Math.ceil(v2 / 2)
+                _fontAdjustment = Math.ceil(v2 / 2);
             else 
                 _fontAdjustment = 0;
 
         }
         
         if (this.grayed) 
-            _textFormat.color = 0xAAAAAA
+            _textFormat.color = 0xAAAAAA;
         else 
             _textFormat.color = _color;
 
@@ -529,9 +529,9 @@ class GTextField extends GObject implements IColorGear
         _textField.filters = _textFilters;
         
         if (_ubbEnabled) 
-            _textField.htmlText = ToolSet.parseUBB(ToolSet.encodeHTML(_text))
+            _textField.htmlText = ToolSet.parseUBB(ToolSet.encodeHTML(_text));
         else 
-        _textField.text = _text;
+            _textField.text = _text;
         
         var renderSingleLine : Bool = _textField.numLines <= 1;
         
@@ -542,7 +542,7 @@ class GTextField extends GObject implements IColorGear
         if (_textHeight > 0) 
         {
             if (renderSingleLine) 
-                _textHeight += 1
+                _textHeight += 1;
             else 
                 _textHeight += 4;
         }
@@ -583,7 +583,7 @@ class GTextField extends GObject implements IColorGear
         switchBitmapMode(true);
         
         if (_lines == null) 
-            _lines = new Array<LineInfo>()
+            _lines = new Array<LineInfo>();
         else 
             LineInfo.returnList(_lines);
         
@@ -774,9 +774,9 @@ class GTextField extends GObject implements IColorGear
         if (_widthAutoSize) 
         {
             if (_textWidth == 0) 
-                w = 0
+                w = 0;
             else 
-            w = _textWidth;
+                w = _textWidth;
         }
         else 
             w = Std.int(this.width);
@@ -784,7 +784,7 @@ class GTextField extends GObject implements IColorGear
         if (_heightAutoSize) 
         {
             if (_textHeight == 0) 
-                h = 0
+                h = 0;
             else 
                 h = _textHeight;
         }
@@ -822,11 +822,12 @@ class GTextField extends GObject implements IColorGear
             if (_align == AlignType.Center) 
                 lineIndent = Std.int((rectWidth - line.width) / 2);
             else if (_align == AlignType.Right) 
-                lineIndent = rectWidth - line.width
+                lineIndent = rectWidth - line.width;
             else 
                 lineIndent = 0;
             textLength = line.text.length;
-            for (j in 0...textLength){
+            for (j in 0...textLength)
+            {
                 ch = line.text.charAt(j);
                 
                 glyph = _bitmapFont.glyphs[ch];
@@ -854,7 +855,7 @@ class GTextField extends GObject implements IColorGear
         if (!_updatingSize) 
         {
             if (!_widthAutoSize) 
-                render()
+                render();
             else 
                 doAlign();
         }
@@ -869,7 +870,7 @@ class GTextField extends GObject implements IColorGear
     private function doAlign() : Void
     {
         if (_verticalAlign == VertAlignType.Top) 
-            _yOffset = -_fontAdjustment
+            _yOffset = -_fontAdjustment;
         else 
         {
             var dh : Float;
@@ -881,7 +882,7 @@ class GTextField extends GObject implements IColorGear
             if (dh < 0) 
                 dh = 0;
             if (_verticalAlign == VertAlignType.Middle) 
-                _yOffset = Std.int(dh / 2) - _fontAdjustment
+                _yOffset = Std.int(dh / 2) - _fontAdjustment;
             else 
                 _yOffset = Std.int(dh) - _fontAdjustment;
         }
@@ -917,7 +918,7 @@ class GTextField extends GObject implements IColorGear
         
         str = xml.att.leading;
         if (str != null) 
-            _leading = Std.parseInt(str)
+            _leading = Std.parseInt(str);
         else 
             _leading = 3;
         
@@ -945,7 +946,7 @@ class GTextField extends GObject implements IColorGear
             _strokeColor = ToolSet.convertFromHtmlColor(str);
             str = xml.att.strokeSize;
             if (str != null) 
-                _stroke = Std.parseInt(str)
+                _stroke = Std.parseInt(str);
             else 
                 _stroke = 1;
         }

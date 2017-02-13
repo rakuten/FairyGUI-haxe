@@ -143,7 +143,7 @@ class UIPackage
     
     public static function getBitmapFontByURL(url : String) : BitmapFont
     {
-        return Reflect.field(_bitmapFonts, url);
+        return _bitmapFonts[url];
     }
     
     public static function setStringsSource(source : FastXML) : Void
@@ -786,7 +786,7 @@ class UIPackage
         
         var lines : Array<String> = str.split("\n");
         var lineCount : Int = lines.length;
-        var i : Int;
+//        var i : Int;
         var kv : Dynamic = {};
         var ttf : Bool = false;
         var size : Int = 0;
