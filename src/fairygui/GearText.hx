@@ -22,7 +22,7 @@ class GearText extends GearBase
     override private function addStatus(pageId : String, value : String) : Void
     {
         if (pageId == null) 
-            _default = value
+            _default = value;
         else
             _storage[pageId] = value;
     }
@@ -31,9 +31,9 @@ class GearText extends GearBase
     {
         _owner._gearLocked = true;
         
-        var data : Dynamic = _storage[_controller.selectedPageId];
+        var data : String = _storage[_controller.selectedPageId];
         if (data != null) 
-            _owner.text = Std.string(data)
+            _owner.text = data;
         else 
         _owner.text = _default;
         
