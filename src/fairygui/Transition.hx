@@ -893,7 +893,7 @@ class Transition
         }
 
 
-        var col : FastXMLList = xml.descendants("item");
+        var col : FastXMLList = xml.nodes.item;
         for (cxml in col.iterator())
         {
             var item : TransitionItem = new TransitionItem();

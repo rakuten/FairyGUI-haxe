@@ -209,7 +209,7 @@ class Relations
     
     public function setup(xml : FastXML) : Void
     {
-        var col : FastXMLList = xml.descendants("relation");
+        var col : FastXMLList = xml.nodes.relation;
         var targetId : String;
         var target : GObject;
         for (cxml in col.iterator())

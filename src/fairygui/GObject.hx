@@ -1529,12 +1529,12 @@ class GObject extends EventDispatcher
             */
             cast(this, GComponent).opaque = true;
         }
-        if (!GRoot.touchPointInput) 
+        if (!GRoot.touchPointInput)
         {
             _displayObject.addEventListener(MouseEvent.MOUSE_DOWN, p__mousedown);
             _displayObject.addEventListener(MouseEvent.MOUSE_UP, p__mouseup);
         }
-        else 
+        else
         {
             _displayObject.addEventListener(TouchEvent.TOUCH_BEGIN, p__mousedown);
             _displayObject.addEventListener(TouchEvent.TOUCH_END, p__mouseup);
@@ -1568,7 +1568,7 @@ class GObject extends EventDispatcher
     
     private function __mousemove(evt : Event) : Void
     {
-        if (_buttonStatus != 1 || GRoot.touchPointInput && _touchPointId != cast((evt), TouchEvent).touchPointID) 
+        if (_buttonStatus != 1 || GRoot.touchPointInput && _touchPointId != cast(evt, TouchEvent).touchPointID)
             return;
 
         var sensitivity : Int;
@@ -1588,7 +1588,7 @@ class GObject extends EventDispatcher
         var devt : GTouchEvent = new GTouchEvent(GTouchEvent.DRAG);
         devt.copyFrom(evt);
         this.dispatchEvent(devt);
-        if (devt.isPropagationStop) 
+        if (devt.isPropagationStop)
             evt.stopPropagation();
     }
 

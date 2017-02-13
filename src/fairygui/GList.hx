@@ -2308,7 +2308,7 @@ class GList extends GComponent
         str = xml.att.autoItemSize;
         _autoResizeItem = str != "false";
 
-        var col : FastXMLList = xml.descendants("item");
+        var col : FastXMLList = xml.nodes.item;
         for (cxml in col.iterator())
         {
             var url : String = cxml.att.url;

@@ -1197,7 +1197,7 @@ class GComponent extends GObject
             setupOverflow(overflow);
         
         _buildingDisplayList = true;
-        var col : FastXMLList = xml.descendants("controller");
+        var col : FastXMLList = xml.nodes.controller;
 
         var controller : Controller;
         for (cxml in col.iterator())
@@ -1250,7 +1250,7 @@ class GComponent extends GObject
         if(str!=null)
         this.mask = getChildById(str).displayObject;
         
-        col = xml.descendants("transition");
+        col = xml.nodes.transition;
         var trans : Transition;
         for (cxml in col.iterator())
         {
