@@ -78,7 +78,7 @@ class PackageItem
         var arr : Array<Dynamic> = callbacks.copy();
         for (callback in arr)
             callback(this);
-        callbacks.splice(0, -1);
+        callbacks.splice(0, callbacks.length);
     }
     
     public function toString() : String

@@ -81,7 +81,7 @@ class SimpleDispatcher
     }
     
     public function clear() : Void{
-        _elements.splice(0, -1);
+        _elements.splice(0, _elements.length);
     }
 
 }

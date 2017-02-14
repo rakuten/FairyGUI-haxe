@@ -940,7 +940,7 @@ class GObject extends EventDispatcher
         while (p!=null)
         {
             if (Std.is(p, GRoot)) 
-                return cast((p), GRoot);
+                return cast(p, GRoot);
             p = p.parent;
         }
         return GRoot.inst;
