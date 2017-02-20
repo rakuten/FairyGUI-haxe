@@ -555,13 +555,15 @@ class GObject extends EventDispatcher
     {
         _touchable = value;
         if (Std.is(this, GImage) || Std.is(this, GMovieClip) || Std.is(this, GTextField) && !Std.is(this, GTextInput) && !Std.is(this, GRichTextField))
+        {
             //Touch is not supported by GImage/GMovieClip/GTextField
-        return false;
+            return false;
+        }
         
         if (Std.is(_displayObject, InteractiveObject)) 
         {
             if (Std.is(this, GComponent)) 
-                cast(_displayObject, InteractiveObject).mouseEnabled = _touchable && cast((this), GComponent).opaque
+                cast(_displayObject, InteractiveObject).mouseEnabled = _touchable && cast((this), GComponent).opaque;
             else 
                 cast(_displayObject, InteractiveObject).mouseEnabled = _touchable;
             if (Std.is(_displayObject, DisplayObjectContainer)) 
@@ -876,17 +878,17 @@ class GObject extends EventDispatcher
     
     @:final private function get_gearXY() : GearXY
     {
-        return cast((getGear(1)), GearXY);
+        return cast(getGear(1), GearXY);
     }
     
     @:final private function get_gearSize() : GearSize
     {
-        return cast((getGear(2)), GearSize);
+        return cast(getGear(2), GearSize);
     }
     
     @:final private function get_gearLook() : GearLook
     {
-        return cast((getGear(3)), GearLook);
+        return cast(getGear(3), GearLook);
     }
     
     @:final private function get_relations() : Relations
@@ -1101,7 +1103,7 @@ class GObject extends EventDispatcher
         if (_displayObject != null) 
         {
             if (MTOUCH_EVENTS.indexOf(type) != -1) 
-                initMTouch()
+                initMTouch();
             else 
             {
                 if (type == "rightClick" && (Std.is(this, GComponent))) 
@@ -1286,9 +1288,9 @@ class GObject extends EventDispatcher
         _displayObject.scaleY = old.scaleY;
         if ((Std.is(_displayObject, InteractiveObject)) && (Std.is(old, InteractiveObject))) 
         {
-            cast((_displayObject), InteractiveObject).mouseEnabled = cast((old), InteractiveObject).mouseEnabled;
+            cast(_displayObject, InteractiveObject).mouseEnabled = cast(old, InteractiveObject).mouseEnabled;
             if (Std.is(_displayObject, DisplayObjectContainer)) 
-                cast((_displayObject), DisplayObjectContainer).mouseChildren = cast((old), DisplayObjectContainer).mouseChildren;
+                cast(_displayObject, DisplayObjectContainer).mouseChildren = cast(old, DisplayObjectContainer).mouseChildren;
         }
     }
     
@@ -1354,7 +1356,7 @@ class GObject extends EventDispatcher
         if (_displayObject != null) 
         {
             if (_grayed) 
-                _displayObject.filters = ToolSet.GRAY_FILTERS
+                _displayObject.filters = ToolSet.GRAY_FILTERS;
             else 
             _displayObject.filters = null;
         }
@@ -1410,7 +1412,7 @@ class GObject extends EventDispatcher
             if (n1 > 2)
             {
                 if (_sourceWidth != 0) 
-                    n1 = n1 / _sourceWidth
+                    n1 = n1 / _sourceWidth;
                 else 
                 n1 = 0;
             }
@@ -1418,7 +1420,7 @@ class GObject extends EventDispatcher
             if (n2 > 2) 
             {
                 if (_sourceHeight != 0) 
-                    n2 = n2 / _sourceHeight
+                    n2 = n2 / _sourceHeight;
                 else 
                 n2 = 0;
             }
@@ -1524,7 +1526,8 @@ class GObject extends EventDispatcher
     private function initMTouch() : Void
     {
         if (Std.is(this, GComponent)) 
-        {  /*GComponent is by default not opaque for optimization.
+        {
+            /*GComponent is by default not opaque for optimization.
             if a click listener registered, we set opaque to true
             */
             cast(this, GComponent).opaque = true;
@@ -1654,7 +1657,7 @@ class GObject extends EventDispatcher
     private function initDrag() : Void
     {
         if (_draggable) 
-            addEventListener(GTouchEvent.BEGIN, __begin)
+            addEventListener(GTouchEvent.BEGIN, __begin);
         else 
             removeEventListener(GTouchEvent.BEGIN, __begin);
     }
@@ -1733,7 +1736,7 @@ class GObject extends EventDispatcher
             var rect : Rectangle = GRoot.inst.localToGlobalRect(_dragBounds.x, _dragBounds.y,
                     _dragBounds.width, _dragBounds.height, sDragHelperRect);
             if (xx < rect.x) 
-                xx = rect.x
+                xx = rect.x;
             else if (xx + sGlobalRect.width > rect.right) 
             {
                 xx = rect.right - sGlobalRect.width;
@@ -1742,7 +1745,7 @@ class GObject extends EventDispatcher
             }
             
             if (yy < rect.y) 
-                yy = rect.y
+                yy = rect.y;
             else if (yy + sGlobalRect.height > rect.bottom) 
             {
                 yy = rect.bottom - sGlobalRect.height;

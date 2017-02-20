@@ -627,7 +627,7 @@ class GComponent extends GObject
             {
                 myIndex = i;
             }
-            else if ((Std.is(child, GButton))
+            else if (Std.is(child, GButton)
                 && cast(child, GButton).relatedController == c)
             {
                 if (i > maxIndex) 

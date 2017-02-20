@@ -150,15 +150,15 @@ class ScrollPane extends EventDispatcher
         _displayInDemand = (flags & 4) != 0;
         _pageMode = (flags & 8) != 0;
         if ((flags & 16) > 0)
-            _touchEffect = true
+            _touchEffect = true;
         else if ((flags & 32) > 0)
-            _touchEffect = false
+            _touchEffect = false;
         else 
         _touchEffect = UIConfig.defaultScrollTouchEffect;
         if ((flags & 64) > 0)
-            _bouncebackEffect = true
+            _bouncebackEffect = true;
         else if ((flags & 128) > 0)
-            _bouncebackEffect = false
+            _bouncebackEffect = false;
         else 
         _bouncebackEffect = UIConfig.defaultScrollBounceEffect;
 
@@ -575,16 +575,16 @@ class ScrollPane extends EventDispatcher
             if (setFirst || rect.y <= _yPos || rect.height >= _viewHeight) 
             {
                 if (_pageMode) 
-                    this.setPosY(Math.floor(rect.y / _pageSizeV) * _pageSizeV, ani)
+                    this.setPosY(Math.floor(rect.y / _pageSizeV) * _pageSizeV, ani);
                 else 
                     this.setPosY(rect.y, ani);
             }
             else if (rect.y + rect.height > bottom) 
             {
                 if (_pageMode) 
-                    this.setPosY(Math.floor(rect.y / _pageSizeV) * _pageSizeV, ani)
+                    this.setPosY(Math.floor(rect.y / _pageSizeV) * _pageSizeV, ani);
                 else if (rect.height <= _viewHeight / 2) 
-                    this.setPosY(rect.y + rect.height * 2 - _viewHeight, ani)
+                    this.setPosY(rect.y + rect.height * 2 - _viewHeight, ani);
                 else 
                     this.setPosY(rect.y + rect.height - _viewHeight, ani);
             }
@@ -595,16 +595,16 @@ class ScrollPane extends EventDispatcher
             if (setFirst || rect.x <= _xPos || rect.width >= _viewWidth) 
             {
                 if (_pageMode) 
-                    this.setPosX(Math.floor(rect.x / _pageSizeH) * _pageSizeH, ani)
+                    this.setPosX(Math.floor(rect.x / _pageSizeH) * _pageSizeH, ani);
                 else 
                     this.setPosX(rect.x, ani);
             }
             else if (rect.x + rect.width > right) 
             {
                 if (_pageMode) 
-                    this.setPosX(Math.floor(rect.x / _pageSizeH) * _pageSizeH, ani)
+                    this.setPosX(Math.floor(rect.x / _pageSizeH) * _pageSizeH, ani);
                 else if (rect.width <= _viewWidth / 2) 
-                    this.setPosX(rect.x + rect.width * 2 - _viewWidth, ani)
+                    this.setPosX(rect.x + rect.width * 2 - _viewWidth, ani);
                 else 
                     this.setPosX(rect.x + rect.width - _viewWidth, ani);
             }
@@ -663,7 +663,7 @@ class ScrollPane extends EventDispatcher
         var mx : Float;
         var my : Float;
         if (_displayOnLeft && _vtScrollBar != null) 
-            mx = Math.floor(_owner.margin.left + _vtScrollBar.width)
+            mx = Math.floor(_owner.margin.left + _vtScrollBar.width);
         else 
             mx = Math.floor(_owner.margin.left);
 
@@ -686,7 +686,7 @@ class ScrollPane extends EventDispatcher
             {
                 _hzScrollBar.width = aWidth - _vtScrollBar.width - _scrollBarMargin.left - _scrollBarMargin.right;
                 if (_displayOnLeft) 
-                    _hzScrollBar.x = _scrollBarMargin.left + _vtScrollBar.width
+                    _hzScrollBar.x = _scrollBarMargin.left + _vtScrollBar.width;
                 else 
                     _hzScrollBar.x = _scrollBarMargin.left;
             }
@@ -701,7 +701,7 @@ class ScrollPane extends EventDispatcher
             if (!_displayOnLeft) 
                 _vtScrollBar.x = aWidth - _vtScrollBar.width;
             if (_hzScrollBar != null) 
-                _vtScrollBar.height = aHeight - _hzScrollBar.height - _scrollBarMargin.top - _scrollBarMargin.bottom
+                _vtScrollBar.height = aHeight - _hzScrollBar.height - _scrollBarMargin.top - _scrollBarMargin.bottom;
             else 
                 _vtScrollBar.height = aHeight - _scrollBarMargin.top - _scrollBarMargin.bottom;
 
@@ -829,14 +829,16 @@ class ScrollPane extends EventDispatcher
         
         if (_vtScrollBar != null) 
         {
-            if (_viewHeight < _vtScrollBar.minSize) 
+            if (_viewHeight < _vtScrollBar.minSize)
+            {
                 //没有使用_vtScrollBar.visible是因为ScrollBar用了一个trick，它并不在owner的DisplayList里，因此_vtScrollBar.visible是无效的
-            _vtScrollBar.displayObject.visible = false
+                _vtScrollBar.displayObject.visible = false;
+            }
             else 
             {
                 _vtScrollBar.displayObject.visible = _scrollBarVisible && !_vScrollNone;
                 if (_contentHeight == 0) 
-                    _vtScrollBar.displayPerc = 0
+                    _vtScrollBar.displayPerc = 0;
                 else 
                     _vtScrollBar.displayPerc = Math.min(1, _viewHeight / _contentHeight);
             }
@@ -844,12 +846,12 @@ class ScrollPane extends EventDispatcher
         if (_hzScrollBar != null) 
         {
             if (_viewWidth < _hzScrollBar.minSize) 
-                _hzScrollBar.displayObject.visible = false
+                _hzScrollBar.displayObject.visible = false;
             else 
             {
                 _hzScrollBar.displayObject.visible = _scrollBarVisible && !_hScrollNone;
                 if (_contentWidth == 0) 
-                    _hzScrollBar.displayPerc = 0
+                    _hzScrollBar.displayPerc = 0;
                 else 
                     _hzScrollBar.displayPerc = Math.min(1, _viewWidth / _contentWidth);
             }
@@ -866,11 +868,12 @@ class ScrollPane extends EventDispatcher
         }
         
         if (_scrollType == ScrollType.Horizontal || _scrollType == ScrollType.Both) 
-            _xOverlap = Math.ceil(Math.max(0, _contentWidth - _viewWidth))
+            _xOverlap = Math.ceil(Math.max(0, _contentWidth - _viewWidth));
         else 
         _xOverlap = 0;
+
         if (_scrollType == ScrollType.Vertical || _scrollType == ScrollType.Both) 
-            _yOverlap = Math.ceil(Math.max(0, _contentHeight - _viewHeight))
+            _yOverlap = Math.ceil(Math.max(0, _contentHeight - _viewHeight));
         else 
         _yOverlap = 0;
         
@@ -915,7 +918,7 @@ class ScrollPane extends EventDispatcher
     private function posChanged(ani : Bool) : Void
     {
         if (_aniFlag == 0) 
-            _aniFlag = (ani) ? 1 : -1
+            _aniFlag = (ani) ? 1 : -1;
         else if (_aniFlag == 1 && !ani) 
             _aniFlag = -1;
         
@@ -1173,12 +1176,15 @@ class ScrollPane extends EventDispatcher
         if (!_touchEffect) 
             return;
         
-        if (draggingPane != null && draggingPane != this || GObject.draggingObject != null) //已经有其他拖动
+        if (draggingPane != null && draggingPane != this || GObject.draggingObject != null)
+        {
+        //已经有其他拖动
             return;
+        }
         
         var sensitivity : Int;
         if (GRoot.touchScreen) 
-            sensitivity = UIConfig.touchScrollSensitivity
+            sensitivity = UIConfig.touchScrollSensitivity;
         else 
             sensitivity = 8;
         
@@ -1202,8 +1208,11 @@ class ScrollPane extends EventDispatcher
                 if ((_gestureFlag & 2) != 0)   //已经有水平方向的手势在监测，那么我们用严格的方式检查是不是按垂直方向移动，避免冲突  
                 {
                     diff2 = Math.abs(_holdAreaPoint.x - _maskContainer.mouseX);
-                    if (diff < diff2) //不通过则不允许滚动了
+                    if (diff < diff2)
+                    {
+                        //不通过则不允许滚动了
                         return;
+                    }
                 }
             }
             
@@ -1261,14 +1270,14 @@ class ScrollPane extends EventDispatcher
             if (y > 0) 
             {
                 if (!_bouncebackEffect || _inertiaDisabled) 
-                    _container.y = 0
+                    _container.y = 0;
                 else 
                 _container.y = Std.int(y * 0.5);
             }
             else if (y < -_yOverlap) 
             {
                 if (!_bouncebackEffect || _inertiaDisabled) 
-                    _container.y = -Std.int(_yOverlap)
+                    _container.y = -Std.int(_yOverlap);
                 else 
                 _container.y = Std.int((y - _yOverlap) * 0.5);
             }
@@ -1290,14 +1299,14 @@ class ScrollPane extends EventDispatcher
             if (x > 0) 
             {
                 if (!_bouncebackEffect || _inertiaDisabled) 
-                    _container.x = 0
+                    _container.x = 0;
                 else 
                 _container.x = Std.int(x * 0.5);
             }
             else if (x < 0 - _xOverlap) 
             {
                 if (!_bouncebackEffect || _inertiaDisabled) 
-                    _container.x = -Std.int(_xOverlap)
+                    _container.x = -Std.int(_xOverlap);
                 else 
                 _container.x = Std.int((x - _xOverlap) * 0.5);
             }
@@ -1364,7 +1373,7 @@ class ScrollPane extends EventDispatcher
         if (_scrollType == ScrollType.Both || _scrollType == ScrollType.Horizontal) 
         {
             if (_container.x > UIConfig.touchDragSensitivity) 
-                fireRelease = 1
+                fireRelease = 1;
             else if (_container.x < -_xOverlap - UIConfig.touchDragSensitivity) 
                 fireRelease = 2;
             
@@ -1393,8 +1402,10 @@ class ScrollPane extends EventDispatcher
                 
                 
                 endX = -page * _pageSizeH;
-                if (endX < -_xOverlap) //最后一页未必有_pageSizeH那么大
+                if (endX < -_xOverlap)
+                {//最后一页未必有_pageSizeH那么大
                  endX = -_xOverlap;
+                }
                 
                 change1.x = endX - _container.x;
             }
@@ -1405,7 +1416,7 @@ class ScrollPane extends EventDispatcher
         if (_scrollType == ScrollType.Both || _scrollType == ScrollType.Vertical) 
         {
             if (_container.y > UIConfig.touchDragSensitivity) 
-                fireRelease = 1
+                fireRelease = 1;
             else if (_container.y < -_yOverlap - UIConfig.touchDragSensitivity) 
                 fireRelease = 2;
             
@@ -1453,24 +1464,24 @@ class ScrollPane extends EventDispatcher
         if (_bouncebackEffect) 
         {
             if (endX > 0) 
-                change2.x = 0 - _container.x - change1.x
+                change2.x = 0 - _container.x - change1.x;
             else if (endX < -_xOverlap) 
                 change2.x = -_xOverlap - _container.x - change1.x;
             
             if (endY > 0) 
-                change2.y = 0 - _container.y - change1.y
+                change2.y = 0 - _container.y - change1.y;
             else if (endY < -_yOverlap) 
                 change2.y = -_yOverlap - _container.y - change1.y;
         }
         else 
         {
             if (endX > 0) 
-                change1.x = 0 - _container.x
+                change1.x = 0 - _container.x;
             else if (endX < -_xOverlap) 
                 change1.x = -_xOverlap - _container.x;
             
             if (endY > 0) 
-                change1.y = 0 - _container.y
+                change1.y = 0 - _container.y;
             else if (endY < -_yOverlap) 
                 change1.y = -_yOverlap - _container.y;
         }
@@ -1488,7 +1499,7 @@ class ScrollPane extends EventDispatcher
                                 duration).ease(_easeTypeFunc).onUpdate(__tweenUpdate2).onFinish(__tweenComplete2);
 
         if (fireRelease == 1) 
-            dispatchEvent(new Event(PULL_DOWN_RELEASE))
+            dispatchEvent(new Event(PULL_DOWN_RELEASE));
         else if (fireRelease == 2) 
             dispatchEvent(new Event(PULL_UP_RELEASE));
     }
@@ -1504,14 +1515,14 @@ class ScrollPane extends EventDispatcher
         if (_xOverlap > 0 && _yOverlap == 0) 
         {
             if (delta < 0) 
-                this.setPercX(_xPerc + getDeltaX(_mouseWheelSpeed), false)
+                this.setPercX(_xPerc + getDeltaX(_mouseWheelSpeed), false);
             else 
                 this.setPercX(_xPerc - getDeltaX(_mouseWheelSpeed), false);
         }
         else 
         {
             if (delta < 0) 
-                this.setPercY(_yPerc + getDeltaY(_mouseWheelSpeed), false)
+                this.setPercY(_yPerc + getDeltaY(_mouseWheelSpeed), false);
             else 
                 this.setPercY(_yPerc - getDeltaY(_mouseWheelSpeed), false);
         }

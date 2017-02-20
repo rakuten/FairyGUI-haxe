@@ -278,7 +278,7 @@ class GList extends GComponent
         if (_autoResizeItem)
         {
             if (_layout == ListLayoutType.SingleColumn)
-                child.width = this.viewWidth
+                child.width = this.viewWidth;
             else if (_layout == ListLayoutType.SingleRow)
                 child.height = this.viewHeight;
         }
@@ -287,7 +287,7 @@ class GList extends GComponent
 
         if (Std.is(child, GButton))
         {
-            var button : GButton = cast((child), GButton);
+            var button : GButton = cast(child, GButton);
             button.selected = false;
             button.changeStateOnClick = false;
             button.useHandCursor = false;
@@ -625,11 +625,11 @@ class GList extends GComponent
 
         for (obj in objs)
         {
-            while (obj != null && !(Std.is(obj, Stage)))
+            while (obj != null && !Std.is(obj, Stage))
             {
                 if (Std.is(obj, UIDisplayObject))
                 {
-                    var gobj : GObject = cast((obj), UIDisplayObject).owner;
+                    var gobj : GObject = cast(obj, UIDisplayObject).owner;
                     while (gobj != null && gobj.parent != this)
                         gobj = gobj.parent;
 
@@ -663,8 +663,8 @@ class GList extends GComponent
 
     private function __rightClickItem(evt : MouseEvent) : Void
     {
-        var item : GObject = cast((evt.currentTarget), GObject);
-        if ((Std.is(item, GButton)) && !cast((item), GButton).selected)
+        var item : GObject = cast(evt.currentTarget, GObject);
+        if (Std.is(item, GButton) && !cast(item, GButton).selected)
             setSelectionOnEvent(item);
 
         if (scrollPane != null && scrollItemToViewOnClick)
@@ -679,7 +679,7 @@ class GList extends GComponent
 
     private function setSelectionOnEvent(item : GObject) : Void
     {
-        if (!(Std.is(item, GButton)) || _selectionMode == ListSelectionMode.None)
+        if (!Std.is(item, GButton) || _selectionMode == ListSelectionMode.None)
             return;
 
         var dontChangeLastIndex : Bool = false;
@@ -769,7 +769,7 @@ class GList extends GComponent
         else if (itemCount == 0)
         {
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
-                this.viewHeight = minSize
+                this.viewHeight = minSize;
             else
                 this.viewWidth = minSize;
         }
@@ -787,7 +787,7 @@ class GList extends GComponent
             if (i < 0)
             {
                 if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
-                    this.viewHeight = minSize
+                    this.viewHeight = minSize;
                 else
                     this.viewWidth = minSize;
             }
@@ -963,7 +963,7 @@ class GList extends GComponent
         {
             var obj : GObject = getChildAt(index);
             if (_scrollPane != null)
-                scrollPane.scrollToView(obj, ani, setFirst)
+                scrollPane.scrollToView(obj, ani, setFirst);
             else if (parent != null && parent.scrollPane != null)
                 parent.scrollPane.scrollToView(obj, ani, setFirst);
         }
@@ -1017,7 +1017,7 @@ class GList extends GComponent
             {
                 var j : Int = _firstIndex % _numItems;
                 if (index >= j)
-                    index = _firstIndex + (index - j)
+                    index = _firstIndex + (index - j);
                 else
                     index = _firstIndex + _numItems + (j - index);
             }
@@ -1100,7 +1100,7 @@ class GList extends GComponent
     private function get_numItems() : Int
     {
         if (_virtual)
-            return _numItems
+            return _numItems;
         else
             return _children.length;
     }
@@ -1116,7 +1116,7 @@ class GList extends GComponent
 
             _numItems = value;
             if (_loop)
-                _realNumItems = _numItems * 5
+                _realNumItems = _numItems * 5;
                 //设置5倍数量，用于循环滚动
             else
                 _realNumItems = _numItems;
@@ -1148,7 +1148,7 @@ class GList extends GComponent
             {
                 for (i in cnt...value){
                     if (itemProvider == null)
-                        addItemFromPool()
+                        addItemFromPool();
                     else
                         addItemFromPool(itemProvider(i));
                 }
@@ -1160,7 +1160,9 @@ class GList extends GComponent
 
             if (itemRenderer != null)
             {
-                for (i in 0...value){itemRenderer(i, getChildAt(i));
+                for (i in 0...value)
+                {
+                    itemRenderer(i, getChildAt(i));
                 }
             }
         }
@@ -1183,7 +1185,7 @@ class GList extends GComponent
     private function setVirtualListChangedFlag(layoutChanged : Bool = false) : Void
     {
         if (layoutChanged)
-            _virtualListChanged = 2
+            _virtualListChanged = 2;
         else if (_virtualListChanged == 0)
             _virtualListChanged = 1;
 
@@ -1199,9 +1201,9 @@ class GList extends GComponent
         if (layoutChanged)
         {
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.SingleRow)
-                _curLineItemCount = 1
+                _curLineItemCount = 1;
             else if (_lineItemCount != 0)
-                _curLineItemCount = _lineItemCount
+                _curLineItemCount = _lineItemCount;
             else if (_layout == ListLayoutType.FlowHorizontal)
             {
                 _curLineItemCount = Math.floor((_scrollPane.viewWidth + _columnGap) / (_itemSize.x + _columnGap));
@@ -1450,7 +1452,7 @@ class GList extends GComponent
                 //循环列表的核心实现，滚动到头尾时重新定位
                 roundSize = Std.int(_numItems * (_itemSize.y + _lineGap));
                 if (pos == 0)
-                    scrollPane.posY = roundSize
+                    scrollPane.posY = roundSize;
                 else if (pos == scrollPane.contentHeight - scrollPane.viewHeight)
                     scrollPane.posY = scrollPane.contentHeight - roundSize - this.viewHeight;
             }
@@ -1466,7 +1468,7 @@ class GList extends GComponent
                 //循环列表的核心实现，滚动到头尾时重新定位
                 roundSize = Std.int(_numItems * (_itemSize.x + _columnGap));
                 if (pos == 0)
-                    scrollPane.posX = roundSize
+                    scrollPane.posX = roundSize;
                 else if (pos == scrollPane.contentWidth - scrollPane.viewWidth)
                     scrollPane.posX = scrollPane.contentWidth - roundSize - this.viewWidth;
             }
@@ -1482,7 +1484,7 @@ class GList extends GComponent
                 //循环列表的核心实现，滚动到头尾时重新定位
                 roundSize = Std.int((_numItems / (_curLineItemCount * _curLineItemCount2)) * viewWidth);
                 if (pos == 0)
-                    scrollPane.posX = roundSize
+                    scrollPane.posX = roundSize;
                 else if (pos == scrollPane.contentWidth - scrollPane.viewWidth)
                     scrollPane.posX = scrollPane.contentWidth - roundSize - this.viewWidth;
             }
@@ -1599,12 +1601,12 @@ class GList extends GComponent
                 {
                     ii.obj = _pool.getObject(url);
                     if (forward)
-                        this.addChildAt(ii.obj, curIndex - newFirstIndex)
+                        this.addChildAt(ii.obj, curIndex - newFirstIndex);
                     else
                         this.addChild(ii.obj);
                 }
                 if (Std.is(ii.obj, GButton))
-                    cast((ii.obj), GButton).selected = false;
+                    cast(ii.obj, GButton).selected = false;
 
                 needRender = true;
             }
@@ -1761,12 +1763,12 @@ class GList extends GComponent
                 {
                     ii.obj = _pool.getObject(url);
                     if (forward)
-                        this.addChildAt(ii.obj, curIndex - newFirstIndex)
+                        this.addChildAt(ii.obj, curIndex - newFirstIndex);
                     else
                         this.addChild(ii.obj);
                 }
                 if (Std.is(ii.obj, GButton))
-                    cast((ii.obj), GButton).selected = false;
+                    cast(ii.obj, GButton).selected = false;
 
                 needRender = true;
             }
@@ -1924,7 +1926,7 @@ class GList extends GComponent
                 insertIndex++;
 
                 if (Std.is(ii.obj, GButton))
-                    cast((ii.obj), GButton).selected = false;
+                    cast(ii.obj, GButton).selected = false;
 
                 needRender = true;
             }
@@ -2014,7 +2016,7 @@ class GList extends GComponent
             if (contentHeight < viewHeight)
             {
                 if (_verticalAlign == VertAlignType.Middle)
-                    newOffsetY = Std.int((viewHeight - contentHeight) / 2)
+                    newOffsetY = Std.int((viewHeight - contentHeight) / 2);
                 else if (_verticalAlign == VertAlignType.Bottom)
                     newOffsetY = viewHeight - contentHeight;
             }
@@ -2024,7 +2026,7 @@ class GList extends GComponent
             if (contentWidth < this.viewWidth)
             {
                 if (_align == AlignType.Center)
-                    newOffsetX = Std.int((viewWidth - contentWidth) / 2)
+                    newOffsetX = Std.int((viewWidth - contentWidth) / 2);
                 else if (_align == AlignType.Right)
                     newOffsetX = viewWidth - contentWidth;
             }
@@ -2034,7 +2036,7 @@ class GList extends GComponent
         {
             _alignOffset.setTo(newOffsetX, newOffsetY);
             if (scrollPane != null)
-                scrollPane.adjustMaskContainer()
+                scrollPane.adjustMaskContainer();
             else
             {
                 _container.x = _margin.left + _alignOffset.x;
@@ -2231,7 +2233,7 @@ class GList extends GComponent
         var overflow : Int;
         str = xml.att.overflow;
         if (str != null)
-            overflow = OverflowType.parse(str)
+            overflow = OverflowType.parse(str);
         else
             overflow = OverflowType.Visible;
 
@@ -2252,14 +2254,14 @@ class GList extends GComponent
             var scroll : Int;
             str = xml.att.scroll;
             if (str != null)
-                scroll = ScrollType.parse(str)
+                scroll = ScrollType.parse(str);
             else
                 scroll = ScrollType.Vertical;
 
             var scrollBarDisplay : Int;
             str = xml.att.scrollBar;
             if (str != null)
-                scrollBarDisplay = ScrollBarDisplayType.parse(str)
+                scrollBarDisplay = ScrollBarDisplayType.parse(str);
             else
                 scrollBarDisplay = ScrollBarDisplayType.Default;
             var scrollBarFlags : Int = Std.parseInt(xml.att.scrollBarFlags);
