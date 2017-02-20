@@ -221,8 +221,8 @@ class Controller extends EventDispatcher
     
     public function clearPages() : Void
     {
-        _pageIds.splice(0, -1);
-        _pageNames.splice(0, -1);
+        _pageIds.splice(0, _pageIds.length);
+        _pageNames.splice(0, _pageNames.length);
         if (_selectedIndex != -1)
             this.selectedIndex = -1
         else 

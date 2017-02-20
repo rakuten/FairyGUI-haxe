@@ -158,7 +158,7 @@ class Relations
         {
             item.dispose();
         }
-        _items.splice(0, -1);
+        _items.splice(0, _items.length);
     }
     
     public function copyFrom(source : Relations) : Void

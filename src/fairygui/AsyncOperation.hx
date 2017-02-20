@@ -55,22 +55,22 @@ class AsyncOperation
     public function cancel() : Void
     {
         GTimers.inst.remove(run);
-        _itemList.splice(0, -1);
+        _itemList.splice(0, _itemList.length);
         if(_objectPool.length>0)
         {
             for (obj in _objectPool)
             {
                 obj.dispose();
             }
-            _itemList.splice(0, -1);
+            _objectPool.splice(0, _objectPool.length);
         }
 
     }
 
     private function internalCreateObject(item:PackageItem):Void
     {
-        _itemList.splice(0, -1);
-        _objectPool.splice(0, -1);
+        _itemList.splice(0, _itemList.length);
+        _objectPool.splice(0, _objectPool.length);
         
         collectComponentChildren(item);
         _itemList.push(new DisplayListItem(item, null));
@@ -178,8 +178,8 @@ class AsyncOperation
         
         GTimers.inst.remove(run);
         var result : GObject = _objectPool[0];
-        _itemList.splice(0, -1);
-        _objectPool.splice(0, -1);
+        _itemList.splice(0, _itemList.length);
+        _objectPool.splice(0, _objectPool.length);
         
         if (callback != null) 
             callback(result);

@@ -1019,7 +1019,7 @@ class LineInfo
         {
             pool.push(li);
         }
-        value.splice(0, -1);
+        value.splice(0, value.length);
     }
     
     public function new()

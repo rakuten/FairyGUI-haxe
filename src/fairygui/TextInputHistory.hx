@@ -31,8 +31,8 @@ class TextInputHistory
     
     public function startRecord(textField : TextField) : Void
     {
-        _undoBuffer.splice(0, -1);
-        _redoBuffer.splice(0, -1);
+        _undoBuffer.splice(0, _undoBuffer.length);
+        _redoBuffer.splice(0, _redoBuffer.length);
         _textField = textField;
         _lock = false;
         _currentText = textField.text;
@@ -62,8 +62,8 @@ class TextInputHistory
         if (_textField != textField) 
             return;
 
-        _undoBuffer.splice(0, -1);
-        _redoBuffer.splice(0, -1);
+        _undoBuffer.splice(0, _undoBuffer.length);
+        _redoBuffer.splice(0, _redoBuffer.length);
         _textField = null;
         _currentText = null;
     }

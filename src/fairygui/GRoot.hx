@@ -382,7 +382,7 @@ class GRoot extends GComponent
                 closePopup(_popupStack[i]);
                 i--;
             }
-            _popupStack.splice(0, -1);
+            _popupStack.splice(0, _popupStack.length);
         }
     }
     
@@ -609,7 +609,7 @@ class GRoot extends GComponent
         while (mc != _nativeStage && mc != null){
             if (Std.is(mc, UIDisplayObject)) 
             {
-                var gg : GObject = cast((mc), UIDisplayObject).owner;
+                var gg : GObject = cast(mc, UIDisplayObject).owner;
                 if (gg.touchable && gg.focusable) 
                 {
                     this.setFocus(gg);
@@ -622,7 +622,7 @@ class GRoot extends GComponent
         if (_tooltipWin != null) 
             hideTooltips();
 
-        _justClosedPopups.splice(0, -1);
+        _justClosedPopups.splice(0, _justClosedPopups.length);
         var popup : GObject;
         var i : Int;
         if (_popupStack.length > 0) 
@@ -632,7 +632,7 @@ class GRoot extends GComponent
             while (mc != _nativeStage && mc != null){
                 if (Std.is(mc, UIDisplayObject)) 
                 {
-                    var pindex : Int = Lambda.indexOf(_popupStack, cast((mc), UIDisplayObject).owner);
+                    var pindex : Int = Lambda.indexOf(_popupStack, cast(mc, UIDisplayObject).owner);
                     if (pindex != -1) 
                     {
                         i = _popupStack.length - 1;
@@ -659,7 +659,7 @@ class GRoot extends GComponent
                     _justClosedPopups.push(popup);
                     i--;
                 }
-                _popupStack.splice(0, -1);
+                _popupStack.splice(0, _popupStack.length);
             }
         }
     }

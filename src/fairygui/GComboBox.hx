@@ -141,10 +141,9 @@ class GComboBox extends GComponent
     private function set_items(value : Array<String>) : Array<String>
     {
         if (value == null)
-            _items.splice(0, -1);
-
-        else 
-        _items = value.concat([]);
+            _items.splice(0, _items.length);
+        else
+            _items = value.concat([]);
         if (_items.length > 0) 
         {
             if (_selectedIndex >= _items.length) 
@@ -188,7 +187,7 @@ class GComboBox extends GComponent
     private function set_values(value : Array<String>) : Array<String>
     {
         if (value == null)
-            _values.splice(0, -1);
+            _values.splice(0, _values.length);
         else 
         _values = value.concat([]);
         return value;
@@ -398,7 +397,7 @@ class GComboBox extends GComponent
         }
         _list.selectedIndex = -1;
         dropdown.width = this.width;
-        
+
         this.root.togglePopup(dropdown, this, _popupDownward);
         if (dropdown.parent != null)
             setState(GButton.DOWN);
@@ -438,7 +437,7 @@ class GComboBox extends GComponent
 
     private function __mousedown(evt : GTouchEvent) : Void
     {
-        if ((Std.is(evt.realTarget, TextField)) && cast(evt.realTarget, TextField).type == TextFieldType.INPUT)
+        if (Std.is(evt.realTarget, TextField) && cast(evt.realTarget, TextField).type == TextFieldType.INPUT)
             return;
         
         if (dropdown != null) 

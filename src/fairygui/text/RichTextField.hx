@@ -536,7 +536,7 @@ class RichTextField extends Sprite
                 }
             }
         }
-        _lineInfo.splice(0, -1);
+        _lineInfo.splice(0, _lineInfo.length);
         
         _textField.htmlText = "";
         if (_defaultTextFormat != null) 

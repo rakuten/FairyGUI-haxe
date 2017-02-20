@@ -113,7 +113,7 @@ class RelationItem
     {
         this.target = source.target;
 
-        _defs.splice(0, -1);
+        _defs.splice(0, _defs.length);
         for (info in source._defs.iterator())
         {
             var info2 : RelationDef = new RelationDef();
