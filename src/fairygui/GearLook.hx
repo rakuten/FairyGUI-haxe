@@ -42,7 +42,8 @@ class GearLook extends GearBase
         gv.rotation = Std.parseInt(arr[1]);
         gv.grayed = (arr[2] == "1") ? true : false;
     }
-    
+    private var a:Bool;
+    private var b:Bool;
     override public function apply() : Void
     {
         var gv : GearLookValue = _storage[_controller.selectedPageId];
@@ -55,12 +56,12 @@ class GearLook extends GearBase
             _owner.grayed = gv.grayed;
             _owner._gearLocked = false;
             
-            var a : Bool;
-            var b : Bool;
-            if (tweener != null) 
+//            var a : Bool;
+//            var b : Bool;
+            if (tweener != null)
             {
-                a = tweener.vars.onUpdateParams[0];
-                b = tweener.vars.onUpdateParams[1];
+//                a = tweener.vars.onUpdateParams[0];
+//                b = tweener.vars.onUpdateParams[1];
                 if (a && tweener.vars.x != gv.alpha || b && tweener.vars.y != gv.rotation) 
                 {
                     _owner._gearLocked = true;
@@ -73,8 +74,10 @@ class GearLook extends GearBase
                     tweener = null;
                     _owner.internalVisible--;
                 }
-                else 
-                return;
+                else
+                {
+                    return;
+                }
             }
             
             a = gv.alpha != _owner.alpha;
@@ -82,11 +85,12 @@ class GearLook extends GearBase
             if (a || b) 
             {
                 _owner.internalVisible++;
-                var vars : Dynamic = 
+                var vars =
                 {
                     x : gv.alpha,
                     y : gv.rotation
                 };
+
                 if (_tweenValue == null)
                     _tweenValue = new Point();
                 _tweenValue.x = _owner.alpha;
@@ -104,12 +108,12 @@ class GearLook extends GearBase
         }
     }
     
-    private function __tweenUpdate(a : Bool, b : Bool) : Void
+    private function __tweenUpdate(val1 : Bool, val2 : Bool) : Void
     {
         _owner._gearLocked = true;
-        if (a) 
+        if (val1)
             _owner.alpha = _tweenValue.x;
-        if (b) 
+        if (val2)
             _owner.rotation = Std.int(_tweenValue.y);
         _owner._gearLocked = false;
     }

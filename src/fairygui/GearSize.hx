@@ -81,7 +81,7 @@ class GearSize extends GearBase
             if (a || b) 
             {
                 _owner.internalVisible++;
-                var vars : Dynamic = 
+                var vars =
                 {
                     width : gv.width,
                     height : gv.height,

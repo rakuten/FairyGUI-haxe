@@ -68,7 +68,7 @@ class GearXY extends GearBase
             if (_owner.x != pt.x || _owner.y != pt.y) 
             {
                 _owner.internalVisible++;
-                var vars : Dynamic = 
+                var vars =
                 {
                     x : pt.x,
                     y : pt.y
