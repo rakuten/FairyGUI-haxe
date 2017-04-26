@@ -53,7 +53,7 @@ class GComboBox extends GComponent
         _selectedIndex = -1;
         _items = [];
         _values = [];
-        _popupDownward = true;
+        _popupDownward = null;
     }
     
     @:final override private function get_text() : String
@@ -372,9 +372,9 @@ class GComboBox extends GComponent
             if (str != null) 
             {
                 if (str == "up") 
-                    _popupDownward = false
-                else if (str == "auto") 
-                    _popupDownward = null;
+                    _popupDownward = false;
+                else if (str == "down")
+                    _popupDownward = true;
             }
         }
     }

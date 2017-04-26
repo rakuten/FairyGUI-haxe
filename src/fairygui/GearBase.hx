@@ -1,5 +1,6 @@
 package fairygui;
 
+
 import tweenxcore.Tools.Easing;
 import fairygui.GObject;
 import fairygui.utils.EaseLookup;
@@ -19,7 +20,8 @@ class GearBase
     private var _easeType : Float->Float;
     private var _tweenTime : Float = 0;
     private var _delay : Float = 0;
-    
+    public var _displayLockToken:UInt;
+
     private var _owner : GObject;
     private var _controller : Controller;
     
@@ -114,7 +116,7 @@ class GearBase
             if (str == "Linear") 
                 _easeType = EaseLookup.find("linear.easenone")
             else 
-            _easeType = EaseLookup.find(str);
+                _easeType = EaseLookup.find(str);
         }
         
         str = xml.att.duration;
@@ -131,7 +133,7 @@ class GearBase
             if (str != null) 
             {
                 var arr : Array<String> = str.split(",");
-                cast((this), GearDisplay).pages = arr;
+                cast(this, GearDisplay).pages = arr;
             }
         }
         else 

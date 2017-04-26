@@ -17,7 +17,7 @@ class GearAnimation extends GearBase
     
     override private function init() : Void
     {
-        _default = new GearAnimationValue(cast((_owner), IAnimationGear).playing, cast((_owner), IAnimationGear).frame);
+        _default = new GearAnimationValue(cast(_owner, IAnimationGear).playing, cast(_owner, IAnimationGear).frame);
         _storage = new Map<String,GearAnimationValue>();
     }
     
@@ -28,7 +28,7 @@ class GearAnimation extends GearBase
         
         var gv : GearAnimationValue;
         if (pageId == null) 
-            gv = _default
+            gv = _default;
         else 
         {
             gv = new GearAnimationValue();
@@ -55,10 +55,7 @@ class GearAnimation extends GearBase
     
     override public function updateState() : Void
     {
-        if (_controller == null || _owner._gearLocked || _owner._underConstruct) 
-            return;
-        
-        var mc : IAnimationGear = cast((_owner), IAnimationGear);
+        var mc : IAnimationGear = cast(_owner, IAnimationGear);
         var gv : GearAnimationValue = _storage[_controller.selectedPageId];
         if (gv == null) 
         {

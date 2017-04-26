@@ -13,10 +13,10 @@ import openfl.errors.RangeError;
 import openfl.display.DisplayObject;
 import openfl.display.DisplayObjectContainer;
 import openfl.display.Graphics;
-import openfl.display.Shape;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.geom.Point;
+import openfl.geom.Rectangle;
 
 import fairygui.display.UISprite;
 import fairygui.utils.GTimers;
@@ -42,7 +42,6 @@ class GComponent extends GObject
     
     private var _margin : Margin;
     private var _trackBounds : Bool = false;
-    private var _clipMask : Shape;
     private var _boundsChanged : Bool = false;
     
     @:allow(fairygui)
@@ -666,7 +665,7 @@ class GComponent extends GObject
         {
             return _scrollPane.isChildInView(child);
         }
-        else if (_clipMask != null) 
+        else if (_container.scrollRect != null)
         {
             return child.x + child.width >= 0 && child.x <= this.width && child.y + child.height >= 0 && child.y <= this.height;
         }
@@ -715,7 +714,7 @@ class GComponent extends GObject
     private function set_margin(value : Margin) : Margin
     {
         _margin.copy(value);
-        if (_clipMask != null) 
+        if (_container.scrollRect != null)
         {
             _container.x = _margin.left + _alignOffset.x;
             _container.y = _margin.top + _alignOffset.y;
@@ -764,8 +763,6 @@ class GComponent extends GObject
     private function set_mask(value : DisplayObject) : DisplayObject
     {
         _container.mask = value;
-        if (value == null && _clipMask != null) 
-            _container.mask = _clipMask;
         return value;
     }
     
@@ -786,23 +783,19 @@ class GComponent extends GObject
         g.endFill();
     }
     
-    private function updateMask() : Void
+    private function updateClipRect() : Void
     {
-        var left : Float = _margin.left;
-        var top : Float = _margin.top;
+        var rect:Rectangle = _container.scrollRect;
         var w : Float = this.width - (_margin.left + _margin.right);
         var h : Float = this.height - (_margin.top + _margin.bottom);
         if (w <= 0) 
-            w = 1;
+            w = 0;
         if (h <= 0) 
-            h = 1;
-        
-        var g : Graphics = _clipMask.graphics;
-        g.clear();
-        g.lineStyle(0, 0, 0);
-        g.beginFill(0, 0);
-        g.drawRect(left, top, w, h);
-        g.endFill();
+            h = 0;
+
+        rect.width = w;
+        rect.height = h;
+        _container.scrollRect = rect;
     }
     
     private function setupScroll(scrollBarMargin : Margin,
@@ -830,12 +823,10 @@ class GComponent extends GObject
                 _container = new Sprite();
                 _rootContainer.addChild(_container);
             }
-            
-            _clipMask = new Shape();
-            _rootContainer.addChild(_clipMask);
-            updateMask();
-            
-            _container.mask = _clipMask;
+
+            _container.scrollRect = new Rectangle();
+            updateClipRect();
+
             _container.x = _margin.left;
             _container.y = _margin.top;
         }
@@ -856,8 +847,8 @@ class GComponent extends GObject
     {
         if (_scrollPane != null) 
             _scrollPane.onOwnerSizeChanged();
-        if (_clipMask != null) 
-            updateMask();
+        if(_container.scrollRect != null)
+            updateClipRect();
         
         if (_opaque) 
             updateOpaque();
@@ -1279,6 +1270,25 @@ class GComponent extends GObject
     private function constructFromXML(xml : FastXML) : Void
     {
     }
+
+    override public function setup_afterAdd(xml:FastXML):Void
+    {
+        super.setup_afterAdd(xml);
+
+        var str:String = xml.att.controller;
+        if(str!=null)
+        {
+            var arr:Array<String> = str.split(",");
+            var i:Int = 0;
+            while(i<arr.length)
+            {
+                var cc:Controller = getController(arr[i]);
+                if(cc!=null)
+                    cc.selectedPageId = arr[i+1];
+                i+=2;
+            }
+        }
+    }
     
     @:final private function p__addedToStage(evt : Event) : Void
     {
@@ -1294,8 +1304,7 @@ class GComponent extends GObject
     {
         var cnt : Int = _transitions.length;
         for (i in 0...cnt){
-            var trans : Transition = _transitions[i];
-            trans.stop(false, false);
+            _transitions[i].OnOwnerRemovedFromStage();
         }
     }
 }

@@ -23,6 +23,7 @@ class GButton extends GComponent
     public var title(get, set) : String;
     public var selectedTitle(get, set) : String;
     public var titleColor(get, set) : Int;
+    public var titleFontSize(get, set):Int;
     public var sound(get, set) : String;
     public var soundVolumeScale(get, set) : Float;
     public var selected(get, set) : Bool;
@@ -152,24 +153,36 @@ class GButton extends GComponent
     
     @:final private function get_titleColor() : Int
     {
-        if (Std.is(_titleObject, GTextField)) 
-            return cast(_titleObject, GTextField).color;
-        else if (Std.is(_titleObject, GLabel)) 
-            return cast(_titleObject, GLabel).titleColor;
-        else if (Std.is(_titleObject, GButton)) 
-            return cast(_titleObject, GButton).titleColor;
+        var tf:GTextField = getTextField();
+        if(tf != null)
+            return tf.color;
         else 
-        return 0;
+            return 0;
     }
     
     private function set_titleColor(value : Int) : Int
     {
-        if (Std.is(_titleObject, GTextField)) 
-            cast(_titleObject, GTextField).color = value;
-        else if (Std.is(_titleObject, GLabel)) 
-            cast(_titleObject, GLabel).titleColor = value;
-        else if (Std.is(_titleObject, GButton)) 
-            cast(_titleObject, GButton).titleColor = value;
+        var tf:GTextField = getTextField();
+        if(tf != null)
+            tf.color = value;
+        updateGear(4);
+        return value;
+    }
+
+    @:final public function get_titleFontSize():Int
+    {
+        var tf:GTextField = getTextField();
+        if(tf != null)
+            return tf.fontSize;
+        else
+            return 0;
+    }
+
+    public function set_titleFontSize(value:Int):Int
+    {
+        var tf:GTextField = getTextField();
+        if(tf != null)
+            tf.fontSize = value;
         return value;
     }
     
@@ -326,7 +339,19 @@ class GButton extends GComponent
         }
         __click(null);
     }
-    
+
+    public function getTextField():GTextField
+    {
+        if(Std.is(_titleObject,GTextField))
+            return cast(_titleObject, GTextField);
+        else if(Std.is(_titleObject, GLabel))
+            return cast(_titleObject, GLabel).getTextField();
+        else if(Std.is(_titleObject, GButton))
+            return cast(_titleObject, GButton).getTextField();
+        else
+            return null;
+    }
+
     private function setState(val : String) : Void
     {
         if (_buttonController != null) 
@@ -422,8 +447,11 @@ class GButton extends GComponent
         str = xml.att.mode;
         if (str != null) 
             _mode = ButtonMode.parse(str);
-        
-        _sound = xml.att.sound;
+
+        str = xml.att.sound;
+        if(str != null)
+            _sound = str;
+
         str = xml.att.volume;
         if (str != null) 
             _soundVolumeScale = Std.parseInt(str) / 100;
@@ -486,8 +514,12 @@ class GButton extends GComponent
             str = xml.att.titleColor;
             if (str != null) 
                 this.titleColor = ToolSet.convertFromHtmlColor(str);
-            
-            if (xml.att.sound != null) 
+
+            str = xml.att.titleFontSize;
+            if(str != null)
+                this.titleFontSize = Std.parseInt(str);
+
+            if (xml.att.sound.length != 0)
                 _sound = xml.att.sound;
             str = xml.att.volume;
             if (str != null) 
@@ -495,9 +527,9 @@ class GButton extends GComponent
             
             str = xml.att.controller;
             if (str != null) 
-                _relatedController = _parent.getController(xml.att.controller)
+                _relatedController = _parent.getController(xml.att.controller);
             else 
-            _relatedController = null;
+                _relatedController = null;
             _pageOption.id = xml.att.page;
             this.selected = xml.att.checked == "true";
         }
