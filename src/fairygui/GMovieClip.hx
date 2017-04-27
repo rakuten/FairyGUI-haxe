@@ -14,10 +14,10 @@ class GMovieClip extends GObject implements IAnimationGear implements IColorGear
 {
     public var playing(get, set) : Bool;
     public var frame(get, set) : Int;
-    public var color(get, set) : Int;
+    public var color(get, set) : UInt;
 
     private var _movieClip : UIMovieClip;
-    private var _color : Int;
+    private var _color : UInt;
     
     public function new()
     {
@@ -72,12 +72,12 @@ class GMovieClip extends GObject implements IAnimationGear implements IColorGear
         _movieClip.setPlaySettings(start, end, times, endAt, endCallback);
     }
     
-    private function get_color() : Int
+    private function get_color() : UInt
     {
         return _color;
     }
     
-    private function set_color(value : Int) : Int
+    private function set_color(value : UInt) : UInt
     {
         if (_color != value) 
         {

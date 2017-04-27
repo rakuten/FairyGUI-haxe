@@ -3,7 +3,7 @@ package fairygui;
 import fairygui.GObject;
 import fairygui.IColorGear;
 import openfl.errors.Error;
-
+import openfl.display.BitmapData;
 import openfl.display.DisplayObject;
 import openfl.display.Graphics;
 import openfl.display.LineScaleMode;
@@ -15,7 +15,7 @@ import fairygui.utils.ToolSet;
 class GGraph extends GObject implements IColorGear
 {
     public var graphics(get, never) : Graphics;
-    public var color(get, set) : Int;
+    public var color(get, set) : UInt;
 
     private var _graphics : Graphics;
     
@@ -25,6 +25,7 @@ class GGraph extends GObject implements IColorGear
     private var _lineAlpha : Float = 0;
     private var _fillColor : Int = 0;
     private var _fillAlpha : Float = 0;
+    private var _fillBitmapData:BitmapData;
     private var _corner : Array<Dynamic>;
     
     public function new()
@@ -46,12 +47,12 @@ class GGraph extends GObject implements IColorGear
         return _graphics;
     }
     
-    private function get_color() : Int
+    private function get_color() : UInt
     {
         return _fillColor;
     }
     
-    private function set_color(value : Int) : Int
+    private function set_color(value : UInt) : UInt
     {
         if (_fillColor != value) 
         {
@@ -72,7 +73,18 @@ class GGraph extends GObject implements IColorGear
         _lineAlpha = lineAlpha;
         _fillColor = fillColor;
         _fillAlpha = fillAlpha;
+        _fillBitmapData = null;
         _corner = corner;
+        drawCommon();
+    }
+
+    public function drawRectWithBitmap(lineSize:Int, lineColor:Int, lineAlpha:Float, bitmapData:BitmapData):Void
+    {
+        _type = 1;
+        _lineSize = lineSize;
+        _lineColor = lineColor;
+        _lineAlpha = lineAlpha;
+        _fillBitmapData = bitmapData;
         drawCommon();
     }
     
@@ -123,7 +135,12 @@ class GGraph extends GObject implements IColorGear
             if (h > 0) 
                 h -= _lineSize;
         }
-        _graphics.beginFill(_fillColor, _fillAlpha);
+
+        if(_fillBitmapData!=null)
+            _graphics.beginBitmapFill(_fillBitmapData);
+        else
+            _graphics.beginFill(_fillColor, _fillAlpha);
+
         if (_type == 1) 
         {
             if (_corner != null) 

@@ -42,9 +42,6 @@ class GearText extends GearBase
     
     override public function updateState() : Void
     {
-        if (_controller == null || _owner._gearLocked || _owner._underConstruct) 
-            return;
-        
         _storage[_controller.selectedPageId] = _owner.text;
     }
 }

@@ -4,7 +4,6 @@ package fairygui;
 interface IColorGear
 {
     
-    
-    var color(get, set) : Int;
+    var color(get, set) : UInt;
 
 }

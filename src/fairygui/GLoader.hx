@@ -29,7 +29,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
     public var autoSize(get, set) : Bool;
     public var playing(get, set) : Bool;
     public var frame(get, set) : Int;
-    public var color(get, set) : Int;
+    public var color(get, set) : UInt;
     public var showErrorSign(get, set) : Bool;
 
     private var _url : String;
@@ -40,7 +40,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
     private var _showErrorSign : Bool = false;
     private var _playing : Bool = false;
     private var _frame : Int = 0;
-    private var _color : Int = 0;
+    private var _color : UInt = 0;
     
     private var _contentItem : PackageItem;
     private var _contentSourceWidth : Int = 0;
@@ -225,12 +225,12 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         return value;
     }
     
-    private function get_color() : Int
+    private function get_color() : UInt
     {
         return _color;
     }
     
-    private function set_color(value : Int) : Int
+    private function set_color(value : UInt) : UInt
     {
         if (_color != value) 
         {

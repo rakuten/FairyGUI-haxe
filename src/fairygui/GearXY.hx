@@ -59,15 +59,17 @@ class GearXY extends GearBase
                     _owner._gearLocked = false;
                     tweener.stop();
                     tweener = null;
-                    _owner.internalVisible--;
+                    _owner.releaseDisplayLock(_displayLockToken);
+                    _displayLockToken = 0;
                 }
                 else 
-                return;
+                    return;
             }
             
             if (_owner.x != pt.x || _owner.y != pt.y) 
             {
-                _owner.internalVisible++;
+                if(_owner.checkGearController(0, _controller))
+                    _displayLockToken = _owner.addDisplayLock();
                 var vars =
                 {
                     x : pt.x,
@@ -97,15 +99,16 @@ class GearXY extends GearBase
     
     private function __tweenComplete() : Void
     {
-        _owner.internalVisible--;
+        if(_displayLockToken!=0)
+        {
+            _owner.releaseDisplayLock(_displayLockToken);
+            _displayLockToken = 0;
+        }
         tweener = null;
     }
     
     override public function updateState() : Void
     {
-        if (_controller == null || _owner._gearLocked || _owner._underConstruct) 
-            return;
-        
         var pt : Point = _storage[_controller.selectedPageId];
         if (pt == null) {
             pt = new Point();

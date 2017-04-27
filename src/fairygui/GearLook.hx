@@ -72,7 +72,11 @@ class GearLook extends GearBase
                     _owner._gearLocked = false;
                     tweener.stop();
                     tweener = null;
-                    _owner.internalVisible--;
+                    if(_displayLockToken!=0)
+                    {
+                        _owner.releaseDisplayLock(_displayLockToken);
+                        _displayLockToken = 0;
+                    }
                 }
                 else
                 {
@@ -84,7 +88,8 @@ class GearLook extends GearBase
             b = gv.rotation != _owner.rotation;
             if (a || b) 
             {
-                _owner.internalVisible++;
+                if(_owner.checkGearController(0, _controller))
+                    _displayLockToken = _owner.addDisplayLock();
                 var vars =
                 {
                     x : gv.alpha,
@@ -120,15 +125,16 @@ class GearLook extends GearBase
     
     private function __tweenComplete() : Void
     {
-        _owner.internalVisible--;
+        if(_displayLockToken!=0)
+        {
+            _owner.releaseDisplayLock(_displayLockToken);
+            _displayLockToken = 0;
+        }
         tweener = null;
     }
     
     override public function updateState() : Void
     {
-        if (_controller == null || _owner._gearLocked || _owner._underConstruct) 
-            return;
-        
         var gv : GearLookValue = _storage[_controller.selectedPageId];
         if (gv == null) 
         {

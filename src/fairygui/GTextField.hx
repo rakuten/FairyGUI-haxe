@@ -23,7 +23,7 @@ class GTextField extends GObject implements IColorGear
 {
     public var font(get, set) : String;
     public var fontSize(get, set) : Int;
-    public var color(get, set) : Int;
+    public var color(get, set) : UInt;
     public var align(get, set) : Int;
     public var verticalAlign(get, set) : Int;
     public var leading(get, set) : Int;
