@@ -5,7 +5,6 @@ import fairygui.GRoot;
 import fairygui.Margin;
 import openfl.errors.Error;
 
-import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import openfl.display.Stage;
 import openfl.events.Event;
@@ -1549,7 +1548,8 @@ class GList extends GComponent
                 {
                     url = itemProvider(curIndex % _numItems);
                     if (url == null)
-                        url = defaultItem;
+                        url = _defaultItem;
+                    url = UIPackage.normalizeURL(url);
                 }
 
                 if (ii.obj != null && ii.obj.resourceURL != url)
@@ -1712,7 +1712,8 @@ class GList extends GComponent
                 {
                     url = itemProvider(curIndex % _numItems);
                     if (url == null)
-                        url = defaultItem;
+                        url = _defaultItem;
+                    url = UIPackage.normalizeURL(url);
                 }
 
                 if (ii.obj != null && ii.obj.resourceURL != url)
@@ -1853,6 +1854,7 @@ class GList extends GComponent
         var ii : ItemInfo;
         var ii2 : ItemInfo;
         var col : Int;
+        var url:String = _defaultItem;
 
         itemInfoVer++;
 
@@ -1916,7 +1918,15 @@ class GList extends GComponent
 
                 if (ii.obj == null)
                 {
-                    ii.obj = _pool.getObject(defaultItem);
+                    if (itemProvider != null)
+                    {
+                        url = itemProvider(i % _numItems);
+                        if (url == null)
+                            url = _defaultItem;
+                        url = UIPackage.normalizeURL(url);
+                    }
+
+                    ii.obj = _pool.getObject(url);
                     this.addChildAt(ii.obj, insertIndex);
                 }
                 else

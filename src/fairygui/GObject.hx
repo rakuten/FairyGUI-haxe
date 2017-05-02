@@ -76,8 +76,6 @@ class GObject extends EventDispatcher
     public var normalizeRotation(get, never) : Float;
     @:isVar public var alpha(get, set) : Float;
     @:isVar public var visible(get, set) : Bool;
-    @:allow(fairygui)
-    private var internalVisible(get, set) : Int;
     public var finalVisible(get, never) : Bool;
     public var sortingOrder(get, set) : Int;
     public var focusable(get, set) : Bool;
@@ -140,7 +138,8 @@ class GObject extends EventDispatcher
     private var _pivotOffsetX : Float;
     private var _pivotOffsetY : Float;
     private var _sortingOrder : Int = 0;
-    private var _internalVisible : Int;
+    private var _internalVisible : Bool;
+    private var _handlingController : Bool;
     private var _focusable : Bool = false;
     private var _tooltips : String;
     private var _pixelSnapping : Bool = false;
@@ -204,7 +203,7 @@ class GObject extends EventDispatcher
         _alpha = 1;
         _rotation = 0;
         _visible = true;
-        _internalVisible = 1;
+        _internalVisible = true;
         _touchable = true;
         _scaleX = 1;
         _scaleY = 1;
@@ -671,32 +670,10 @@ class GObject extends EventDispatcher
         }
         return value;
     }
-    
-    @:allow(fairygui)
-    private function set_internalVisible(value : Int) : Int
-    {
-        if (value < 0) 
-            value = 0;
-        var oldValue : Bool = _internalVisible > 0;
-        var newValue : Bool = value > 0;
-        _internalVisible = value;
-        if (oldValue != newValue) 
-        {
-            if (_parent != null) 
-                _parent.childStateChanged(this);
-        }
-        return value;
-    }
-    
-    @:allow(fairygui)
-    private function get_internalVisible() : Int
-    {
-        return _internalVisible;
-    }
-    
+
     private function get_finalVisible() : Bool
     {
-        return _visible && _internalVisible > 0 && (_group == null || _group.finalVisible);
+        return _visible && _internalVisible && (_group == null || _group.finalVisible);
     }
     
     @:final private function get_sortingOrder() : Int
@@ -865,8 +842,18 @@ class GObject extends EventDispatcher
     
     private function updateGear(index : Int) : Void
     {
-        if (_gears[index] != null) 
-            _gears[index].updateState();
+        if(_underConstruct || _gearLocked)
+            return;
+
+        var gear:GearBase = _gears[index];
+        if ( gear!= null && gear.controller!=null)
+            gear.updateState();
+    }
+
+    @:allow(fairygui)
+    private function checkGearController(index:Int, c:Controller):Bool
+    {
+        return _gears[index] != null && _gears[index].controller==c;
     }
     
     @:allow(fairygui)
@@ -874,6 +861,46 @@ class GObject extends EventDispatcher
     {
         if (_gears[index] != null) 
             _gears[index].updateFromRelations(dx, dy);
+    }
+
+    @:allow(fairygui)
+    private function addDisplayLock():UInt
+    {
+        var gearDisplay:GearDisplay = cast(_gears[0], GearDisplay);
+        if(gearDisplay != null && gearDisplay.controller != null)
+        {
+            var ret:UInt = gearDisplay.addLock();
+            checkGearDisplay();
+
+            return ret;
+        }
+        else
+            return 0;
+    }
+
+    @:allow(fairygui)
+    private function releaseDisplayLock(token:UInt):Void
+    {
+        var gearDisplay:GearDisplay = cast(_gears[0], GearDisplay);
+        if(gearDisplay != null && gearDisplay.controller != null)
+        {
+            gearDisplay.releaseLock(token);
+            checkGearDisplay();
+        }
+    }
+
+    private function checkGearDisplay():Void
+    {
+        if(_handlingController)
+            return;
+
+        var connected:Bool = _gears[0]==null || cast(_gears[0], GearDisplay).connected;
+        if(connected != _internalVisible)
+        {
+            _internalVisible = connected;
+            if(_parent != null)
+                _parent.childStateChanged(this);
+        }
     }
     
     @:final private function get_gearXY() : GearXY
@@ -1344,11 +1371,15 @@ class GObject extends EventDispatcher
     
     public function handleControllerChanged(c : Controller) : Void
     {
+        _handlingController = true;
         for (i in 0...8){
             var gear : GearBase = _gears[i];
             if (gear != null && gear.controller == c) 
                 gear.apply();
         }
+        _handlingController = false;
+
+        checkGearDisplay();
     }
     
     private function handleGrayedChanged() : Void
@@ -1358,7 +1389,7 @@ class GObject extends EventDispatcher
             if (_grayed) 
                 _displayObject.filters = ToolSet.GRAY_FILTERS;
             else 
-            _displayObject.filters = null;
+                _displayObject.filters = null;
         }
     }
     

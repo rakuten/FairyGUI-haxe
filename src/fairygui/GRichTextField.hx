@@ -24,6 +24,7 @@ class GRichTextField extends GTextField
     override private function createDisplayObject() : Void
     {
         _richTextField = new UIRichTextField(this);
+        _textField = _richTextField.nativeTextField;
         setDisplayObject(_richTextField);
     }
     
@@ -46,6 +47,15 @@ class GRichTextField extends GTextField
         render();
         return val;
     }
+
+    override private function updateAutoSize():Void
+    {
+        //as版的RichText不支持自动宽度
+        if(_heightAutoSize)
+            _textField.autoSize = TextFieldAutoSize.LEFT;
+        else
+            _textField.autoSize = TextFieldAutoSize.NONE;
+    }
     
     override private function render() : Void
     {
@@ -54,17 +64,11 @@ class GRichTextField extends GTextField
     
     override private function renderNow(updateBounds : Bool = true) : Void
     {
-        if (_heightAutoSize) 
-            _richTextField.autoSize = TextFieldAutoSize.LEFT
-        else 
-        _richTextField.autoSize = TextFieldAutoSize.NONE;
-        _richTextField.nativeTextField.filters = _textFilters;
         _richTextField.defaultTextFormat = _textFormat;
-        _richTextField.multiline = !_singleLine;
-        if (_ubbEnabled) 
-            _richTextField.text = ToolSet.parseUBB(_text)
+        if (_ubbEnabled)
+            _richTextField.text = ToolSet.parseUBB(_text);
         else 
-        _richTextField.text = _text;
+            _richTextField.text = _text;
         
         var renderSingleLine : Bool = _richTextField.numLines <= 1;
         

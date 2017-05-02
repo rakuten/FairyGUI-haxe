@@ -1,6 +1,5 @@
 package fairygui;
 
-
 class GObjectPool
 {
     public var initCallback(get, set) : Dynamic;
@@ -47,14 +46,10 @@ class GObjectPool
     
     public function getObject(url:String):GObject
     {
+        url = UIPackage.normalizeURL(url);
+
         var arr : Array<GObject> = _pool[url];
-        if (arr == null) 
-        {
-            arr = new Array<GObject>();
-            _pool[url] = arr;
-        }
-        
-        if (arr.length > 0)
+        if (arr != null && arr.length > 0)
         {
             _count--;
             return arr.shift();

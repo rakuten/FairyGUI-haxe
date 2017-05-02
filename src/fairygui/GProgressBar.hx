@@ -1,5 +1,6 @@
 package fairygui;
 
+import openfl.system.System;
 import tweenxcore.Tools.Easing;
 import tweenx909.TweenX;
 import fairygui.GTextField;
@@ -8,11 +9,11 @@ import fairygui.GTextField;
 class GProgressBar extends GComponent
 {
     public var titleType(get, set) : Int;
-    public var max(get, set) : Int;
-    @:isVar public var value(get, set) : Int;
+    public var max(get, set) : Float;
+    @:isVar public var value(get, set) : Float;
 
-    private var _max : Int;
-    private var _value : Int;
+    private var _max : Float;
+    private var _value : Float;
     private var _titleType : Int = 0;
     private var _reverse : Bool = false;
     
@@ -28,7 +29,7 @@ class GProgressBar extends GComponent
     private var _barStartY : Int = 0;
     
     private var _tweener : TweenX;
-    public var _tweenValue : Int = 0;
+    public var _tweenValue : Float = 0;
     
     public function new()
     {
@@ -54,12 +55,12 @@ class GProgressBar extends GComponent
         return value;
     }
     
-    @:final private function get_max() : Int
+    @:final private function get_max() : Float
     {
         return _max;
     }
     
-    @:final private function set_max(value : Int) : Int
+    @:final private function set_max(value : Float) : Float
     {
         if (_max != value) 
         {
@@ -69,12 +70,12 @@ class GProgressBar extends GComponent
         return value;
     }
     
-    @:final private function get_value() : Int
+    @:final private function get_value() : Float
     {
         return _value;
     }
     
-    @:final private function set_value(value : Int) : Int
+    @:final private function set_value(value : Float) : Float
     {
         if (_tweener != null) 
         {
@@ -90,7 +91,7 @@ class GProgressBar extends GComponent
         return value;
     }
     
-    public function tweenValue(value : Int, duration : Float) : TweenX
+    public function tweenValue(value : Float, duration : Float) : TweenX
     {
         if (_value != value) 
         {
@@ -99,21 +100,26 @@ class GProgressBar extends GComponent
             
             _tweenValue = _value;
             _value = value;
-            _tweener = TweenX.to(this, {_tweenValue : value},duration,Easing.linear).onUpdate(onUpdateTween);
+            _tweener = TweenX.to(this, {_tweenValue : value},duration,Easing.linear).onUpdate(onTweenUpdate).onFinish(onTweenComplete);
             return _tweener;
         }
         else 
         return null;
     }
     
-    private function onUpdateTween() : Void
+    private function onTweenUpdate() : Void
     {
         update(_tweenValue);
     }
-    
-    public function update(newValue : Int) : Void
+
+    private function onTweenComplete():Void
     {
-        var percent : Float = Math.min(newValue / _max, 1);
+        _tweener = null;
+    }
+    
+    public function update(newValue : Float) : Void
+    {
+        var percent:Float = _max!=0 ? Math.min(newValue/_max,1) : 0;
         if (_titleObject != null) 
         {
             switch (_titleType)
@@ -212,7 +218,11 @@ class GProgressBar extends GComponent
         if (xml != null) 
         {
             _value = Std.parseInt(xml.att.value);
+            if (_value == null)
+                _value = 0;
             _max = Std.parseInt(xml.att.max);
+            if (_max == null)
+                _max = 0;
         }
         update(_value);
     }

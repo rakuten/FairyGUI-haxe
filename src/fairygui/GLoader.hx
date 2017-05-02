@@ -31,6 +31,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
     public var frame(get, set) : Int;
     public var color(get, set) : UInt;
     public var showErrorSign(get, set) : Bool;
+    public var texture(get, set):BitmapData;
 
     private var _url : String;
     private var _align : Int = 0;
@@ -260,6 +261,33 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         _showErrorSign = value;
         return value;
     }
+
+    private function get_texture():BitmapData
+    {
+        if(Std.is(_content, Bitmap))
+            return cast(_content, Bitmap).bitmapData;
+        else
+            return null;
+    }
+
+    private function set_texture(value:BitmapData):BitmapData
+    {
+        this.url = null;
+
+        if(!Std.is(_content,Bitmap))
+        {
+            _content = new Bitmap();
+            _container.addChild(_content);
+        }
+        else
+            _container.addChild(_content);
+
+        cast(_content, Bitmap).bitmapData = value;
+        _contentSourceWidth = value.width;
+        _contentSourceHeight = value.height;
+        updateLayout();
+        return value;
+    }
     
     private function loadContent() : Void
     {
@@ -279,10 +307,13 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         _contentItem = UIPackage.getItemByURL(itemURL);
         if (_contentItem != null) 
         {
+            if(_autoSize)
+                this.setSize(_contentItem.width, _contentItem.height);
+
             if (_contentItem.type == PackageItemType.Image) 
             {
                 if (_contentItem.loaded) 
-                    __imageLoaded(_contentItem)
+                    __imageLoaded(_contentItem);
                 else 
                 {
                     _loading = 1;
@@ -292,7 +323,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
             else if (_contentItem.type == PackageItemType.MovieClip) 
             {
                 if (_contentItem.loaded) 
-                    __movieClipLoaded(_contentItem)
+                    __movieClipLoaded(_contentItem);
                 else 
                 {
                     _loading = 2;
@@ -305,10 +336,10 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
                 _contentItem.owner.addItemCallback(_contentItem, __swfLoaded);
             }
             else 
-            setErrorState();
+                setErrorState();
         }
         else 
-        setErrorState();
+            setErrorState();
     }
     
     private function __imageLoaded(pi : PackageItem) : Void
@@ -458,8 +489,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         
         if (_errorSign != null) 
         {
-            _errorSign.width = this.width;
-            _errorSign.height = this.height;
+            _errorSign.setSize(this.width, this.height);
             _container.addChild(_errorSign.displayObject);
         }
     }

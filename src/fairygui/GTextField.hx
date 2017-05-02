@@ -1,12 +1,12 @@
 package fairygui;
 
 import openfl.filters.BitmapFilter;
-import fairygui.IColorGear;
+import fairygui.ITextColorGear;
 
 import openfl.display.BitmapData;
 import openfl.filters.DropShadowFilter;
 import openfl.geom.Point;
-import openfl.text.AntiAliasType;
+import openfl.text.TextField;
 import openfl.text.TextFieldAutoSize;
 import openfl.text.TextFormat;
 
@@ -19,7 +19,7 @@ import fairygui.utils.FontUtils;
 import fairygui.utils.GTimers;
 import fairygui.utils.ToolSet;
 
-class GTextField extends GObject implements IColorGear
+class GTextField extends GObject implements ITextColorGear
 {
     public var font(get, set) : String;
     public var fontSize(get, set) : Int;
@@ -33,7 +33,7 @@ class GTextField extends GObject implements IColorGear
     public var italic(get, set) : Bool;
     public var singleLine(get, set) : Bool;
     public var stroke(get, set) : Int;
-    public var strokeColor(get, set) : Int;
+    public var strokeColor(get, set) : UInt;
     public var shadowOffset(get, set) : Point;
     public var ubbEnabled(get, set) : Bool;
     public var autoSize(get, set) : Int;
@@ -57,11 +57,11 @@ class GTextField extends GObject implements IColorGear
     private var _italic : Bool = false;
     private var _singleLine : Bool = false;
     private var _stroke : Int = 0;
-    private var _strokeColor : Int = 0;
+    private var _strokeColor : UInt = 0;
     private var _shadowOffset : Point;
     private var _textFilters : Array<BitmapFilter>;
     
-    private var _textField : UITextField;
+    private var _textField : TextField;
     private var _bitmap : UIImage;
     private var _bitmapData : BitmapData;
     
@@ -93,6 +93,7 @@ class GTextField extends GObject implements IColorGear
         _autoSize = AutoSizeType.Both;
         _widthAutoSize = true;
         _heightAutoSize = true;
+        updateAutoSize();
     }
     
     override private function createDisplayObject() : Void
@@ -100,7 +101,9 @@ class GTextField extends GObject implements IColorGear
         _textField = new UITextField(this);
         _textField.mouseEnabled = false;
         _textField.selectable = false;
+        _textField.multiline = true;
         _textField.width = 10;
+        _textField.height = 1;
         setDisplayObject(_textField);
     }
     
@@ -311,7 +314,12 @@ class GTextField extends GObject implements IColorGear
         if (_singleLine != value) 
         {
             _singleLine = value;
-            render();
+            _textField.multiline = !_singleLine;
+            if(!_widthAutoSize)
+                _textField.wordWrap = !_singleLine;
+
+            if(!_underConstruct)
+                render();
         }
         return value;
     }
@@ -331,17 +339,18 @@ class GTextField extends GObject implements IColorGear
         return value;
     }
     
-    @:final private function get_strokeColor() : Int
+    @:final private function get_strokeColor() : UInt
     {
         return _strokeColor;
     }
     
-    private function set_strokeColor(value : Int) : Int
+    private function set_strokeColor(value : UInt) : UInt
     {
         if (_strokeColor != value) 
         {
             _strokeColor = value;
             updateTextFilters();
+            updateGear(4);
         }
         return value;
     }
@@ -376,9 +385,8 @@ class GTextField extends GObject implements IColorGear
                 Math.atan2(_shadowOffset.y, _shadowOffset.x) * ToolSet.RAD_TO_DEG, _strokeColor, 1, 1, 2)]
         else 
         _textFilters = null;
-        
-        if (!this._underConstruct) 
-            render();
+
+        _textField.filters = _textFilters;
     }
     
     private function set_ubbEnabled(value : Bool) : Bool
@@ -403,6 +411,7 @@ class GTextField extends GObject implements IColorGear
             _autoSize = value;
             _widthAutoSize = value == AutoSizeType.Both;
             _heightAutoSize = value == AutoSizeType.Both || value == AutoSizeType.Height;
+            updateAutoSize();
             render();
         }
         return value;
@@ -442,15 +451,9 @@ class GTextField extends GObject implements IColorGear
                 _textFormat.font = _font;
             else 
             _textFormat.font = UIConfig.defaultFont;
-            
-            var v : Int = CharSize.getHeight(_textFormat.size, _textFormat.font, _bold);
-            
-            //像微软雅黑这样的字体，默认的渲染顶部会产生很大的空间，这里加一个调整值，消除这些多余的空间
-            var v2 : Float = v - _textFormat.size;
-            if (v2 > 3) 
-                _fontAdjustment = Math.ceil(v2 / 2);
-            else 
-                _fontAdjustment = 0;
+
+            var charSize:Dynamic = CharSize.getSize(Std.int(_textFormat.size), _textFormat.font, _bold);
+            _fontAdjustment = charSize.yIndent;
 
         }
         
@@ -469,12 +472,26 @@ class GTextField extends GObject implements IColorGear
         _textFormat.underline = _underline;
         _textFormat.italic = _italic;
 
-        if(_textField != null)
-            _textField.defaultTextFormat = _textFormat;
+        _textField.defaultTextFormat = _textFormat;
+        _textField.embedFonts = FontUtils.isEmbeddedFont(_textFormat);
 
 
         if (!_underConstruct) 
             render();
+    }
+
+    private function updateAutoSize():Void
+    {
+        if(_widthAutoSize)
+        {
+            _textField.autoSize = TextFieldAutoSize.LEFT;
+            _textField.wordWrap = false;
+        }
+        else
+        {
+            _textField.autoSize = TextFieldAutoSize.NONE;
+            _textField.wordWrap = !_singleLine;
+        }
     }
     
     private function render() : Void
@@ -510,28 +527,20 @@ class GTextField extends GObject implements IColorGear
         }
         
         switchBitmapMode(false);
-        _textField.embedFonts = FontUtils.isEmbeddedFont(_textFormat);
-        _textField.defaultTextFormat = _textFormat;
-        if (_widthAutoSize) 
-        {
-            _textField.autoSize = TextFieldAutoSize.LEFT;
-            _textField.wordWrap = false;
-        }
-        else 
-        {
-            _textField.autoSize = TextFieldAutoSize.NONE;
-            _textField.wordWrap = !_singleLine;
-        }
-        _textField.width = this.width;
-        _textField.height = Math.max(this.height, _textFormat.size);
-        _textField.multiline = !_singleLine;
-        _textField.antiAliasType = AntiAliasType.ADVANCED;
-        _textField.filters = _textFilters;
+        var w:Float;
+        var h:Float;
+        w = this.width;
+        if(w!=_textField.width)
+            _textField.width = w;
+        h = Math.max(this.height, Std.int(_textFormat.size));
+        if(h!=_textField.height)
+            _textField.height = h;
         
         if (_ubbEnabled) 
             _textField.htmlText = ToolSet.parseUBB(ToolSet.encodeHTML(_text));
         else 
             _textField.text = _text;
+        _textField.defaultTextFormat = _textFormat;
         
         var renderSingleLine : Bool = _textField.numLines <= 1;
         
@@ -547,13 +556,9 @@ class GTextField extends GObject implements IColorGear
                 _textHeight += 4;
         }
         
-        var w : Int;
-        var h : Int;
-        if (_widthAutoSize) 
-            w = _textWidth
-        else 
-            w = Std.int(this.width);
-        
+        if (_widthAutoSize)
+            w = _textWidth;
+
         if (_heightAutoSize) 
         {
             h = _textHeight;
@@ -564,7 +569,7 @@ class GTextField extends GObject implements IColorGear
         {
             h = Std.int(this.height);
             if(_textHeight>h)
-                _textHeight = h;
+                _textHeight = Std.int(h);
             _textField.height = _textHeight + _fontAdjustment + 3;
         }
         
@@ -581,7 +586,8 @@ class GTextField extends GObject implements IColorGear
     private function renderWithBitmapFont(updateBounds : Bool) : Void
     {
         switchBitmapMode(true);
-        
+        _bitmap.filters = _textFilters;
+
         if (_lines == null) 
             _lines = new Array<LineInfo>();
         else 
@@ -870,7 +876,7 @@ class GTextField extends GObject implements IColorGear
     private function doAlign() : Void
     {
         if (_verticalAlign == VertAlignType.Top) 
-            _yOffset = -_fontAdjustment;
+            _yOffset = 0;
         else 
         {
             var dh : Float;
@@ -879,13 +885,17 @@ class GTextField extends GObject implements IColorGear
             else 
                 dh = this.height - _textHeight;
 
-            if (dh < 0) 
-                dh = 0;
-            if (_verticalAlign == VertAlignType.Middle) 
-                _yOffset = Std.int(dh / 2) - _fontAdjustment;
-            else 
-                _yOffset = Std.int(dh) - _fontAdjustment;
+            if(dh>_fontAdjustment)
+            {
+                if (_verticalAlign == VertAlignType.Middle)
+                    _yOffset = Std.int((dh - _fontAdjustment)/2);
+                else
+                    _yOffset = Std.int(dh);
+            }
+            else
+                _yOffset = 0;
         }
+        _yOffset -=_fontAdjustment;
         displayObject.y = this.y + _yOffset;
     }
     
@@ -934,12 +944,13 @@ class GTextField extends GObject implements IColorGear
             _autoSize = AutoSizeType.parse(str);
             _widthAutoSize = _autoSize == AutoSizeType.Both;
             _heightAutoSize = _autoSize == AutoSizeType.Both || _autoSize == AutoSizeType.Height;
+            updateAutoSize();
         }
         
         _underline = xml.att.underline == "true";
         _italic = xml.att.italic == "true";
         _bold = xml.att.bold == "true";
-        _singleLine = xml.att.singleLine == "true";
+        this.singleLine = xml.att.singleLine == "true";
         str = xml.att.strokeColor;
         if (str != null) 
         {
