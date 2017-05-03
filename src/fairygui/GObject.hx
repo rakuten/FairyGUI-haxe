@@ -34,7 +34,6 @@ import fairygui.utils.ColorMatrix;
 import fairygui.utils.GTimers;
 import fairygui.utils.SimpleDispatcher;
 import fairygui.utils.ToolSet;
-import fairygui.utils.CompatUtil;
 
 @:meta(Event(name="startDrag",type="fairygui.event.DragEvent"))
 
@@ -561,12 +560,14 @@ class GObject extends EventDispatcher
         
         if (Std.is(_displayObject, InteractiveObject)) 
         {
-            if (Std.is(this, GComponent)) 
-                cast(_displayObject, InteractiveObject).mouseEnabled = _touchable && cast((this), GComponent).opaque;
-            else 
+            if (Std.is(this, GComponent))
+                cast(this, GComponent).handleTouchable(_touchable);
+            else
+            {
                 cast(_displayObject, InteractiveObject).mouseEnabled = _touchable;
-            if (Std.is(_displayObject, DisplayObjectContainer)) 
-                cast(_displayObject, DisplayObjectContainer).mouseChildren = _touchable;
+                if (Std.is(_displayObject, DisplayObjectContainer))
+                    cast(_displayObject, DisplayObjectContainer).mouseChildren = _touchable;
+            }
         }
         return value;
     }

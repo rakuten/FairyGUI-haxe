@@ -6,6 +6,9 @@ import fairygui.Margin;
 import fairygui.ScrollPane;
 import fairygui.Transition;
 import fairygui.utils.CompatUtil;
+import fairygui.utils.PixelHitTest;
+import fairygui.utils.PixelHitTestData;
+
 import openfl.errors.ArgumentError;
 import openfl.errors.Error;
 import openfl.errors.RangeError;
@@ -36,9 +39,11 @@ class GComponent extends GObject
     public var mask(get, set) : DisplayObject;
     public var viewWidth(get, set) : Int;
     public var viewHeight(get, set) : Int;
+    public var hitArea(get, set):PixelHitTest;
 
     private var _sortingChildCount : Int = 0;
     private var _opaque : Bool = false;
+    private var _hitArea:PixelHitTest;
     
     private var _margin : Margin;
     private var _trackBounds : Bool = false;
@@ -694,16 +699,46 @@ class GComponent extends GObject
         if (_opaque != value) 
         {
             _opaque = value;
-            if (_opaque) {
-                cast(this.displayObject, Sprite).mouseEnabled = this.touchable;
+            if(_opaque)
                 updateOpaque();
-            }
-            else {
-                cast(this.displayObject, Sprite).mouseEnabled = false;
+            else
                 _rootContainer.graphics.clear();
-            }
+            _rootContainer.mouseEnabled = this.touchable && (_opaque || _hitArea!=null);
         }
         return value;
+    }
+
+    @:final private function get_hitArea():PixelHitTest
+    {
+        return _hitArea;
+    }
+
+    private function set_hitArea(value:PixelHitTest):PixelHitTest
+    {
+        if(_rootContainer.hitArea!=null)
+            _rootContainer.removeChild(_rootContainer.hitArea);
+
+        _hitArea = value;
+        if(_hitArea!=null)
+        {
+            _rootContainer.hitArea = _hitArea.createHitAreaSprite();
+            _rootContainer.addChild(_rootContainer.hitArea);
+            _rootContainer.mouseChildren = false;
+        }
+        else
+        {
+            _rootContainer.hitArea = null;
+            _rootContainer.mouseChildren = this.touchable;
+        }
+        _rootContainer.mouseEnabled = this.touchable && (_opaque || _hitArea!=null);
+        return value;
+    }
+
+    @:allow(fairygui)
+    private function handleTouchable(val:Bool):Void
+    {
+        _rootContainer.mouseEnabled = val && (_opaque || _hitArea!=null);
+        _rootContainer.mouseChildren = val && _hitArea==null;
     }
     
     private function get_margin() : Margin

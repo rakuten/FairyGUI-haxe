@@ -41,9 +41,9 @@ class GTimers
     private function getItem() : TimerItem
     {
         if (_itemPool.length > 0)
-            return _itemPool.pop()
+            return _itemPool.pop();
         else 
-        return new TimerItem();
+            return new TimerItem();
     }
 
     private function findItem(callback: Dynamic): TimerItem
@@ -137,9 +137,9 @@ class GTimers
                 }
                 
                 if (item.hasParam) 
-                    item.callback(item.param)
+                    item.callback(item.param);
                 else 
-                item.callback();
+                    item.callback();
             }
         }
     }

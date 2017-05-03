@@ -52,7 +52,7 @@ class GearColor extends GearBase
             _storage[pageId] = new GearColorValue(col1, col2);
     }
     
-    override public function apply() : Void=
+    override public function apply() : Void
     {
         _owner._gearLocked = true;
 
@@ -61,7 +61,7 @@ class GearColor extends GearBase
             gv = _default;
 
         cast(_owner, IColorGear).color = gv.color;
-        if(Std.is(_owner, ITextColorGear) && gv.strokeColor!=0xFF000000)
+        if(Std.is(_owner, ITextColorGear) && gv.strokeColor != (0xFF000000:UInt))
             cast(_owner, ITextColorGear).strokeColor = gv.strokeColor;
         
         _owner._gearLocked = false;

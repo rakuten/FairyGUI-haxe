@@ -519,7 +519,8 @@ class GButton extends GComponent
             if(str != null)
                 this.titleFontSize = Std.parseInt(str);
 
-            if (xml.att.sound.length != 0)
+            str = xml.att.sound;
+            if (str != null)
                 _sound = xml.att.sound;
             str = xml.att.volume;
             if (str != null) 

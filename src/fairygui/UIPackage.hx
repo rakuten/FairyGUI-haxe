@@ -2,8 +2,6 @@ package fairygui;
 
 import FastXML;
 import openfl.Lib;
-import fairygui.ZipUIPackageReader;
-
 import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.LoaderInfo;
@@ -12,17 +10,16 @@ import openfl.geom.Rectangle;
 import openfl.media.Sound;
 import openfl.system.LoaderContext;
 import openfl.utils.ByteArray;
-
+import openfl.display.Loader;
 
 import fairygui.display.Frame;
 import fairygui.text.BMGlyph;
 import fairygui.text.BitmapFont;
 import fairygui.utils.GTimers;
+import fairygui.utils.PixelHitTestData;
 import fairygui.utils.ToolSet;
-
-
-import openfl.display.Loader;
 import fairygui.PackageItem;
+import fairygui.ZipUIPackageReader;
 
 
 class UIPackage
@@ -37,6 +34,7 @@ class UIPackage
     private var _items : Array<PackageItem>;
     private var _itemsById : Map<String, PackageItem>;
     private var _itemsByName : Map<String, PackageItem>;
+    private var _hitTestDatas:Map<String, PixelHitTestData>;
     private var _customId : String;
     
     private var _reader : IUIPackageReader;
@@ -53,6 +51,7 @@ class UIPackage
     public function new()
     {
         _items = new Array<PackageItem>();
+        _hitTestDatas = new Map<String, PixelHitTestData>();
     }
     
     public static function getById(id : String) : UIPackage
@@ -237,11 +236,8 @@ class UIPackage
         
         var str : String = _reader.readDescFile("package.xml");
         
-//        var ignoreWhitespace : Bool = FastXML.ignoreWhitespace;
-//        FastXML.ignoreWhitespace = true;
         var xml : FastXML = FastXML.parse(str);
-//        FastXML.ignoreWhitespace = ignoreWhitespace;
-        
+
         _id = xml.att.id;
         _name = xml.att.name;
 
@@ -297,7 +293,6 @@ class UIPackage
                 }
                 case PackageItemType.Component:
                     UIObjectFactory.resolvePackageItemExtension(pi);
-                    break;
             }
 
             _items.push(pi);
@@ -305,7 +300,18 @@ class UIPackage
             if (pi.name != null) 
                 _itemsByName[pi.name] = pi;
         }
-        
+
+        var ba:ByteArray = _reader.readResFile("hittest.bytes");
+        if(ba!=null)
+        {
+            while(ba.bytesAvailable > 0)
+            {
+                var hitTestData:PixelHitTestData = new PixelHitTestData();
+                _hitTestDatas[ba.readUTF()] = hitTestData;
+                hitTestData.load(ba);
+            }
+        }
+
         var cnt : Int = _items.length;
         for (i in 0...cnt){
             pi = _items[i];
@@ -432,10 +438,7 @@ class UIPackage
     
     private function getXMLDesc(file : String) : FastXML
     {
-//        var ignoreWhitespace : Bool = FastXML.ignoreWhitespace;
-//        FastXML.ignoreWhitespace = true;
         var ret : FastXML = FastXML.parse(_reader.readDescFile(file));
-//        FastXML.ignoreWhitespace = ignoreWhitespace;
         return ret;
     }
     
@@ -448,9 +451,14 @@ class UIPackage
     {
         var pi : PackageItem = _itemsByName[resName];
         if (pi != null) 
-            return pi.image
+            return pi.image;
         else 
-        return null;
+            return null;
+    }
+
+    public function getPixelHitTestData(itemId:String):PixelHitTestData
+    {
+        return _hitTestDatas[itemId];
     }
     
     public function getComponentData(item : PackageItem) : FastXML
