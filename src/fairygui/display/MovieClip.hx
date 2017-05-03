@@ -69,9 +69,9 @@ class MovieClip extends Sprite
     {
         _frames = value;
         if (_frames != null) 
-            _frameCount = _frames.length
+            _frameCount = _frames.length;
         else 
-        _frameCount = 0;
+            _frameCount = 0;
         
         if (_end == -1 || _end > _frameCount - 1) 
             _end = _frameCount - 1;
@@ -80,7 +80,11 @@ class MovieClip extends Sprite
         
         if (_currentFrame < 0 || _currentFrame > _frameCount - 1) 
             _currentFrame = _frameCount - 1;
-        
+
+        if(_frameCount>0)
+            setFrame(_frames[_currentFrame]);
+        else
+            setFrame(null);
         _playState.rewind();
         return value;
     }
@@ -126,10 +130,10 @@ class MovieClip extends Sprite
     {
         _playing = value;
         
-        if (_playing && this.stage != null) 
-            GTimers.inst.callBy24Fps(update)
+        if (_playing && this.stage != null)
+            GTimers.inst.add(1,0,update);
         else 
-        GTimers.inst.remove(update);
+            GTimers.inst.remove(update);
         return value;
     }
     
@@ -175,9 +179,9 @@ class MovieClip extends Sprite
                         var f : Dynamic = _callback;
                         _callback = null;
                         if (f.length == 1) 
-                            f(this)
+                            f(this);
                         else 
-                        f();
+                            f();
                     }
                 }
                 else 
@@ -189,15 +193,13 @@ class MovieClip extends Sprite
                         {
                             _times--;
                             if (_times == 0) 
-                                _status = 2
+                                _status = 2;
                             else 
-                            _status = 1;
+                                _status = 1;
                         }
                     }
                 }
-                
-                
-                
+
                 setFrame(_frames[_currentFrame]);
             }
         }
@@ -217,8 +219,8 @@ class MovieClip extends Sprite
     
     private function __addedToStage(evt : Event) : Void
     {
-        if (_playing) 
-            GTimers.inst.callBy24Fps(update);
+        if (_playing)
+            GTimers.inst.add(1,0,update);
     }
     
     private function __removedFromStage(evt : Event) : Void

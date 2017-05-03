@@ -41,6 +41,7 @@ class PackageItem
     //componenet
     public var componentData : FastXML;
     public var displayList : Array<DisplayListItem>;
+    public var extensionType:Class<Dynamic>;
     
     //sound
     public var sound : Sound;

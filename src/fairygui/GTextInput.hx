@@ -1,9 +1,9 @@
 package fairygui;
 
-
 import openfl.events.Event;
 import openfl.events.FocusEvent;
 import openfl.events.KeyboardEvent;
+import openfl.system.Capabilities;
 import openfl.text.TextFieldType;
 
 import fairygui.utils.ToolSet;
@@ -19,11 +19,15 @@ class GTextInput extends GTextField
     private var _changed : Bool = false;
     private var _promptText : String;
     private var _password : Bool = false;
+
+    public var disableIME:Bool = false;
     
     public function new()
     {
         super();
         this.focusable = true;
+
+        _textField.wordWrap = true;
         
         _textField.addEventListener(KeyboardEvent.KEY_DOWN, __textChanged);
         _textField.addEventListener(Event.CHANGE, __textChanged);
@@ -120,6 +124,11 @@ class GTextInput extends GTextField
         }
         return _text;
     }
+
+    override private function updateAutoSize():Void
+    {
+        //输入文本不支持自动大小
+    }
     
     override private function render() : Void
     {
@@ -128,10 +137,16 @@ class GTextInput extends GTextField
 
     override private function renderNow(updateBounds : Bool = true) : Void
     {
-        _textField.width = this.width;
-        _textField.height = this.height + _fontAdjustment;
-        _textField.wordWrap = !_singleLine;
-        _textField.multiline = !_singleLine;
+        var w:Float;
+        var h:Float;
+        w = this.width;
+        if(w!=_textField.width)
+            _textField.width = w;
+        h = this.height+_fontAdjustment;
+
+        if(h!=_textField.height)
+            _textField.height = h;
+
         _yOffset = -_fontAdjustment;
         _textField.y = this.y + _yOffset;
         
@@ -190,7 +205,12 @@ class GTextInput extends GTextField
     
     private function __focusIn(evt : Event) : Void
     {
-        if (_text == null && _promptText != null) 
+        #if flash
+        if(disableIME && Capabilities.hasIME)
+            flash.system.IME.enabled = false;
+        #end
+
+        if (_text == null && _promptText != null)
         {
             _textField.displayAsPassword = _password;
             _textField.text = "";
@@ -200,6 +220,11 @@ class GTextInput extends GTextField
     
     private function __focusOut(evt : Event) : Void
     {
+        #if flash
+        if(disableIME && Capabilities.hasIME)
+            flash.system.IME.enabled = true;
+        #end
+
         _text = _textField.text;
         TextInputHistory.inst.stopRecord(_textField);
         _changed = false;

@@ -20,7 +20,7 @@ class CharSize
     public static var TEST_STRING:String = "fj|_我案愛爱";
     public static var PLACEHOLDER_FONT:String = "Arial";
     
-    private static function getSize(size : Int, font : String, bold : Bool) : Dynamic{
+    public static function getSize(size : Int, font : String, bold : Bool) : Dynamic{
         if (testTextField == null)
         {
             testTextField = new TextField();
@@ -82,7 +82,7 @@ class CharSize
             holderResults = {};
         }
         var ret:Float = holderResults[size];
-        if(ret==null)
+        if(Math.isNaN(ret))
         {
             testTextFormat.font = PLACEHOLDER_FONT;
             testTextFormat.size = size;

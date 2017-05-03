@@ -40,6 +40,8 @@ class Transition
     private var _timeScale : Float = 0;
     
     public var OPTION_IGNORE_DISPLAY_CONTROLLER : Int = 1;
+    public var OPTION_AUTO_STOP_DISABLED:Int = 2;
+    public var OPTION_AUTO_STOP_AT_END:Int = 4;
     
     private static inline var FRAME_RATE : Int = 24;
     
@@ -106,15 +108,14 @@ class Transition
         {
             _onComplete = onComplete;
             _onCompleteParam = onCompleteParam;
-            
-            _owner.internalVisible++;
+
             if ((_options & OPTION_IGNORE_DISPLAY_CONTROLLER) != 0) 
             {
                 var cnt : Int = _items.length;
                 for (i in 0...cnt){
                     var item : TransitionItem = _items[i];
-                    if (item.target != null && item.target != _owner) 
-                        item.target.internalVisible++;
+                    if (item.target != null && item.target != _owner)
+                        item.displayLockToken = item.target.addDisplayLock();
                 }
             }
         }
@@ -138,8 +139,7 @@ class Transition
             var param : Dynamic = _onCompleteParam;
             _onComplete = null;
             _onCompleteParam = null;
-            
-            _owner.internalVisible--;
+
             var item : TransitionItem;
             var cnt : Int = _items.length;
             if (_reversed) 
@@ -178,8 +178,11 @@ class Transition
     
     private function stopItem(item : TransitionItem, setToComplete : Bool) : Void
     {
-        if ((_options & OPTION_IGNORE_DISPLAY_CONTROLLER) != 0 && item.target != _owner) 
-            item.target.internalVisible--;
+        if (item.displayLockToken!=0)
+        {
+            item.target.releaseDisplayLock(item.displayLockToken);
+            item.displayLockToken = 0;
+        }
         
         if (item.type == TransitionActionType.ColorFilter && item.filterCreated)
             item.target.filters = null;
@@ -431,6 +434,13 @@ class Transition
             }
         }
     }
+
+    @:allow(fairygui)
+    private function OnOwnerRemovedFromStage():Void
+    {
+        if ((_options & OPTION_AUTO_STOP_DISABLED) == 0)
+            stop((_options & OPTION_AUTO_STOP_AT_END) != 0 ? true : false, false);
+    }
     
     private function internalPlay(delay : Float) : Void
     {
@@ -671,25 +681,27 @@ class Transition
             {
                 _totalTimes--;
                 if (_totalTimes > 0) 
-                    internalPlay(0)
+                    internalPlay(0);
                 else 
                 {
                     _playing = false;
-                    _owner.internalVisible--;
                     
                     var cnt : Int = _items.length;
                     for (i in 0...cnt){
                         var item : TransitionItem = _items[i];
                         if (item.target != null) 
                         {
-                            if ((_options & OPTION_IGNORE_DISPLAY_CONTROLLER) != 0 && item.target != _owner) 
-                                item.target.internalVisible--;
-                        }
-                        
-                        if (item.filterCreated) 
-                        {
-                            item.filterCreated = false;
-                            item.target.filters = null;
+                            if(item.displayLockToken!=0)
+                            {
+                                item.target.releaseDisplayLock(item.displayLockToken);
+                                item.displayLockToken = 0;
+                            }
+
+                            if (item.filterCreated)
+                            {
+                                item.filterCreated = false;
+                                item.target.filters = null;
+                            }
                         }
                     }
                     
@@ -1125,7 +1137,8 @@ class TransitionItem
     public var completed : Bool = false;
     public var target : GObject;
     public var filterCreated : Bool = false;
-    
+    public var displayLockToken:UInt = 0;
+
     public var params : Array<Dynamic>;
     public function new()
     {

@@ -52,7 +52,7 @@ class GearColor extends GearBase
             _storage[pageId] = new GearColorValue(col1, col2);
     }
     
-    override public function apply() : Void
+    override public function apply() : Void=
     {
         _owner._gearLocked = true;
 

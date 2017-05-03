@@ -11,26 +11,26 @@ class PlayState
     public var reversed : Bool;  //是否已反向播放  
     public var repeatedCount : Int;  //重复次数  
     
-    private var _curFrame : Int;  //当前帧  
-    private var _lastTime : Float;
+    private var _curFrame : Int;  //当前帧
     private var _curFrameDelay : Int;  //当前帧延迟  
     private var _lastUpdateSeq : Int;
     
     public function new()
     {
-        _lastTime = GTimers.time;
     }
     
     public function update(mc : MovieClip) : Void
     {
-        if (_lastUpdateSeq == GTimers.workCount)               //PlayState may be shared, only update once per frame  
-        return;
-        
-        _lastUpdateSeq = GTimers.workCount;
-        var tt : Float = GTimers.time;
-        var elapsed : Float = tt - _lastTime;
-        _lastTime = tt;
-        
+        var elapsed:Float;
+        var frameId:UInt = GTimers.workCount;
+        if (frameId - _lastUpdateSeq != 1)
+            //1、如果>1，表示不是连续帧了，说明刚启动（或者停止过），这里不能用流逝的时间了，不然会跳过很多帧
+            //2、如果==0，表示在本帧已经处理过了，这通常是因为一个PlayState用于多个MovieClip共享，目的是多个MovieClip同步播放
+            elapsed = 0;
+        else
+            elapsed = GTimers.deltaTime;
+        _lastUpdateSeq = frameId;
+
         reachEnding = false;
         _curFrameDelay += Std.int(elapsed);
         var interval : Int = mc.interval + mc.frames[_curFrame].addDelay + (((_curFrame == 0 && repeatedCount > 0)) ? mc.repeatDelay : 0);

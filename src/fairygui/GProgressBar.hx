@@ -218,10 +218,10 @@ class GProgressBar extends GComponent
         if (xml != null) 
         {
             _value = Std.parseInt(xml.att.value);
-            if (_value == null)
+            if (Math.isNaN(_value))
                 _value = 0;
             _max = Std.parseInt(xml.att.max);
-            if (_max == null)
+            if (Math.isNaN(_max))
                 _max = 0;
         }
         update(_value);

@@ -17,6 +17,7 @@ class TreeNode
     public var cell(get, never) : GComponent;
     public var level(get, never) : Int;
     public var numChildren(get, never) : Int;
+    public var tree(get, never) : TreeView;
 
     private var _data : Dynamic;
     
@@ -274,7 +275,13 @@ class TreeNode
     {
         return _children.length;
     }
-    
+
+    private function get_tree():TreeView
+    {
+        return _tree;
+    }
+
+
     @:allow(fairygui.tree)
     private function setTree(value : TreeView) : Void
     {

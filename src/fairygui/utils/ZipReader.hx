@@ -12,6 +12,7 @@ class ZipReader
 {
     private var _stream : ByteArray;
     private var _entries : Map<String, ZipEntry>;
+    public var entries(get, never) : Map<String, ZipEntry>;
     
     public function new(ba : ByteArray)
     {
@@ -21,6 +22,12 @@ class ZipReader
         
         readEntries();
     }
+
+    private function get_entries():Map<String, ZipEntry>
+    {
+        return _entries;
+    }
+
 
     private function readEntries() : Void{
 

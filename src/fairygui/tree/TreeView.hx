@@ -93,11 +93,18 @@ class TreeView
             parentNode.expanded = true;
             parentNode = parentNode.parent;
         }
+
+        if(node.cell == null)
+            return;
+
         _list.addSelection(_list.getChildIndex(node.cell), scrollItToView);
     }
     
     public function removeSelection(node : TreeNode) : Void
     {
+        if(node.cell == null)
+            return;
+
         _list.removeSelection(_list.getChildIndex(node.cell));
     }
     
@@ -363,7 +370,8 @@ class TreeView
         if (_list.scrollPane != null) 
         {
             _list.scrollPane.posY = posY;
-            _list.scrollPane.scrollToView(node.cell);
+            if(node.cell != null)
+                _list.scrollPane.scrollToView(node.cell);
         }
     }
 }

@@ -5,7 +5,6 @@ import openfl.Lib;
 import tweenx909.TweenX;
 
 import openfl.errors.Error;
-import openfl.display.Graphics;
 import openfl.display.Sprite;
 import openfl.events.Event;
 import openfl.events.EventDispatcher;
@@ -56,7 +55,6 @@ class ScrollPane extends EventDispatcher
     private var _owner : GComponent;
     private var _container : Sprite;
     private var _maskContainer : Sprite;
-    private var _mask : Sprite;
     
     private var _viewWidth : Float = 0;
     private var _viewHeight : Float = 0;
@@ -192,11 +190,7 @@ class ScrollPane extends EventDispatcher
         
         if (!_maskDisabled) 
         {
-            _mask = new Sprite();
-            _mask.mouseEnabled = false;
-            _mask.mouseChildren = false;
-            _container.mask = _mask;
-            _maskContainer.addChild(_mask);
+            _maskContainer.scrollRect = new Rectangle();
         }
         var res : String;
         if (scrollBarDisplay != ScrollBarDisplayType.Hidden) 
@@ -859,12 +853,12 @@ class ScrollPane extends EventDispatcher
         
         if (!_maskDisabled) 
         {
-            var g : Graphics = _mask.graphics;
-            g.clear();
-            g.lineStyle(0, 0, 0);
-            g.beginFill(0, 0);
-            g.drawRect(-_owner._alignOffset.x, -_owner._alignOffset.y, _viewWidth, _viewHeight);
-            g.endFill();
+            var rect:Rectangle = _maskContainer.scrollRect;
+            rect.x = -_owner._alignOffset.x;
+            rect.y = -_owner._alignOffset.y;
+            rect.width = _viewWidth;
+            rect.height = _viewHeight;
+            _maskContainer.scrollRect = rect;
         }
         
         if (_scrollType == ScrollType.Horizontal || _scrollType == ScrollType.Both) 

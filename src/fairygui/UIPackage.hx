@@ -130,15 +130,57 @@ class UIPackage
     
     public static function getItemByURL(url : String) : PackageItem
     {
-        if (ToolSet.startsWith(url, "ui://")) 
+        if (url == null)
+            return null;
+
+        var pos1:Int = url.indexOf("//");
+        if (pos1 == -1)
+            return null;
+        var pkg:UIPackage;
+        var pos2:Int = url.indexOf("/", pos1 + 2);
+        if (pos2 == -1)
         {
-            var pkgId : String = url.substr(5, 8);
-            var srcId : String = url.substr(13);
-            var pkg : UIPackage = getById(pkgId);
-            if (pkg != null) 
-                return pkg.getItemById(srcId);
+            if (url.length > 13)
+            {
+                var pkgId:String = url.substr(5, 8);
+                pkg = getById(pkgId);
+                if (pkg != null)
+                {
+                    var srcId:String = url.substr(13);
+                    return pkg.getItemById(srcId);
+                }
+            }
         }
+        else
+        {
+            var pkgName:String = url.substr(pos1 + 2, pos2 - pos1 - 2);
+            pkg = getByName(pkgName);
+            if (pkg != null)
+            {
+                var srcName:String = url.substr(pos2 + 1);
+                return pkg.getItemByName(srcName);
+            }
+        }
+
         return null;
+    }
+
+    public static function normalizeURL(url:String):String
+    {
+        if(url==null)
+            return null;
+
+        var pos1:Int = url.indexOf("//");
+        if (pos1 == -1)
+            return null;
+
+        var pos2:Int = url.indexOf("/", pos1 + 2);
+        if (pos2 == -1)
+            return url;
+
+        var pkgName:String = url.substr(pos1 + 2, pos2 - pos1 - 2);
+        var srcName:String = url.substr(pos2 + 1);
+        return getItemURL(pkgName, srcName);
     }
     
     public static function getBitmapFontByURL(url : String) : BitmapFont
@@ -213,6 +255,7 @@ class UIPackage
         for (cxml in resources)
         {
             pi = new PackageItem();
+            pi.owner = this;
             pi.type = PackageItemType.parseType(cxml.name);
             pi.id = cxml.att.id;
             pi.name = cxml.att.name;
@@ -252,9 +295,11 @@ class UIPackage
                     str = try cxml.att.smoothing catch(e:Dynamic) null;
                     pi.smoothing = str != "false";
                 }
+                case PackageItemType.Component:
+                    UIObjectFactory.resolvePackageItemExtension(pi);
+                    break;
             }
-            
-            pi.owner = this;
+
             _items.push(pi);
             _itemsById[pi.id] = pi;
             if (pi.name != null) 
@@ -548,6 +593,9 @@ class UIPackage
                     value = strings[elementId];
                     if (value != null)
                         dxml.setAttribute("title", value);
+                    value = strings[elementId+"-prompt"];
+                    if(value != null)
+                        dxml.setAttribute("prompt",value);
                     continue;
                 }
 

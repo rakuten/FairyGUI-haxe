@@ -224,7 +224,12 @@ class RelationItem
         switch (_sw2_)
         {
             case RelationType.Left_Left:
-
+                if(info.percent && _target==_owner.parent)
+                {
+                    v = _owner.x - targetX;
+                    v = v / _targetWidth * _target._rawWidth;
+                    _owner.x = targetX + v;
+                }
             case RelationType.Left_Center:
                 v = _owner.x - (targetX + _targetWidth / 2);
                 if (info.percent) 
@@ -257,7 +262,12 @@ class RelationItem
                 _owner.x = targetX + _target._rawWidth + v - _owner._rawWidth;
             
             case RelationType.Top_Top:
-
+                if(info.percent && _target==_owner.parent)
+                {
+                    v = _owner.y - targetY;
+                    v = v / _targetHeight * _target._rawHeight;
+                    _owner.y = targetY + v;
+                }
             case RelationType.Top_Middle:
                 v = _owner.y - (targetY + _targetHeight / 2);
                 if (info.percent) 

@@ -23,7 +23,7 @@ class GGraph extends GObject implements IColorGear
     private var _lineSize : Int = 0;
     private var _lineColor : Int = 0;
     private var _lineAlpha : Float = 0;
-    private var _fillColor : Int = 0;
+    private var _fillColor : UInt = 0;
     private var _fillAlpha : Float = 0;
     private var _fillBitmapData:BitmapData;
     private var _corner : Array<Dynamic>;

@@ -1,10 +1,11 @@
 package fairygui;
 
+import openfl.errors.Error;
 class UIObjectFactory
 {
     @:allow(fairygui)
     private static var packageItemExtensions : Map<String, Class<Dynamic>> = new Map<String, Class<Dynamic>>();
-    private static var loaderExtension : Class<Dynamic>;
+    private static var loaderType : Class<Dynamic>;
     
     public function new()
     {
@@ -12,12 +13,27 @@ class UIObjectFactory
     
     public static function setPackageItemExtension(url : String, type : Class<Dynamic>) : Void
     {
-        packageItemExtensions[url.substring(5)] = type;
+        if (url == null)
+            throw new Error("Invaild url: " + url);
+
+        var pi:PackageItem = UIPackage.getItemByURL(url);
+        if (pi != null)
+            pi.extensionType = type;
+
+        packageItemExtensions[url] = type;
     }
     
     public static function setLoaderExtension(type : Class<Dynamic>) : Void
     {
-        loaderExtension = type;
+        loaderType = type;
+    }
+
+    @:allow(fairygui)
+    private static function resolvePackageItemExtension(pi:PackageItem):Void
+    {
+        pi.extensionType = packageItemExtensions["ui://" + pi.owner.id + pi.id];
+        if(pi.extensionType == null)
+            pi.extensionType = packageItemExtensions["ui://" + pi.owner.name + "/" + pi.name];
     }
     
     public static function newObject(pi : PackageItem) : GObject
@@ -37,7 +53,7 @@ class UIObjectFactory
             
             case PackageItemType.Component:
             {
-                var cls : Class<Dynamic> = packageItemExtensions[pi.owner.id + pi.id];
+                var cls : Class<Dynamic> = pi.extensionType;
                 if (cls != null) 
                     return Type.createInstance(cls, []);
                 
@@ -111,10 +127,10 @@ class UIObjectFactory
                 return new GGraph();
             
             case "loader":
-                if (loaderExtension != null) 
-                    return Type.createInstance(loaderExtension, [])
+                if (loaderType != null)
+                    return Type.createInstance(loaderType, []);
                 else 
-                return new GLoader();
+                    return new GLoader();
         }
         return null;
     }
