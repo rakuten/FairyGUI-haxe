@@ -83,7 +83,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         if (_contentItem != null) 
         {
             if (_loading == 1) 
-                _contentItem.owner.removeItemCallback(_contentItem, __imageLoaded)
+                _contentItem.owner.removeItemCallback(_contentItem, __imageLoaded);
             else if (_loading == 2) 
                 _contentItem.owner.removeItemCallback(_contentItem, __movieClipLoaded);
         }
@@ -297,9 +297,9 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
             return;
         
         if (ToolSet.startsWith(_url, "ui://")) 
-            loadFromPackage(_url)
+            loadFromPackage(_url);
         else 
-        loadExternal();
+            loadExternal();
     }
     
     private function loadFromPackage(itemURL : String) : Void
