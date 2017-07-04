@@ -12,7 +12,6 @@ class DragDropManager
     public static var inst(get, never):DragDropManager;
     public var dragAgent(get, never):GObject;
     public var dragging(get, never):Bool;
-    public var sourceData(get, never):Dynamic;
 
     private var _agent:GLoader;
     private var _sourceData:Dynamic;
