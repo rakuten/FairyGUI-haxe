@@ -17,7 +17,7 @@ class GTextInput extends GTextField
     public var password(get, set) : Bool;
 
     private var _changed : Bool = false;
-    private var _promptText : String;
+    private var _promptText : String = "";
     private var _password : Bool = false;
 
     public var disableIME:Bool = false;
@@ -150,7 +150,7 @@ class GTextInput extends GTextField
         _yOffset = -_fontAdjustment;
         _textField.y = this.y + _yOffset;
         
-        if (_text == null && _promptText != null) 
+        if (_text == "" && _promptText != "")
         {
             _textField.displayAsPassword = false;
             _textField.htmlText = ToolSet.parseUBB(ToolSet.encodeHTML(_promptText));
@@ -172,11 +172,16 @@ class GTextInput extends GTextField
     override public function setup_beforeAdd(xml : FastXML) : Void
     {
         super.setup_beforeAdd(xml);
-        
-        _promptText = xml.att.prompt;
-        var str : String = xml.att.maxLength;
-        if (str != null) 
+
+        var str : String;
+        str = xml.att.prompt;
+        if (str != null)
+            _promptText = str;
+
+        str = xml.att.maxLength;
+        if (str != null)
             _textField.maxChars = Std.parseInt(str);
+
         str = xml.att.restrict;
         if (str != null) 
             _textField.restrict = str;
@@ -187,9 +192,9 @@ class GTextInput extends GTextField
     {
         super.setup_afterAdd(xml);
         
-        if (_text == null) 
+        if (_text == "")
         {
-            if (_promptText != null) 
+            if (_promptText != "")
             {
                 _textField.displayAsPassword = false;
                 _textField.htmlText = ToolSet.parseUBB(ToolSet.encodeHTML(_promptText));
@@ -210,7 +215,7 @@ class GTextInput extends GTextField
             flash.system.IME.enabled = false;
         #end
 
-        if (_text == null && _promptText != null)
+        if (_text == "" && _promptText != "")
         {
             _textField.displayAsPassword = _password;
             _textField.text = "";
@@ -229,7 +234,7 @@ class GTextInput extends GTextField
         TextInputHistory.inst.stopRecord(_textField);
         _changed = false;
         
-        if (_text == null && _promptText != null) 
+        if (_text == "" && _promptText != "")
         {
             _textField.displayAsPassword = false;
             _textField.htmlText = ToolSet.parseUBB(ToolSet.encodeHTML(_promptText));

@@ -115,7 +115,8 @@ class GObject extends EventDispatcher
     public var dragging(get, never) : Bool;
     public var isDown(get, never) : Bool;
 
-    public var data : Dynamic;
+    public var data:Dynamic;
+
     public var packageItem : PackageItem;
     public static var draggingObject : GObject;
     
@@ -493,7 +494,7 @@ class GObject extends EventDispatcher
             handlePositionChanged();
         }
     }
-    
+
     private function internalSetPivot(xv : Float, yv : Float, asAnchor : Bool) : Void
     {
         _pivotX = xv;

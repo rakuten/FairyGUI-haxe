@@ -37,10 +37,10 @@ class ScrollPane extends EventDispatcher
     public var scrollSpeed(get, set) : Int;
     public var snapToItem(get, set) : Bool;
     public var mouseWheelEnabled(get, set) : Bool;
-    public var percX(get, set) : Float;
-    public var percY(get, set) : Float;
-    public var posX(get, set) : Float;
-    public var posY(get, set) : Float;
+    @:isVar public var percX(get, set) : Float;
+    @:isVar public var percY(get, set) : Float;
+    @:isVar public var posX(get, set) : Float;
+    @isVar public var posY(get, set) : Float;
     public var isBottomMost(get, never) : Bool;
     public var isRightMost(get, never) : Bool;
     public var currentPageX(get, set) : Int;

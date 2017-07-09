@@ -41,11 +41,11 @@ class GList extends GComponent
     /**
      * itemRenderer(index:int, item:GObject);
      */
-    public var itemRenderer :Dynamic;
+    public var itemRenderer :Int->GObject->Void;
     /**
      * itemProvider(index:int):String;
      */
-    public var itemProvider :Dynamic;
+    public var itemProvider :Int->String;
     public var scrollItemToViewOnClick : Bool = false;
     public var foldInvisibleItems : Bool = false;
 
