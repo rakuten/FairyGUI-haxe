@@ -52,7 +52,7 @@ import fairygui.utils.ToolSet;
 class GObject extends EventDispatcher
 {
     public var id(get, never) : String;
-    public var name(get, set) : String;
+    @:isVar public var name(get, set) : String;
     @:isVar public var x(get, set) : Float;
     @:isVar public var y(get, set) : Float;
     @:isVar public var pixelSnapping(get, set) : Bool;

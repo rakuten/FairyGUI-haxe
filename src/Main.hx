@@ -1,8 +1,5 @@
 package ;
 
-import openfl.events.MouseEvent;
-import openfl.events.Event;
-import fairygui.display.UISprite;
 import openfl.Assets;
 import fairygui.GRoot;
 import fairygui.UIConfig;
@@ -10,6 +7,8 @@ import fairygui.UIPackage;
 import openfl.utils.ByteArray;
 import openfl.net.URLLoader;
 import openfl.display.StageAlign;
+import openfl.display.StageScaleMode;
+import openfl.display.StageQuality;
 
 import openfl.display.Sprite;
 
@@ -27,7 +26,8 @@ class Main extends Sprite {
         stage.frameRate=24;
 
         stage.align=StageAlign.TOP_LEFT;
-//        stage.scaleMode=StageScaleMode.NO_SCALE;
+        stage.scaleMode=StageScaleMode .NO_SCALE;
+        stage.quality = StageQuality.HIGH;
 
         #if (debug && flash)
         MonsterDebugger.initialize(this);

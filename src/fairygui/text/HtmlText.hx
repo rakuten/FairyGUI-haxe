@@ -25,7 +25,7 @@ class HtmlText
         catch (e : Dynamic)
         {
             parsedText = val;
-            elements.splice(0,-1);
+            elements.splice(0,elements.length);
         }
     }
     
