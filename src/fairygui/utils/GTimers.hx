@@ -7,6 +7,8 @@ import openfl.Lib;
 
 class GTimers
 {
+
+
     private var _items : Array<TimerItem>;
     private var _itemPool : Array<TimerItem>;
     private var _timer : Timer;
@@ -20,11 +22,22 @@ class GTimers
     public static var time : Int = 0;
     public static var workCount : Int = 0;
 
-    public static var inst:GTimers;
     private static var FPS24 : Int = Std.int(1000 / 24);
+
+    public static var _inst:GTimers;
+    public static var inst(get, never):GTimers;
+    private static function get_inst():GTimers
+    {
+        if (_inst == null)
+            new GTimers();
+        return _inst;
+    }
 
     public function new()
     {
+        if (_inst == null)
+            _inst = this;
+
         _items = new Array<TimerItem>();
         _itemPool = new Array<TimerItem>();
 
