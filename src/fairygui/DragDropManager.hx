@@ -38,11 +38,6 @@ class DragDropManager
         _agent.addEventListener(DragEvent.DRAG_END, __dragEnd);
     }
 
-    public function get_sourceData():Dynamic
-    {
-        return _sourceData;
-    }
-
     private function get_dragAgent():GObject
     {
         return _agent;

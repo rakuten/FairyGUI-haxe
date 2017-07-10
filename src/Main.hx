@@ -13,7 +13,7 @@ import openfl.display.StageQuality;
 import openfl.display.Sprite;
 
 #if (debug && flash)
-import com.demonsters.debugger.MonsterDebugger;
+//import com.demonsters.debugger.MonsterDebugger;
 #end
 
 class Main extends Sprite {
@@ -30,11 +30,11 @@ class Main extends Sprite {
         stage.quality = StageQuality.HIGH;
 
         #if (debug && flash)
-        MonsterDebugger.initialize(this);
+        //MonsterDebugger.initialize(this);
         #end
 
         #if (debug && cpp)
-        new debugger.Local(true);
+        //new debugger.Local(true);
         #end
 
         Assets.loadBytes(path).onComplete(assetsCompleteHandler);
