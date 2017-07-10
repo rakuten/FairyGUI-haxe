@@ -40,7 +40,7 @@ class ScrollPane extends EventDispatcher
     @:isVar public var percX(get, set) : Float;
     @:isVar public var percY(get, set) : Float;
     @:isVar public var posX(get, set) : Float;
-    @isVar public var posY(get, set) : Float;
+    @:isVar public var posY(get, set) : Float;
     public var isBottomMost(get, never) : Bool;
     public var isRightMost(get, never) : Bool;
     public var currentPageX(get, set) : Int;

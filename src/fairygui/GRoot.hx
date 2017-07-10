@@ -242,7 +242,7 @@ class GRoot extends GComponent
         {
             var g:GObject = arr[i];
             if (Std.is(g, Window) && !(try cast(g, Window)catch (e:Dynamic) null).modal)
-                (try cast(g, Window)catch (e:Dynamic) null).hide();
+                cast(g, Window).hide();
         }
     }
 
@@ -254,7 +254,7 @@ class GRoot extends GComponent
         {
             var g:GObject = arr[i];
             if (Std.is(g, Window))
-                (try cast(g, Window)catch (e:Dynamic) null).hide();
+                cast(g, Window).hide();
         }
     }
 
