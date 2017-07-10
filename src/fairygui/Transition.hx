@@ -94,7 +94,7 @@ class Transition
         stop();
 
         if (times < 0)
-            times = CompatUtil.INT_MAX_VALUE
+            times = CompatUtil.INT_MAX_VALUE;
         else if (times == 0)
             times = 1;
         _totalTimes = times;
@@ -121,7 +121,7 @@ class Transition
         else if (onComplete != null)
         {
             if (onComplete.length > 0)
-                onComplete(onCompleteParam)
+                onComplete(onCompleteParam);
             else
                 onComplete();
         }
@@ -148,8 +148,10 @@ class Transition
                 {
                     item = _items[i];
                     if (item.target == null)
-                    {i--;continue;
-                    };
+                    {
+                        i--;
+                        continue;
+                    }
 
                     stopItem(item, setToComplete);
                     i--;
@@ -170,7 +172,7 @@ class Transition
             if (processCallback && func != null)
             {
                 if (func.length > 0)
-                    func(param)
+                    func(param);
                 else
                     func();
             }
@@ -220,7 +222,7 @@ class Transition
                 if (item.tween)
                 {
                     if (!item.yoyo || item.repeat % 2 == 0)
-                        applyValue(item, (_reversed) ? item.startValue : item.endValue)
+                        applyValue(item, (_reversed) ? item.startValue : item.endValue);
                     else
                         applyValue(item, (_reversed) ? item.endValue : item.startValue);
                 }
@@ -280,7 +282,7 @@ class Transition
             if (item.label == label)
             {
                 if (item.tween)
-                    value = item.startValue
+                    value = item.startValue;
                 else
                     value = item.value;
             }
@@ -291,9 +293,7 @@ class Transition
             else
                 continue;
 
-            var _sw3_ = (item.type);
-
-            switch (_sw3_)
+            switch (item.type)
             {
                 case TransitionActionType.XY, TransitionActionType.Size, TransitionActionType.Pivot, TransitionActionType.Scale, TransitionActionType.Skew:
                     value.b1 = true;
@@ -467,7 +467,7 @@ class Transition
         {
             item = _items[i];
             if (item.targetId != null)
-                item.target = _owner.getChildById(item.targetId)
+                item.target = _owner.getChildById(item.targetId);
             else
                 item.target = _owner;
             if (item.target == null)
@@ -476,7 +476,7 @@ class Transition
             if (item.tween)
             {
                 if (_reversed)
-                    startTime = delay + _maxTime - item.time - item.duration
+                    startTime = delay + _maxTime - item.time - item.duration;
                 else
                     startTime = delay + item.time;
                 if (startTime > 0 && (item.type == TransitionActionType.XY || item.type == TransitionActionType.Size))
@@ -496,12 +496,12 @@ class Transition
             else
             {
                 if (_reversed)
-                    startTime = delay + _maxTime - item.time
+                    startTime = delay + _maxTime - item.time;
                 else
                     startTime = delay + item.time;
 
                 if (startTime == 0)
-                    applyValue(item, item.value)
+                    applyValue(item, item.value);
                 else
                 {
                     item.completed = false;
@@ -533,8 +533,7 @@ class Transition
             startValue = item.startValue;
             endValue = item.endValue;
         }
-        var _sw4_ = item.type;
-        switch(_sw4_)
+        switch(item.type)
         {
             case TransitionActionType.XY, TransitionActionType.Size:
                 if (item.type == TransitionActionType.XY)
@@ -615,7 +614,7 @@ class Transition
         if (item.repeat != 0)
         {
             if (item.repeat == -1)
-                itemRepeat = CompatUtil.INT_MAX_VALUE
+                itemRepeat = CompatUtil.INT_MAX_VALUE;
             else
                 itemRepeat = item.repeat;
             itemYoyo = item.yoyo;
@@ -723,7 +722,7 @@ class Transition
                         _onComplete = null;
                         _onCompleteParam = null;
                         if (func.length > 0)
-                            func(param)
+                            func(param);
                         else
                             func();
                     }
@@ -736,9 +735,7 @@ class Transition
     {
         item.target._gearLocked = true;
 
-        var _sw6_ = item.type;
-
-        switch (_sw6_)
+        switch (item.type)
         {
             case TransitionActionType.XY:
                 if (item.target == _owner)
@@ -746,13 +743,15 @@ class Transition
                     var f1:Float;
                     var f2:Float;
                     if (!value.b1)
-                        f1 = item.target.x
+                        f1 = item.target.x;
                     else
                         f1 = value.f1 + _ownerBaseX;
+
                     if (!value.b2)
-                        f2 = item.target.y
+                        f2 = item.target.y;
                     else
                         f2 = value.f2 + _ownerBaseY;
+
                     item.target.setXY(f1, f2);
                 }
                 else
@@ -790,24 +789,24 @@ class Transition
             case TransitionActionType.Skew:
 
             case TransitionActionType.Color:
-                cast((item.target), IColorGear).color = value.c;
+                cast(item.target, IColorGear).color = value.c;
 
             case TransitionActionType.Animation:
                 if (!value.b1)
-                    value.i = cast((item.target), IAnimationGear).frame;
+                    value.i = cast(item.target, IAnimationGear).frame;
 
-                cast((item.target), IAnimationGear).frame = value.i;
-                cast((item.target), IAnimationGear).playing = value.b;
+                cast(item.target, IAnimationGear).frame = value.i;
+                cast(item.target, IAnimationGear).playing = value.b;
 
             case TransitionActionType.Visible:
                 item.target.visible = value.b;
 
             case TransitionActionType.Transition:
-                var trans:Transition = cast((item.target), GComponent).getTransition(value.s);
+                var trans:Transition = cast(item.target, GComponent).getTransition(value.s);
                 if (trans != null)
                 {
                     if (value.i == 0)
-                        trans.stop(false, true)
+                        trans.stop(false, true);
                     else if (trans.playing)
                         trans._totalTimes = value.i == -(1) ? CompatUtil.INT_MAX_VALUE : value.i
                     else
@@ -815,7 +814,7 @@ class Transition
                         item.completed = false;
                         _totalTasks++;
                         if (_reversed)
-                            trans.playReverse(__playTransComplete, item, value.i)
+                            trans.playReverse(__playTransComplete, item, value.i);
                         else
                             trans.play(__playTransComplete, item, value.i);
                         if (_timeScale != 1)
@@ -976,7 +975,7 @@ class Transition
                     if (pos != -1)
                         str = str.substr(0, pos) + ".ease" + str.substr(pos + 1);
                     if (str == "Linear")
-                        item.easeType = EaseLookup.find("linear.easenone")
+                        item.easeType = EaseLookup.find("linear.easenone");
                     else
                         item.easeType = EaseLookup.find(str);
                 }
