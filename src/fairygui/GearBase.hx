@@ -145,13 +145,12 @@ class GearBase
             if (str != null) 
                 pages = str.split(",");
             
-            str = xml.att.values;
-            if (str != null) 
-                values = str.split("|");
-            
-            if (pages != null && values != null) 
+            if (pages != null)
             {
-                for (i in 0...values.length)
+                str = xml.att.values;
+                values = str.split("|");
+
+                for (i in 0...pages.length)
                 {
                     addStatus(pages[i], values[i]);
                 }

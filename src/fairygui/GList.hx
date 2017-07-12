@@ -1,79 +1,76 @@
 package fairygui;
 
+import fairygui.display.UIDisplayObject;
+import fairygui.event.GTouchEvent;
+import fairygui.event.ItemEvent;
+import fairygui.GObject;
 import fairygui.GObjectPool;
 import fairygui.GRoot;
 import fairygui.Margin;
-import openfl.errors.Error;
-
+import fairygui.utils.CompatUtil;
+import fairygui.utils.GTimers;
 import openfl.display.Sprite;
 import openfl.display.Stage;
+import openfl.errors.Error;
 import openfl.events.Event;
 import openfl.events.MouseEvent;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
 
-import fairygui.display.UIDisplayObject;
-import fairygui.event.GTouchEvent;
-import fairygui.event.ItemEvent;
-import fairygui.utils.GTimers;
-import fairygui.utils.CompatUtil;
-
-import fairygui.GObject;
-
-@:meta(Event(name="itemClick",type="fairygui.event.ItemEvent"))
+@:meta(Event(name = "itemClick", type = "fairygui.event.ItemEvent"))
 
 class GList extends GComponent
 {
-    public var layout(get, set) : Int;
-    public var lineItemCount(get, set) : Int;
-    public var lineGap(get, set) : Int;
-    public var columnGap(get, set) : Int;
-    public var align(get, set) : Int;
-    public var verticalAlign(get, set) : Int;
-    public var virtualItemSize(get, set) : Point;
-    public var defaultItem(get, set) : String;
-    public var autoResizeItem(get, set) : Bool;
-    public var selectionMode(get, set) : Int;
-    public var itemPool(get, never) : GObjectPool;
-    public var selectedIndex(get, set) : Int;
-    public var numItems(get, set) : Int;
+    public var layout(get, set):Int;
+    public var lineItemCount(get, set):Int;
+    public var lineGap(get, set):Int;
+    public var columnGap(get, set):Int;
+    public var align(get, set):Int;
+    public var verticalAlign(get, set):Int;
+    public var virtualItemSize(get, set):Point;
+    public var defaultItem(get, set):String;
+    public var autoResizeItem(get, set):Bool;
+    public var selectionMode(get, set):Int;
+    public var itemPool(get, never):GObjectPool;
+    public var selectedIndex(get, set):Int;
+    public var numItems(get, set):Int;
 
     /**
      * itemRenderer(index:int, item:GObject);
      */
-    public var itemRenderer :Int->GObject->Void;
+    public var itemRenderer:Int -> GObject -> Void;
     /**
      * itemProvider(index:int):String;
      */
-    public var itemProvider :Int->String;
-    public var scrollItemToViewOnClick : Bool = false;
-    public var foldInvisibleItems : Bool = false;
+    public var itemProvider:Int -> String;
+    public var scrollItemToViewOnClick:Bool = false;
+    public var foldInvisibleItems:Bool = false;
 
-    private var _layout : Int = 0;
-    private var _lineItemCount : Int = 0;
-    private var _lineGap : Int = 0;
-    private var _columnGap : Int = 0;
-    private var _defaultItem : String;
-    private var _autoResizeItem : Bool = false;
-    private var _selectionMode : Int = 0;
-    private var _align : Int = 0;
-    private var _verticalAlign : Int = 0;
+    private var _layout:Int = 0;
+    private var _lineItemCount:Int = 0;
+    private var _lineGap:Int = 0;
+    private var _columnGap:Int = 0;
+    private var _defaultItem:String;
+    private var _autoResizeItem:Bool = false;
+    private var _selectionMode:Int = 0;
+    private var _align:Int = 0;
+    private var _verticalAlign:Int = 0;
 
-    private var _lastSelectedIndex : Int = 0;
-    private var _pool : GObjectPool;
+    private var _lastSelectedIndex:Int = 0;
+    private var _pool:GObjectPool;
 
     //Virtual List support
-    private var _virtual : Bool = false;
-    private var _loop : Bool = false;
-    private var _numItems : Int = 0;
-    private var _realNumItems : Int = 0;
-    private var _firstIndex : Int = 0;  //the top left index
-    private var _curLineItemCount : Int = 0;  //item count in one line
-    private var _curLineItemCount2 : Int = 0;  //只用在页面模式，表示垂直方向的项目数
-    private var _itemSize : Point;
-    private var _virtualListChanged : Int = 0;  //1-content changed, 2-size changed
-    private var _eventLocked : Bool = false;
-    private var _virtualItems : Array<ItemInfo>;
+    private var _virtual:Bool = false;
+    private var _loop:Bool = false;
+    private var _numItems:Int = 0;
+    private var _realNumItems:Int = 0;
+    private var _firstIndex:Int = 0; //the top left index
+    private var _curLineItemCount:Int = 0; //item count in one line
+    private var _curLineItemCount2:Int = 0; //只用在页面模式，表示垂直方向的项目数
+    private var _itemSize:Point;
+    private var _virtualListChanged:Int = 0; //1-content changed, 2-size changed
+    private var _eventLocked:Bool = false;
+    private var _virtualItems:Array<ItemInfo>;
 
     public function new()
     {
@@ -93,18 +90,18 @@ class GList extends GComponent
         _rootContainer.addChild(_container);
     }
 
-    override public function dispose() : Void
+    override public function dispose():Void
     {
         _pool.clear();
         super.dispose();
     }
 
-    @:final private function get_layout() : Int
+    @:final private function get_layout():Int
     {
         return _layout;
     }
 
-    @:final private function set_layout(value : Int) : Int
+    @:final private function set_layout(value:Int):Int
     {
         if (_layout != value)
         {
@@ -116,12 +113,12 @@ class GList extends GComponent
         return value;
     }
 
-    @:final private function get_lineItemCount() : Int
+    @:final private function get_lineItemCount():Int
     {
         return _lineItemCount;
     }
 
-    @:final private function set_lineItemCount(value : Int) : Int
+    @:final private function set_lineItemCount(value:Int):Int
     {
         if (_lineItemCount != value)
         {
@@ -133,12 +130,12 @@ class GList extends GComponent
         return value;
     }
 
-    @:final private function get_lineGap() : Int
+    @:final private function get_lineGap():Int
     {
         return _lineGap;
     }
 
-    @:final private function set_lineGap(value : Int) : Int
+    @:final private function set_lineGap(value:Int):Int
     {
         if (_lineGap != value)
         {
@@ -150,12 +147,12 @@ class GList extends GComponent
         return value;
     }
 
-    @:final private function get_columnGap() : Int
+    @:final private function get_columnGap():Int
     {
         return _columnGap;
     }
 
-    @:final private function set_columnGap(value : Int) : Int
+    @:final private function set_columnGap(value:Int):Int
     {
         if (_columnGap != value)
         {
@@ -167,12 +164,12 @@ class GList extends GComponent
         return value;
     }
 
-    private function get_align() : Int
+    private function get_align():Int
     {
         return _align;
     }
 
-    private function set_align(value : Int) : Int
+    private function set_align(value:Int):Int
     {
         if (_align != value)
         {
@@ -184,12 +181,12 @@ class GList extends GComponent
         return value;
     }
 
-    @:final private function get_verticalAlign() : Int
+    @:final private function get_verticalAlign():Int
     {
         return _verticalAlign;
     }
 
-    private function set_verticalAlign(value : Int) : Int
+    private function set_verticalAlign(value:Int):Int
     {
         if (_verticalAlign != value)
         {
@@ -201,12 +198,12 @@ class GList extends GComponent
         return value;
     }
 
-    @:final private function get_virtualItemSize() : Point
+    @:final private function get_virtualItemSize():Point
     {
         return _itemSize;
     }
 
-    @:final private function set_virtualItemSize(value : Point) : Point
+    @:final private function set_virtualItemSize(value:Point):Point
     {
         if (_virtual)
         {
@@ -218,61 +215,61 @@ class GList extends GComponent
         return value;
     }
 
-    @:final private function get_defaultItem() : String
+    @:final private function get_defaultItem():String
     {
         return _defaultItem;
     }
 
-    @:final private function set_defaultItem(val : String) : String
+    @:final private function set_defaultItem(val:String):String
     {
         _defaultItem = val;
         return val;
     }
 
-    @:final private function get_autoResizeItem() : Bool
+    @:final private function get_autoResizeItem():Bool
     {
         return _autoResizeItem;
     }
 
-    @:final private function set_autoResizeItem(value : Bool) : Bool
+    @:final private function set_autoResizeItem(value:Bool):Bool
     {
         _autoResizeItem = value;
         return value;
     }
 
-    @:final private function get_selectionMode() : Int
+    @:final private function get_selectionMode():Int
     {
         return _selectionMode;
     }
 
-    @:final private function set_selectionMode(value : Int) : Int
+    @:final private function set_selectionMode(value:Int):Int
     {
         _selectionMode = value;
         return value;
     }
 
-    private function get_itemPool() : GObjectPool
+    private function get_itemPool():GObjectPool
     {
         return _pool;
     }
 
-    public function getFromPool(url : String = null) : GObject
+    public function getFromPool(url:String = null):GObject
     {
         if (url == null)
             url = _defaultItem;
 
-        var ret : GObject = _pool.getObject(url);
+        var ret:GObject = _pool.getObject(url);
         if (ret != null)
             ret.visible = true;
         return ret;
     }
 
-    public function returnToPool(obj : GObject) : Void
+    public function returnToPool(obj:GObject):Void
     {
         _pool.returnObject(obj);
     }
 
-    override public function addChildAt(child : GObject, index : Int) : GObject
+    override public function addChildAt(child:GObject, index:Int):GObject
     {
         if (_autoResizeItem)
         {
@@ -286,7 +283,7 @@ class GList extends GComponent
 
         if (Std.is(child, GButton))
         {
-            var button : GButton = cast(child, GButton);
+            var button:GButton = cast(child, GButton);
             button.selected = false;
             button.changeStateOnClick = false;
             button.useHandCursor = false;
@@ -297,7 +294,7 @@ class GList extends GComponent
         return child;
     }
 
-    public function addItem(url : String = null) : GObject
+    public function addItem(url:String = null):GObject
     {
         if (url == null)
             url = _defaultItem;
@@ -305,33 +302,33 @@ class GList extends GComponent
         return addChild(UIPackage.createObjectFromURL(url));
     }
 
-    public function addItemFromPool(url : String = null) : GObject
+    public function addItemFromPool(url:String = null):GObject
     {
         return addChild(getFromPool(url));
     }
 
-    override public function removeChildAt(index : Int, dispose : Bool = false) : GObject
+    override public function removeChildAt(index:Int, dispose:Bool = false):GObject
     {
-        var child : GObject = super.removeChildAt(index, dispose);
+        var child:GObject = super.removeChildAt(index, dispose);
         child.removeEventListener(GTouchEvent.CLICK, __clickItem);
         child.removeEventListener("rightClick", __rightClickItem);
 
         return child;
     }
 
-    public function removeChildToPoolAt(index : Int) : Void
+    public function removeChildToPoolAt(index:Int):Void
     {
-        var child : GObject = super.removeChildAt(index);
+        var child:GObject = super.removeChildAt(index);
         returnToPool(child);
     }
 
-    public function removeChildToPool(child : GObject) : Void
+    public function removeChildToPool(child:GObject):Void
     {
         super.removeChild(child);
         returnToPool(child);
     }
 
-    public function removeChildrenToPool(beginIndex : Int = 0, endIndex : Int = -1) : Void
+    public function removeChildrenToPool(beginIndex:Int = 0, endIndex:Int = -1):Void
     {
         if (endIndex < 0 || endIndex >= _children.length)
             endIndex = _children.length - 1;
@@ -342,18 +339,19 @@ class GList extends GComponent
         }
     }
 
-    private function get_selectedIndex() : Int
+    private function get_selectedIndex():Int
     {
-        var cnt : Int = _children.length;
-        for (i in 0...cnt){
-            var obj : GButton = _children[i].asButton;
+        var cnt:Int = _children.length;
+        for (i in 0...cnt)
+        {
+            var obj:GButton = _children[i].asButton;
             if (obj != null && obj.selected)
                 return childIndexToItemIndex(i);
         }
         return -1;
     }
 
-    private function set_selectedIndex(value : Int) : Int
+    private function set_selectedIndex(value:Int):Int
     {
         clearSelection();
         if (value >= 0 && value < this.numItems)
@@ -361,19 +359,20 @@ class GList extends GComponent
         return value;
     }
 
-    public function getSelection() : Array<Int>
+    public function getSelection():Array<Int>
     {
-        var ret : Array<Int> = new Array<Int>();
-        var cnt : Int = _children.length;
-        for (i in 0...cnt){
-            var obj : GButton = _children[i].asButton;
+        var ret:Array<Int> = new Array<Int>();
+        var cnt:Int = _children.length;
+        for (i in 0...cnt)
+        {
+            var obj:GButton = _children[i].asButton;
             if (obj != null && obj.selected)
                 ret.push(childIndexToItemIndex(i));
         }
         return ret;
     }
 
-    public function addSelection(index : Int, scrollItToView : Bool = false) : Void
+    public function addSelection(index:Int, scrollItToView:Bool = false):Void
     {
         if (_selectionMode == ListSelectionMode.None)
             return;
@@ -390,12 +389,12 @@ class GList extends GComponent
         if (index < 0 || index >= _children.length)
             return;
 
-        var obj : GButton = getChildAt(index).asButton;
+        var obj:GButton = getChildAt(index).asButton;
         if (obj != null && !obj.selected)
             obj.selected = true;
     }
 
-    public function removeSelection(index : Int) : Void
+    public function removeSelection(index:Int):Void
     {
         if (_selectionMode == ListSelectionMode.None)
             return;
@@ -404,69 +403,73 @@ class GList extends GComponent
         if (index < 0 || index >= _children.length)
             return;
 
-        var obj : GButton = getChildAt(index).asButton;
+        var obj:GButton = getChildAt(index).asButton;
         if (obj != null && obj.selected)
             obj.selected = false;
     }
 
-    public function clearSelection() : Void
+    public function clearSelection():Void
     {
-        var cnt : Int = _children.length;
-        for (i in 0...cnt){
-            var obj : GButton = _children[i].asButton;
+        var cnt:Int = _children.length;
+        for (i in 0...cnt)
+        {
+            var obj:GButton = _children[i].asButton;
             if (obj != null)
                 obj.selected = false;
         }
     }
 
-    public function selectAll() : Void
+    public function selectAll():Void
     {
         checkVirtualList();
 
-        var cnt : Int = _children.length;
-        for (i in 0...cnt){
-            var obj : GButton = _children[i].asButton;
+        var cnt:Int = _children.length;
+        for (i in 0...cnt)
+        {
+            var obj:GButton = _children[i].asButton;
             if (obj != null)
                 obj.selected = true;
         }
     }
 
-    public function selectNone() : Void
+    public function selectNone():Void
     {
-        var cnt : Int = _children.length;
-        for (i in 0...cnt){
-            var obj : GButton = _children[i].asButton;
+        var cnt:Int = _children.length;
+        for (i in 0...cnt)
+        {
+            var obj:GButton = _children[i].asButton;
             if (obj != null)
                 obj.selected = false;
         }
     }
 
-    public function selectReverse() : Void
+    public function selectReverse():Void
     {
         checkVirtualList();
 
-        var cnt : Int = _children.length;
-        for (i in 0...cnt){
-            var obj : GButton = _children[i].asButton;
+        var cnt:Int = _children.length;
+        for (i in 0...cnt)
+        {
+            var obj:GButton = _children[i].asButton;
             if (obj != null)
                 obj.selected = !obj.selected;
         }
     }
 
-    public function handleArrowKey(dir : Int) : Void
+    public function handleArrowKey(dir:Int):Void
     {
-        var index : Int = this.selectedIndex;
+        var index:Int = this.selectedIndex;
         if (index == -1)
             return;
 
-        var obj : GObject;
-        var current : GObject;
-        var k : Int = 0;
-        var i : Int = 0;
-        var cnt : Int;
+        var obj:GObject;
+        var current:GObject;
+        var k:Int = 0;
+        var i:Int = 0;
+        var cnt:Int;
         switch (dir)
         {
-            case 1:  //up
+            case 1: //up
                 if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowVertical)
                 {
                     index--;
@@ -481,7 +484,8 @@ class GList extends GComponent
                     current = _children[index];
                     k = 0;
                     i = index - 1;
-                    while (i >= 0){
+                    while (i >= 0)
+                    {
                         obj = _children[i];
                         if (obj.y != current.y)
                         {
@@ -491,7 +495,8 @@ class GList extends GComponent
                         k++;
                         i--;
                     }
-                    while (i >= 0){
+                    while (i >= 0)
+                    {
                         obj = _children[i];
                         if (obj.y != current.y)
                         {
@@ -503,7 +508,7 @@ class GList extends GComponent
                     }
                 }
 
-            case 3:  //right
+            case 3: //right
                 if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.FlowHorizontal || _layout == ListLayoutType.Pagination)
                 {
                     index++;
@@ -518,7 +523,8 @@ class GList extends GComponent
                     current = _children[index];
                     k = 0;
                     cnt = _children.length;
-                    for (i in index + 1...cnt){
+                    for (i in index + 1...cnt)
+                    {
                         obj = _children[i];
                         if (obj.x != current.x)
                         {
@@ -527,7 +533,8 @@ class GList extends GComponent
                         }
                         k++;
                     }
-                    while (i < cnt){
+                    while (i < cnt)
+                    {
                         obj = _children[i];
                         if (obj.x != current.x)
                         {
@@ -539,7 +546,7 @@ class GList extends GComponent
                     }
                 }
 
-            case 5:  //down
+            case 5: //down
                 if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowVertical)
                 {
                     index++;
@@ -554,7 +561,8 @@ class GList extends GComponent
                     current = _children[index];
                     k = 0;
                     cnt = _children.length;
-                    for (i in index + 1...cnt){
+                    for (i in index + 1...cnt)
+                    {
                         obj = _children[i];
                         if (obj.y != current.y)
                         {
@@ -563,7 +571,8 @@ class GList extends GComponent
                         }
                         k++;
                     }
-                    while (i < cnt){
+                    while (i < cnt)
+                    {
                         obj = _children[i];
                         if (obj.y != current.y)
                         {
@@ -575,7 +584,7 @@ class GList extends GComponent
                     }
                 }
 
-            case 7:  //left
+            case 7: //left
                 if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.FlowHorizontal || _layout == ListLayoutType.Pagination)
                 {
                     index--;
@@ -590,7 +599,8 @@ class GList extends GComponent
                     current = _children[index];
                     k = 0;
                     i = index - 1;
-                    while (i >= 0){
+                    while (i >= 0)
+                    {
                         obj = _children[i];
                         if (obj.x != current.x)
                         {
@@ -600,7 +610,8 @@ class GList extends GComponent
                         k++;
                         i--;
                     }
-                    while (i >= 0){
+                    while (i >= 0)
+                    {
                         obj = _children[i];
                         if (obj.x != current.x)
                         {
@@ -614,11 +625,11 @@ class GList extends GComponent
         }
     }
 
-    public function getItemNear(globalX : Float, globalY : Float) : GObject
+    public function getItemNear(globalX:Float, globalY:Float):GObject
     {
         ensureBoundsCorrect();
 
-        var objs : Array<Dynamic> = root.nativeStage.getObjectsUnderPoint(new Point(globalX, globalY));
+        var objs:Array<Dynamic> = root.nativeStage.getObjectsUnderPoint(new Point(globalX, globalY));
         if (objs == null || objs.length == 0)
             return null;
 
@@ -628,7 +639,7 @@ class GList extends GComponent
             {
                 if (Std.is(obj, UIDisplayObject))
                 {
-                    var gobj : GObject = cast(obj, UIDisplayObject).owner;
+                    var gobj:GObject = cast(obj, UIDisplayObject).owner;
                     while (gobj != null && gobj.parent != this)
                         gobj = gobj.parent;
 
@@ -642,48 +653,48 @@ class GList extends GComponent
         return null;
     }
 
-    private function __clickItem(evt : GTouchEvent) : Void
+    private function __clickItem(evt:GTouchEvent):Void
     {
         if (this._scrollPane != null && this._scrollPane.isDragged)
             return;
 
-        var item : GObject = cast((evt.currentTarget), GObject);
+        var item:GObject = cast((evt.currentTarget), GObject);
         setSelectionOnEvent(item);
 
         if (scrollPane != null && scrollItemToViewOnClick)
             scrollPane.scrollToView(item, true);
 
-        var ie : ItemEvent = new ItemEvent(ItemEvent.CLICK, item);
+        var ie:ItemEvent = new ItemEvent(ItemEvent.CLICK, item);
         ie.stageX = evt.stageX;
         ie.stageY = evt.stageY;
         ie.clickCount = evt.clickCount;
         this.dispatchEvent(ie);
     }
 
-    private function __rightClickItem(evt : MouseEvent) : Void
+    private function __rightClickItem(evt:MouseEvent):Void
     {
-        var item : GObject = cast(evt.currentTarget, GObject);
+        var item:GObject = cast(evt.currentTarget, GObject);
         if (Std.is(item, GButton) && !cast(item, GButton).selected)
             setSelectionOnEvent(item);
 
         if (scrollPane != null && scrollItemToViewOnClick)
             scrollPane.scrollToView(item, true);
 
-        var ie : ItemEvent = new ItemEvent(ItemEvent.CLICK, item);
+        var ie:ItemEvent = new ItemEvent(ItemEvent.CLICK, item);
         ie.stageX = evt.stageX;
         ie.stageY = evt.stageY;
         ie.rightButton = true;
         this.dispatchEvent(ie);
     }
 
-    private function setSelectionOnEvent(item : GObject) : Void
+    private function setSelectionOnEvent(item:GObject):Void
     {
         if (!Std.is(item, GButton) || _selectionMode == ListSelectionMode.None)
             return;
 
-        var dontChangeLastIndex : Bool = false;
-        var button : GButton = cast((item), GButton);
-        var index : Int = getChildIndex(item);
+        var dontChangeLastIndex:Bool = false;
+        var button:GButton = cast((item), GButton);
+        var index:Int = getChildIndex(item);
 
         if (_selectionMode == ListSelectionMode.Single)
         {
@@ -695,18 +706,19 @@ class GList extends GComponent
         }
         else
         {
-            var r : GRoot = this.root;
+            var r:GRoot = this.root;
             if (r.shiftKeyDown)
             {
                 if (!button.selected)
                 {
                     if (_lastSelectedIndex != -1)
                     {
-                        var min : Int = Std.int(Math.min(_lastSelectedIndex, index));
-                        var max : Int = Std.int(Math.max(_lastSelectedIndex, index));
+                        var min:Int = Std.int(Math.min(_lastSelectedIndex, index));
+                        var max:Int = Std.int(Math.max(_lastSelectedIndex, index));
                         max = Std.int(Math.min(max, _children.length - 1));
-                        for (i in min...max + 1){
-                            var obj : GButton = getChildAt(i).asButton;
+                        for (i in min...max + 1)
+                        {
+                            var obj:GButton = getChildAt(i).asButton;
                             if (obj != null && !obj.selected)
                                 obj.selected = true;
                         }
@@ -739,27 +751,28 @@ class GList extends GComponent
             _lastSelectedIndex = index;
     }
 
-    private function clearSelectionExcept(obj : GObject) : Void
+    private function clearSelectionExcept(obj:GObject):Void
     {
-        var cnt : Int = _children.length;
-        for (i in 0...cnt){
-            var button : GButton = _children[i].asButton;
+        var cnt:Int = _children.length;
+        for (i in 0...cnt)
+        {
+            var button:GButton = _children[i].asButton;
             if (button != null && button != obj && button.selected)
                 button.selected = false;
         }
     }
 
-    public function resizeToFit(itemCount : Int = 2147483647, minSize : Int = 0) : Void
+    public function resizeToFit(itemCount:Int = 2147483647, minSize:Int = 0):Void
     {
         ensureBoundsCorrect();
 
-        var curCount : Int = this.numItems;
+        var curCount:Int = this.numItems;
         if (itemCount > curCount)
             itemCount = curCount;
 
         if (_virtual)
         {
-            var lineCount : Int = Math.ceil(itemCount / _curLineItemCount);
+            var lineCount:Int = Math.ceil(itemCount / _curLineItemCount);
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
                 this.viewHeight = Std.int(lineCount * _itemSize.y + Math.max(0, lineCount - 1) * _lineGap);
             else
@@ -774,8 +787,8 @@ class GList extends GComponent
         }
         else
         {
-            var i : Int = itemCount - 1;
-            var obj : GObject = null;
+            var i:Int = itemCount - 1;
+            var obj:GObject = null;
             while (i >= 0)
             {
                 obj = this.getChildAt(i);
@@ -792,7 +805,7 @@ class GList extends GComponent
             }
             else
             {
-                var size : Int;
+                var size:Int;
                 if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
                 {
                     size = Std.int(obj.y + obj.height);
@@ -811,19 +824,20 @@ class GList extends GComponent
         }
     }
 
-    public function getMaxItemWidth() : Int
+    public function getMaxItemWidth():Int
     {
-        var cnt : Int = _children.length;
-        var max : Int = 0;
-        for (i in 0...cnt){
-            var child : GObject = getChildAt(i);
+        var cnt:Int = _children.length;
+        var max:Int = 0;
+        for (i in 0...cnt)
+        {
+            var child:GObject = getChildAt(i);
             if (child.width > max)
                 max = Std.int(child.width);
         }
         return max;
     }
 
-    override private function handleSizeChanged() : Void
+    override private function handleSizeChanged():Void
     {
         super.handleSizeChanged();
 
@@ -838,15 +852,16 @@ class GList extends GComponent
         }
     }
 
-    public function adjustItemsSize() : Void
+    public function adjustItemsSize():Void
     {
-        var child : GObject;
-        var cnt : Int;
+        var child:GObject;
+        var cnt:Int;
         if (_layout == ListLayoutType.SingleColumn)
         {
             cnt = _children.length;
-            var cw : Int = this.viewWidth;
-            for (i in 0...cnt){
+            var cw:Int = this.viewWidth;
+            for (i in 0...cnt)
+            {
                 child = getChildAt(i);
                 child.width = cw;
             }
@@ -854,23 +869,24 @@ class GList extends GComponent
         else if (_layout == ListLayoutType.SingleRow)
         {
             cnt = _children.length;
-            var ch : Int = this.viewHeight;
-            for (i in 0...cnt){
+            var ch:Int = this.viewHeight;
+            for (i in 0...cnt)
+            {
                 child = getChildAt(i);
                 child.height = ch;
             }
         }
     }
 
-    override public function getSnappingPosition(xValue : Float, yValue : Float, resultPoint : Point = null) : Point
+    override public function getSnappingPosition(xValue:Float, yValue:Float, resultPoint:Point = null):Point
     {
         if (_virtual)
         {
             if (resultPoint == null)
                 resultPoint = new Point();
 
-            var saved : Float;
-            var index : Int;
+            var saved:Float;
+            var index:Int;
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
             {
                 saved = yValue;
@@ -907,11 +923,11 @@ class GList extends GComponent
             return super.getSnappingPosition(xValue, yValue, resultPoint);
     }
 
-    public function scrollToView(index : Int, ani : Bool = false, setFirst : Bool = false) : Void
+    public function scrollToView(index:Int, ani:Bool = false, setFirst:Bool = false):Void
     {
         if (_virtual)
         {
-            if(_numItems==0)
+            if (_numItems == 0)
                 return;
 
             checkVirtualList();
@@ -919,17 +935,17 @@ class GList extends GComponent
             if (index >= _virtualItems.length)
                 throw new Error("Invalid child index: " + index + ">" + _virtualItems.length);
 
-            if(_loop)
-                index = Math.floor(_firstIndex/_numItems)*_numItems+index;
+            if (_loop)
+                index = Math.floor(_firstIndex / _numItems) * _numItems + index;
 
-            var rect : Rectangle;
-            var ii : ItemInfo = _virtualItems[index];
-            var pos : Float = 0;
-            var i : Int;
+            var rect:Rectangle;
+            var ii:ItemInfo = _virtualItems[index];
+            var pos:Float = 0;
+            var i:Int;
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
             {
                 i = 0;
-                while (i<index)
+                while (i < index)
                 {
                     pos += _virtualItems[i].height + _lineGap;
                     i += _curLineItemCount;
@@ -939,7 +955,7 @@ class GList extends GComponent
             else if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.FlowVertical)
             {
                 i = 0;
-                while (i<index)
+                while (i < index)
                 {
                     pos += _virtualItems[i].width + _columnGap;
                     i += _curLineItemCount;
@@ -948,19 +964,19 @@ class GList extends GComponent
             }
             else
             {
-                var page : Int = Std.int(index / (_curLineItemCount * _curLineItemCount2));
+                var page:Int = Std.int(index / (_curLineItemCount * _curLineItemCount2));
                 rect = new Rectangle(page * viewWidth + (index % _curLineItemCount) * (ii.width + _columnGap),
                 (index / _curLineItemCount) % _curLineItemCount2 * (ii.height + _lineGap),
                 ii.width, ii.height);
             }
 
-            setFirst = true;  //因为在可变item大小的情况下，只有设置在最顶端，位置才不会因为高度变化而改变，所以只能支持setFirst=true
+            setFirst = true; //因为在可变item大小的情况下，只有设置在最顶端，位置才不会因为高度变化而改变，所以只能支持setFirst=true
             if (_scrollPane != null)
                 scrollPane.scrollToView(rect, ani, setFirst);
         }
         else
         {
-            var obj : GObject = getChildAt(index);
+            var obj:GObject = getChildAt(index);
             if (_scrollPane != null)
                 scrollPane.scrollToView(obj, ani, setFirst);
             else if (parent != null && parent.scrollPane != null)
@@ -968,19 +984,20 @@ class GList extends GComponent
         }
     }
 
-    override public function getFirstChildInView() : Int
+    override public function getFirstChildInView():Int
     {
         return childIndexToItemIndex(super.getFirstChildInView());
     }
 
-    public function childIndexToItemIndex(index : Int) : Int
+    public function childIndexToItemIndex(index:Int):Int
     {
         if (!_virtual)
             return index;
 
         if (_layout == ListLayoutType.Pagination)
         {
-            for (i in _firstIndex..._realNumItems){
+            for (i in _firstIndex..._realNumItems)
+            {
                 if (_virtualItems[i].obj != null)
                 {
                     index--;
@@ -1001,7 +1018,7 @@ class GList extends GComponent
         }
     }
 
-    public function itemIndexToChildIndex(index : Int) : Int
+    public function itemIndexToChildIndex(index:Int):Int
     {
         if (!_virtual)
             return index;
@@ -1014,7 +1031,7 @@ class GList extends GComponent
         {
             if (_loop && _numItems > 0)
             {
-                var j : Int = _firstIndex % _numItems;
+                var j:Int = _firstIndex % _numItems;
                 if (index >= j)
                     index = _firstIndex + (index - j);
                 else
@@ -1027,7 +1044,7 @@ class GList extends GComponent
         }
     }
 
-    public function setVirtual() : Void
+    public function setVirtual():Void
     {
         _setVirtual(false);
     }
@@ -1035,7 +1052,7 @@ class GList extends GComponent
     /// <summary>
     /// Set the list to be virtual list, and has loop behavior.
     /// </summary>
-    public function setVirtualAndLoop() : Void
+    public function setVirtualAndLoop():Void
     {
         _setVirtual(true);
     }
@@ -1043,7 +1060,7 @@ class GList extends GComponent
     /// <summary>
     /// Set the list to be virtual list.
     /// </summary>
-    private function _setVirtual(loop : Bool) : Void
+    private function _setVirtual(loop:Bool):Void
     {
         if (!_virtual)
         {
@@ -1066,7 +1083,7 @@ class GList extends GComponent
             if (_itemSize == null)
             {
                 _itemSize = new Point();
-                var obj : GObject = getFromPool(null);
+                var obj:GObject = getFromPool(null);
                 if (obj == null)
                 {
                     throw new Error("FairyGUI: Virtual List must have a default list item resource.");
@@ -1096,7 +1113,7 @@ class GList extends GComponent
     /// If the list is not virtual, specified number of items will be created.
     /// If the list is virtual, only items in view will be created.
     /// </summary>
-    private function get_numItems() : Int
+    private function get_numItems():Int
     {
         if (_virtual)
             return _numItems;
@@ -1104,9 +1121,9 @@ class GList extends GComponent
             return _children.length;
     }
 
-    private function set_numItems(value : Int) : Int
+    private function set_numItems(value:Int):Int
     {
-        var i : Int;
+        var i:Int;
 
         if (_virtual)
         {
@@ -1121,11 +1138,12 @@ class GList extends GComponent
                 _realNumItems = _numItems;
 
             //_virtualItems的设计是只增不减的
-            var oldCount : Int = _virtualItems.length;
+            var oldCount:Int = _virtualItems.length;
             if (_realNumItems > oldCount)
             {
-                for (i in oldCount..._realNumItems){
-                    var ii : ItemInfo = new ItemInfo();
+                for (i in oldCount..._realNumItems)
+                {
+                    var ii:ItemInfo = new ItemInfo();
                     ii.width = _itemSize.x;
                     ii.height = _itemSize.y;
 
@@ -1134,18 +1152,18 @@ class GList extends GComponent
             }
 
             if (this._virtualListChanged != 0)
-                GTimers.inst.remove(_refreshVirtualList);  //立即刷新
-
+                GTimers.inst.remove(_refreshVirtualList); //立即刷新
 
 
             _refreshVirtualList();
         }
         else
         {
-            var cnt : Int = _children.length;
+            var cnt:Int = _children.length;
             if (value > cnt)
             {
-                for (i in cnt...value){
+                for (i in cnt...value)
+                {
                     if (itemProvider == null)
                         addItemFromPool();
                     else
@@ -1168,20 +1186,21 @@ class GList extends GComponent
         return value;
     }
 
-    public function refreshVirtualList() : Void
+    public function refreshVirtualList():Void
     {
         setVirtualListChangedFlag(false);
     }
 
-    private function checkVirtualList() : Void
+    private function checkVirtualList():Void
     {
-        if (this._virtualListChanged != 0) {
+        if (this._virtualListChanged != 0)
+        {
             this._refreshVirtualList();
             GTimers.inst.remove(_refreshVirtualList);
         }
     }
 
-    private function setVirtualListChangedFlag(layoutChanged : Bool = false) : Void
+    private function setVirtualListChangedFlag(layoutChanged:Bool = false):Void
     {
         if (layoutChanged)
             _virtualListChanged = 2;
@@ -1191,9 +1210,9 @@ class GList extends GComponent
         GTimers.inst.callLater(_refreshVirtualList);
     }
 
-    private function _refreshVirtualList() : Void
+    private function _refreshVirtualList():Void
     {
-        var layoutChanged : Bool = _virtualListChanged == 2;
+        var layoutChanged:Bool = _virtualListChanged == 2;
         _virtualListChanged = 0;
         _eventLocked = true;
 
@@ -1230,19 +1249,19 @@ class GList extends GComponent
             }
         }
 
-        var ch : Float = 0;
-        var cw : Float = 0;
+        var ch:Float = 0;
+        var cw:Float = 0;
         if (_realNumItems > 0)
         {
-            var i : Int;
-            var len : Int = Math.ceil(_realNumItems / _curLineItemCount) * _curLineItemCount;
+            var i:Int;
+            var len:Int = Math.ceil(_realNumItems / _curLineItemCount) * _curLineItemCount;
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
             {
                 i = 0;
                 while (i < len)
                 {
                     ch += _virtualItems[i].height + _lineGap;
-                    i+=_curLineItemCount;
+                    i += _curLineItemCount;
                 }
                 if (ch > 0)
                     ch -= _lineGap;
@@ -1254,7 +1273,7 @@ class GList extends GComponent
                 while (i < len)
                 {
                     cw += _virtualItems[i].width + _columnGap;
-                    i+=_curLineItemCount;
+                    i += _curLineItemCount;
                 }
                 if (cw > 0)
                     cw -= _columnGap;
@@ -1262,7 +1281,7 @@ class GList extends GComponent
             }
             else
             {
-                var pageCount : Int = Math.ceil(len / (_curLineItemCount * _curLineItemCount2));
+                var pageCount:Int = Math.ceil(len / (_curLineItemCount * _curLineItemCount2));
                 cw = pageCount * viewWidth;
                 ch = viewHeight;
             }
@@ -1276,12 +1295,12 @@ class GList extends GComponent
         handleScroll(true);
     }
 
-    private function __scrolled(evt : Event) : Void
+    private function __scrolled(evt:Event):Void
     {
         handleScroll(false);
     }
 
-    private function getIndexOnPos1(forceUpdate : Bool) : Int
+    private function getIndexOnPos1(forceUpdate:Bool):Int
     {
         if (_realNumItems < _curLineItemCount)
         {
@@ -1289,16 +1308,17 @@ class GList extends GComponent
             return 0;
         }
 
-        var i : Int;
-        var pos2 : Float;
-        var pos3 : Float;
+        var i:Int;
+        var pos2:Float;
+        var pos3:Float;
 
         if (numChildren > 0 && !forceUpdate)
         {
             pos2 = this.getChildAt(0).y;
             if (pos2 > pos_param)
             {
-                for (i in _firstIndex - _curLineItemCount...0){
+                for (i in _firstIndex - _curLineItemCount...0)
+                {
                     pos2 -= (_virtualItems[i].height + _lineGap);
                     if (pos2 <= pos_param)
                     {
@@ -1312,7 +1332,8 @@ class GList extends GComponent
             }
             else
             {
-                for (i in _firstIndex..._realNumItems){
+                for (i in _firstIndex..._realNumItems)
+                {
                     pos3 = pos2 + _virtualItems[i].height + _lineGap;
                     if (pos3 > pos_param)
                     {
@@ -1329,7 +1350,8 @@ class GList extends GComponent
         else
         {
             pos2 = 0;
-            for (i in 0..._realNumItems){
+            for (i in 0..._realNumItems)
+            {
                 pos3 = pos2 + _virtualItems[i].height + _lineGap;
                 if (pos3 > pos_param)
                 {
@@ -1344,7 +1366,7 @@ class GList extends GComponent
         }
     }
 
-    private function getIndexOnPos2(forceUpdate : Bool) : Int
+    private function getIndexOnPos2(forceUpdate:Bool):Int
     {
         if (_realNumItems < _curLineItemCount)
         {
@@ -1352,16 +1374,17 @@ class GList extends GComponent
             return 0;
         }
 
-        var i : Int;
-        var pos2 : Float;
-        var pos3 : Float;
+        var i:Int;
+        var pos2:Float;
+        var pos3:Float;
 
         if (numChildren > 0 && !forceUpdate)
         {
             pos2 = this.getChildAt(0).x;
             if (pos2 > pos_param)
             {
-                for (i in _firstIndex - _curLineItemCount...0){
+                for (i in _firstIndex - _curLineItemCount...0)
+                {
                     pos2 -= (_virtualItems[i].width + _columnGap);
                     if (pos2 <= pos_param)
                     {
@@ -1375,7 +1398,8 @@ class GList extends GComponent
             }
             else
             {
-                for (i in _firstIndex..._realNumItems){
+                for (i in _firstIndex..._realNumItems)
+                {
                     pos3 = pos2 + _virtualItems[i].width + _columnGap;
                     if (pos3 > pos_param)
                     {
@@ -1392,7 +1416,8 @@ class GList extends GComponent
         else
         {
             pos2 = 0;
-            for (i in 0..._realNumItems){
+            for (i in 0..._realNumItems)
+            {
                 pos3 = pos2 + _virtualItems[i].width + _columnGap;
                 if (pos3 > pos_param)
                 {
@@ -1407,7 +1432,7 @@ class GList extends GComponent
         }
     }
 
-    private function getIndexOnPos3(forceUpdate : Bool) : Int
+    private function getIndexOnPos3(forceUpdate:Bool):Int
     {
         if (_realNumItems < _curLineItemCount)
         {
@@ -1415,13 +1440,14 @@ class GList extends GComponent
             return 0;
         }
 
-        var viewWidth : Float = this.viewWidth;
-        var page : Int = Math.floor(pos_param / viewWidth);
-        var startIndex : Int = page * (_curLineItemCount * _curLineItemCount2);
-        var pos2 : Float = page * viewWidth;
-        var i : Int;
-        var pos3 : Float;
-        for (i in 0..._curLineItemCount){
+        var viewWidth:Float = this.viewWidth;
+        var page:Int = Math.floor(pos_param / viewWidth);
+        var startIndex:Int = page * (_curLineItemCount * _curLineItemCount2);
+        var pos2:Float = page * viewWidth;
+        var i:Int;
+        var pos3:Float;
+        for (i in 0..._curLineItemCount)
+        {
             pos3 = pos2 + _virtualItems[startIndex + i].width + _columnGap;
             if (pos3 > pos_param)
             {
@@ -1435,13 +1461,13 @@ class GList extends GComponent
         return startIndex + _curLineItemCount - 1;
     }
 
-    private function handleScroll(forceUpdate : Bool) : Void
+    private function handleScroll(forceUpdate:Bool):Void
     {
         if (_eventLocked)
             return;
 
-        var pos : Float;
-        var roundSize : Int;
+        var pos:Float;
+        var roundSize:Int;
 
         if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
         {
@@ -1494,23 +1520,23 @@ class GList extends GComponent
         _boundsChanged = false;
     }
 
-    private static var itemInfoVer : Int = 0;  //用来标志item是否在本次处理中已经被重用了
-    private static var enterCounter : Int = 0;  //因为HandleScroll是会重入的，这个用来避免极端情况下的死锁
-    private static var pos_param : Float;
+    private static var itemInfoVer:Int = 0; //用来标志item是否在本次处理中已经被重用了
+    private static var enterCounter:Int = 0; //因为HandleScroll是会重入的，这个用来避免极端情况下的死锁
+    private static var pos_param:Float;
 
-    private function handleScroll1(forceUpdate : Bool) : Void
+    private function handleScroll1(forceUpdate:Bool):Void
     {
         enterCounter++;
         if (enterCounter > 3)
             return;
 
-        var pos : Float = scrollPane.scrollingPosY;
-        var max : Float = pos + scrollPane.viewHeight;
-        var end : Bool = max == scrollPane.contentHeight;  //这个标志表示当前需要滚动到最末，无论内容变化大小
+        var pos:Float = scrollPane.scrollingPosY;
+        var max:Float = pos + scrollPane.viewHeight;
+        var end:Bool = max == scrollPane.contentHeight; //这个标志表示当前需要滚动到最末，无论内容变化大小
 
         //寻找当前位置的第一条项目
         GList.pos_param = pos;
-        var newFirstIndex : Int = getIndexOnPos1(forceUpdate);
+        var newFirstIndex:Int = getIndexOnPos1(forceUpdate);
         pos = GList.pos_param;
         if (newFirstIndex == _firstIndex && !forceUpdate)
         {
@@ -1518,23 +1544,23 @@ class GList extends GComponent
             return;
         }
 
-        var oldFirstIndex : Int = _firstIndex;
+        var oldFirstIndex:Int = _firstIndex;
         _firstIndex = newFirstIndex;
-        var curIndex : Int = newFirstIndex;
-        var forward : Bool = oldFirstIndex > newFirstIndex;
-        var oldCount : Int = this.numChildren;
-        var lastIndex : Int = oldFirstIndex + oldCount - 1;
-        var reuseIndex : Int = (forward) ? lastIndex : oldFirstIndex;
-        var curX : Float = 0;
-        var curY : Float = pos;
-        var needRender : Bool;
-        var deltaSize : Float = 0;
-        var firstItemDeltaSize : Float = 0;
-        var url : String = defaultItem;
-        var ii : ItemInfo;
-        var ii2 : ItemInfo;
-        var i : Int;
-        var j : Int;
+        var curIndex:Int = newFirstIndex;
+        var forward:Bool = oldFirstIndex > newFirstIndex;
+        var oldCount:Int = this.numChildren;
+        var lastIndex:Int = oldFirstIndex + oldCount - 1;
+        var reuseIndex:Int = (forward) ? lastIndex : oldFirstIndex;
+        var curX:Float = 0;
+        var curY:Float = pos;
+        var needRender:Bool;
+        var deltaSize:Float = 0;
+        var firstItemDeltaSize:Float = 0;
+        var url:String = defaultItem;
+        var ii:ItemInfo;
+        var ii2:ItemInfo;
+        var i:Int;
+        var j:Int;
 
         itemInfoVer++;
 
@@ -1565,7 +1591,8 @@ class GList extends GComponent
                 if (forward)
                 {
                     j = reuseIndex;
-                    while (j >= oldFirstIndex){
+                    while (j >= oldFirstIndex)
+                    {
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
@@ -1580,7 +1607,8 @@ class GList extends GComponent
                 }
                 else
                 {
-                    for (j in reuseIndex...lastIndex + 1){
+                    for (j in reuseIndex...lastIndex + 1)
+                    {
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
@@ -1631,7 +1659,7 @@ class GList extends GComponent
 
             ii.updateFlag = itemInfoVer;
             ii.obj.setXY(curX, curY);
-            if (curIndex == newFirstIndex)                   //要显示多一条才不会穿帮
+            if (curIndex == newFirstIndex) //要显示多一条才不会穿帮
                 max += ii.height;
 
             curX += ii.width + _columnGap;
@@ -1644,7 +1672,8 @@ class GList extends GComponent
             curIndex++;
         }
 
-        for (i in 0...oldCount){
+        for (i in 0...oldCount)
+        {
             ii = _virtualItems[oldFirstIndex + i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
@@ -1656,25 +1685,25 @@ class GList extends GComponent
         if (deltaSize != 0 || firstItemDeltaSize != 0)
             _scrollPane.changeContentSizeOnScrolling(0, deltaSize, 0, firstItemDeltaSize);
 
-        if (curIndex > 0 && this.numChildren > 0 && _container.y < 0 && getChildAt(0).y > -_container.y)               //最后一页没填满！
+        if (curIndex > 0 && this.numChildren > 0 && _container.y < 0 && getChildAt(0).y > -_container.y) //最后一页没填满！
             handleScroll1(false);
 
         enterCounter--;
     }
 
-    private function handleScroll2(forceUpdate : Bool) : Void
+    private function handleScroll2(forceUpdate:Bool):Void
     {
         enterCounter++;
         if (enterCounter > 3)
             return;
 
-        var pos : Float = scrollPane.scrollingPosX;
-        var max : Float = pos + scrollPane.viewWidth;
-        var end : Bool = pos == scrollPane.contentWidth;  //这个标志表示当前需要滚动到最末，无论内容变化大小
+        var pos:Float = scrollPane.scrollingPosX;
+        var max:Float = pos + scrollPane.viewWidth;
+        var end:Bool = pos == scrollPane.contentWidth; //这个标志表示当前需要滚动到最末，无论内容变化大小
 
         //寻找当前位置的第一条项目
         GList.pos_param = pos;
-        var newFirstIndex : Int = getIndexOnPos2(forceUpdate);
+        var newFirstIndex:Int = getIndexOnPos2(forceUpdate);
         pos = GList.pos_param;
         if (newFirstIndex == _firstIndex && !forceUpdate)
         {
@@ -1682,23 +1711,23 @@ class GList extends GComponent
             return;
         }
 
-        var oldFirstIndex : Int = _firstIndex;
+        var oldFirstIndex:Int = _firstIndex;
         _firstIndex = newFirstIndex;
-        var curIndex : Int = newFirstIndex;
-        var forward : Bool = oldFirstIndex > newFirstIndex;
-        var oldCount : Int = this.numChildren;
-        var lastIndex : Int = oldFirstIndex + oldCount - 1;
-        var reuseIndex : Int = (forward) ? lastIndex : oldFirstIndex;
-        var curX : Float = pos;
-        var curY : Float = 0;
-        var needRender : Bool;
-        var deltaSize : Float = 0;
-        var firstItemDeltaSize : Float = 0;
-        var url : String = defaultItem;
-        var ii : ItemInfo;
-        var ii2 : ItemInfo;
-        var i : Int;
-        var j : Int;
+        var curIndex:Int = newFirstIndex;
+        var forward:Bool = oldFirstIndex > newFirstIndex;
+        var oldCount:Int = this.numChildren;
+        var lastIndex:Int = oldFirstIndex + oldCount - 1;
+        var reuseIndex:Int = (forward) ? lastIndex : oldFirstIndex;
+        var curX:Float = pos;
+        var curY:Float = 0;
+        var needRender:Bool;
+        var deltaSize:Float = 0;
+        var firstItemDeltaSize:Float = 0;
+        var url:String = defaultItem;
+        var ii:ItemInfo;
+        var ii2:ItemInfo;
+        var i:Int;
+        var j:Int;
 
         itemInfoVer++;
 
@@ -1728,7 +1757,8 @@ class GList extends GComponent
                 if (forward)
                 {
                     j = reuseIndex;
-                    while (j >= oldFirstIndex){
+                    while (j >= oldFirstIndex)
+                    {
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
@@ -1743,7 +1773,8 @@ class GList extends GComponent
                 }
                 else
                 {
-                    for (j in reuseIndex...lastIndex + 1){
+                    for (j in reuseIndex...lastIndex + 1)
+                    {
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
@@ -1794,7 +1825,7 @@ class GList extends GComponent
 
             ii.updateFlag = itemInfoVer;
             ii.obj.setXY(curX, curY);
-            if (curIndex == newFirstIndex)                   //要显示多一条才不会穿帮
+            if (curIndex == newFirstIndex) //要显示多一条才不会穿帮
                 max += ii.width;
 
             curY += ii.height + _lineGap;
@@ -1807,7 +1838,8 @@ class GList extends GComponent
             curIndex++;
         }
 
-        for (i in 0...oldCount){
+        for (i in 0...oldCount)
+        {
             ii = _virtualItems[oldFirstIndex + i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
@@ -1819,47 +1851,48 @@ class GList extends GComponent
         if (deltaSize != 0 || firstItemDeltaSize != 0)
             _scrollPane.changeContentSizeOnScrolling(deltaSize, 0, firstItemDeltaSize, 0);
 
-        if (curIndex > 0 && this.numChildren > 0 && _container.x < 0 && getChildAt(0).x > -_container.x)               //最后一页没填满！
+        if (curIndex > 0 && this.numChildren > 0 && _container.x < 0 && getChildAt(0).x > -_container.x) //最后一页没填满！
             handleScroll2(false);
 
         enterCounter--;
     }
 
-    private function handleScroll3(forceUpdate : Bool) : Void
+    private function handleScroll3(forceUpdate:Bool):Void
     {
-        var pos : Float = scrollPane.scrollingPosX;
+        var pos:Float = scrollPane.scrollingPosX;
 
         //寻找当前位置的第一条项目
         GList.pos_param = pos;
-        var newFirstIndex : Int = getIndexOnPos3(forceUpdate);
+        var newFirstIndex:Int = getIndexOnPos3(forceUpdate);
         pos = GList.pos_param;
         if (newFirstIndex == _firstIndex && !forceUpdate)
             return;
 
-        var oldFirstIndex : Int = _firstIndex;
+        var oldFirstIndex:Int = _firstIndex;
         _firstIndex = newFirstIndex;
 
         //分页模式不支持不等高，所以渲染满一页就好了
 
-        var reuseIndex : Int = oldFirstIndex;
-        var virtualItemCount : Int = _virtualItems.length;
-        var pageSize : Int = _curLineItemCount * _curLineItemCount2;
-        var startCol : Int = newFirstIndex % _curLineItemCount;
-        var viewWidth : Float = this.viewWidth;
-        var page : Int = Std.int(newFirstIndex / pageSize);
-        var startIndex : Int = page * pageSize;
-        var lastIndex : Int = startIndex + pageSize * 2;  //测试两页
-        var needRender : Bool;
-        var i : Int;
-        var ii : ItemInfo;
-        var ii2 : ItemInfo;
-        var col : Int;
+        var reuseIndex:Int = oldFirstIndex;
+        var virtualItemCount:Int = _virtualItems.length;
+        var pageSize:Int = _curLineItemCount * _curLineItemCount2;
+        var startCol:Int = newFirstIndex % _curLineItemCount;
+        var viewWidth:Float = this.viewWidth;
+        var page:Int = Std.int(newFirstIndex / pageSize);
+        var startIndex:Int = page * pageSize;
+        var lastIndex:Int = startIndex + pageSize * 2; //测试两页
+        var needRender:Bool;
+        var i:Int;
+        var ii:ItemInfo;
+        var ii2:ItemInfo;
+        var col:Int;
         var url:String = _defaultItem;
 
         itemInfoVer++;
 
         //先标记这次要用到的项目
-        for (i in startIndex...lastIndex){
+        for (i in startIndex...lastIndex)
+        {
             if (i >= _realNumItems)
                 continue;
 
@@ -1879,9 +1912,10 @@ class GList extends GComponent
             ii.updateFlag = itemInfoVer;
         }
 
-        var lastObj : GObject = null;
-        var insertIndex : Int = 0;
-        for (i in startIndex...lastIndex){
+        var lastObj:GObject = null;
+        var insertIndex:Int = 0;
+        for (i in startIndex...lastIndex)
+        {
             if (i >= _realNumItems)
                 continue;
 
@@ -1953,11 +1987,11 @@ class GList extends GComponent
             ii.obj.setXY(Std.int((i / pageSize) * viewWidth + col * (ii.width + _columnGap)),
             Std.int(i / _curLineItemCount) % _curLineItemCount2 * (ii.height + _lineGap));
 
-        }  //释放未使用的
+        } //释放未使用的
 
 
-
-        for (i in reuseIndex...virtualItemCount){
+        for (i in reuseIndex...virtualItemCount)
+        {
             ii = _virtualItems[i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
@@ -1967,17 +2001,18 @@ class GList extends GComponent
         }
     }
 
-    private function handleArchOrder1() : Void
+    private function handleArchOrder1():Void
     {
         if (this.childrenRenderOrder == ChildrenRenderOrder.Arch)
         {
-            var mid : Float = _scrollPane.posY + this.viewHeight / 2;
-            var minDist : Float = CompatUtil.INT_MAX_VALUE;
-            var dist : Float;
-            var apexIndex : Int = 0;
-            var cnt : Int = this.numChildren;
-            for (i in 0...cnt){
-                var obj : GObject = getChildAt(i);
+            var mid:Float = _scrollPane.posY + this.viewHeight / 2;
+            var minDist:Float = CompatUtil.INT_MAX_VALUE;
+            var dist:Float;
+            var apexIndex:Int = 0;
+            var cnt:Int = this.numChildren;
+            for (i in 0...cnt)
+            {
+                var obj:GObject = getChildAt(i);
                 if (!foldInvisibleItems || obj.visible)
                 {
                     dist = Math.abs(mid - obj.y - obj.height / 2);
@@ -1992,17 +2027,18 @@ class GList extends GComponent
         }
     }
 
-    private function handleArchOrder2() : Void
+    private function handleArchOrder2():Void
     {
         if (this.childrenRenderOrder == ChildrenRenderOrder.Arch)
         {
-            var mid : Float = _scrollPane.posX + this.viewWidth / 2;
-            var minDist : Float = CompatUtil.INT_MAX_VALUE;
-            var dist : Float;
-            var apexIndex : Int = 0;
-            var cnt : Int = this.numChildren;
-            for (i in 0...cnt){
-                var obj : GObject = getChildAt(i);
+            var mid:Float = _scrollPane.posX + this.viewWidth / 2;
+            var minDist:Float = CompatUtil.INT_MAX_VALUE;
+            var dist:Float;
+            var apexIndex:Int = 0;
+            var cnt:Int = this.numChildren;
+            for (i in 0...cnt)
+            {
+                var obj:GObject = getChildAt(i);
                 if (!foldInvisibleItems || obj.visible)
                 {
                     dist = Math.abs(mid - obj.x - obj.width / 2);
@@ -2017,10 +2053,10 @@ class GList extends GComponent
         }
     }
 
-    private function handleAlign(contentWidth : Float, contentHeight : Float) : Void
+    private function handleAlign(contentWidth:Float, contentHeight:Float):Void
     {
-        var newOffsetX : Float = 0;
-        var newOffsetY : Float = 0;
+        var newOffsetX:Float = 0;
+        var newOffsetY:Float = 0;
         if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal || _layout == ListLayoutType.Pagination)
         {
             if (contentHeight < viewHeight)
@@ -2055,34 +2091,36 @@ class GList extends GComponent
         }
     }
 
-    override private function updateBounds() : Void
+    override private function updateBounds():Void
     {
-        if(_virtual)
+        if (_virtual)
             return;
 
-        var i : Int = 0;
-        var j : Int = 0;
-        var child : GObject;
-        var curX : Int = 0;
-        var curY : Int = 0;
-        var maxWidth : Int = 0;
-        var maxHeight : Int = 0;
-        var cw : Int = 0;
-        var ch : Int = 0;
-        var sw : Int = 0;
-        var sh : Int = 0;
-        var p : Int = 0;
-        var cnt : Int = _children.length;
-        var viewWidth : Float = this.viewWidth;
-        var viewHeight : Float = this.viewHeight;
+        var i:Int = 0;
+        var j:Int = 0;
+        var child:GObject;
+        var curX:Int = 0;
+        var curY:Int = 0;
+        var maxWidth:Int = 0;
+        var maxHeight:Int = 0;
+        var cw:Int = 0;
+        var ch:Int = 0;
+        var sw:Int = 0;
+        var sh:Int = 0;
+        var p:Int = 0;
+        var cnt:Int = _children.length;
+        var viewWidth:Float = this.viewWidth;
+        var viewHeight:Float = this.viewHeight;
 
-        for (i in 0...cnt){
+        for (i in 0...cnt)
+        {
             child = getChildAt(i);
             child.ensureSizeCorrect();
         }
         if (_layout == ListLayoutType.SingleColumn)
         {
-            for (i in 0...cnt){
+            for (i in 0...cnt)
+            {
                 child = getChildAt(i);
                 if (foldInvisibleItems && !child.visible)
                     continue;
@@ -2102,7 +2140,8 @@ class GList extends GComponent
         }
         else if (_layout == ListLayoutType.SingleRow)
         {
-            for (i in 0...cnt){
+            for (i in 0...cnt)
+            {
                 child = getChildAt(i);
                 if (foldInvisibleItems && !child.visible)
                     continue;
@@ -2123,7 +2162,8 @@ class GList extends GComponent
         else if (_layout == ListLayoutType.FlowHorizontal)
         {
             j = 0;
-            for (i in 0...cnt){
+            for (i in 0...cnt)
+            {
                 child = getChildAt(i);
                 if (foldInvisibleItems && !child.visible)
                     continue;
@@ -2157,7 +2197,8 @@ class GList extends GComponent
         else if (_layout == ListLayoutType.FlowVertical)
         {
             j = 0;
-            for (i in 0...cnt){
+            for (i in 0...cnt)
+            {
                 child = getChildAt(i);
                 if (foldInvisibleItems && !child.visible)
                     continue;
@@ -2189,7 +2230,8 @@ class GList extends GComponent
         }
         else //pagination
         {
-            for (i in 0...cnt){
+            for (i in 0...cnt)
+            {
                 child = getChildAt(i);
                 if (foldInvisibleItems && !child.visible)
                     continue;
@@ -2211,7 +2253,7 @@ class GList extends GComponent
                     maxHeight = 0;
                     j = 0;
 
-                    if (curY + sh > viewHeight && maxWidth != 0)   //new page
+                    if (curY + sh > viewHeight && maxWidth != 0) //new page
                     {
                         p++;
                         curY = 0;
@@ -2231,16 +2273,16 @@ class GList extends GComponent
         setBounds(0, 0, cw, ch);
     }
 
-    override public function setup_beforeAdd(xml : FastXML) : Void
+    override public function setup_beforeAdd(xml:FastXML):Void
     {
         super.setup_beforeAdd(xml);
 
-        var str : String;
+        var str:String;
         str = xml.att.layout;
         if (str != null)
             _layout = ListLayoutType.parse(str);
 
-        var overflow : Int;
+        var overflow:Int;
         str = xml.att.overflow;
         if (str != null)
             overflow = OverflowType.parse(str);
@@ -2261,32 +2303,32 @@ class GList extends GComponent
 
         if (overflow == OverflowType.Scroll)
         {
-            var scroll : Int;
+            var scroll:Int;
             str = xml.att.scroll;
             if (str != null)
                 scroll = ScrollType.parse(str);
             else
                 scroll = ScrollType.Vertical;
 
-            var scrollBarDisplay : Int;
+            var scrollBarDisplay:Int;
             str = xml.att.scrollBar;
             if (str != null)
                 scrollBarDisplay = ScrollBarDisplayType.parse(str);
             else
                 scrollBarDisplay = ScrollBarDisplayType.Default;
-            var scrollBarFlags : Int = Std.parseInt(xml.att.scrollBarFlags);
+            var scrollBarFlags:Int = Std.parseInt(xml.att.scrollBarFlags);
 
-            var scrollBarMargin : Margin = new Margin();
+            var scrollBarMargin:Margin = new Margin();
             str = xml.att.scrollBarMargin;
             if (str != null)
                 scrollBarMargin.parse(str);
 
-            var vtScrollBarRes : String = null;
-            var hzScrollBarRes : String = null;
+            var vtScrollBarRes:String = null;
+            var hzScrollBarRes:String = null;
             str = xml.att.scrollBarRes;
             if (str != null)
             {
-                var arr : Array<Dynamic> = str.split(",");
+                var arr:Array<Dynamic> = str.split(",");
                 vtScrollBarRes = arr[0];
                 hzScrollBarRes = arr[1];
             }
@@ -2320,16 +2362,16 @@ class GList extends GComponent
         str = xml.att.autoItemSize;
         _autoResizeItem = str != "false";
 
-        var col : FastXMLList = xml.nodes.item;
+        var col:FastXMLList = xml.nodes.item;
         for (cxml in col.iterator())
         {
-            var url : String = cxml.att.url;
+            var url:String = cxml.att.url;
             if (url == null)
                 url = _defaultItem;
             if (url == null)
                 continue;
 
-            var obj : GObject = getFromPool(url);
+            var obj:GObject = getFromPool(url);
             if (obj != null)
             {
                 addChild(obj);
@@ -2348,13 +2390,12 @@ class GList extends GComponent
 }
 
 
-
 class ItemInfo
 {
-    public var width : Float = 0;
-    public var height : Float = 0;
-    public var obj : GObject;
-    public var updateFlag : Int = 0;
+    public var width:Float = 0;
+    public var height:Float = 0;
+    public var obj:GObject;
+    public var updateFlag:Int = 0;
 
     public function new()
     {

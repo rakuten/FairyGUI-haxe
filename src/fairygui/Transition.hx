@@ -1074,6 +1074,7 @@ class Transition
                     else
                         value.f1 = intv / 100;
                 }
+
                 else
                     value.f1 = 1;
 

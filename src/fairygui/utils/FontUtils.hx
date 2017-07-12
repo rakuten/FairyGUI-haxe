@@ -12,6 +12,13 @@ class FontUtils
     public function new()
     {
     }
+
+    public static function registerFont(fontName:String, path:String):Void
+    {
+        var font:Font = Font.fromFile(path);
+        font.fontName = fontName;
+        Font.enumerateFonts().push(font);
+    }
     
     public static function updateEmbeddedFonts() : Void
     {

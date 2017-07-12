@@ -44,6 +44,8 @@ class GComponent extends GObject
     private var _margin:Margin;
     private var _trackBounds:Bool = false;
     private var _boundsChanged:Bool = false;
+    private var _childrenRenderOrder:Int = 0;
+    private var _apexIndex:Int = 0;
 
     @:allow(fairygui)
     private var _buildingDisplayList:Bool = false;
@@ -61,9 +63,6 @@ class GComponent extends GObject
     private var _scrollPane:ScrollPane;
     @:allow(fairygui)
     private var _alignOffset:Point;
-
-    private var _childrenRenderOrder:Int = 0;
-    private var _apexIndex:Int = 0;
 
     public function new()
     {
@@ -203,6 +202,7 @@ class GComponent extends GObject
                 _sortingChildCount--;
 
             _children.splice(index, 1);
+            child.group = null;
             if (child.inContainer)
             {
                 _container.removeChild(child.displayObject);
@@ -938,11 +938,22 @@ class GComponent extends GObject
     private function __render():Void
     {
         if (_boundsChanged)
+        {
+            for (child in _children)
+            {
+                child.ensureSizeCorrect();
+            }
             updateBounds();
+        }
     }
 
     public function ensureBoundsCorrect():Void
     {
+        for (child in _children)
+        {
+            child.ensureSizeCorrect();
+        }
+
         if (_boundsChanged)
             updateBounds();
     }
@@ -960,11 +971,6 @@ class GComponent extends GObject
             var ar:Int = CompatUtil.INT_MIN_VALUE;
             var ab:Int = CompatUtil.INT_MIN_VALUE;
             var tmp:Int;
-
-            for (child in _children)
-            {
-                child.ensureSizeCorrect();
-            }
 
             for (child in _children)
             {
@@ -1174,12 +1180,12 @@ class GComponent extends GObject
 
         str = xml.att.size;
         arr = str.split(",");
-        _sourceWidth = Std.parseInt(arr[0]);
-        _sourceHeight = Std.parseInt(arr[1]);
-        _initWidth = _sourceWidth;
-        _initHeight = _sourceHeight;
+        sourceWidth = Std.parseInt(arr[0]);
+        sourceHeight = Std.parseInt(arr[1]);
+        initWidth = sourceWidth;
+        initHeight = sourceHeight;
 
-        setSize(_sourceWidth, _sourceHeight);
+        setSize(sourceWidth, sourceHeight);
 
         str = xml.att.pivot;
         if (str != null)
@@ -1187,6 +1193,16 @@ class GComponent extends GObject
             arr = str.split(",");
             str = xml.att.anchor;
             internalSetPivot(Std.parseFloat(arr[0]), Std.parseFloat(arr[1]), str == "true");
+        }
+
+        str = xml.att.restrictSize;
+        if(str != null)
+        {
+            arr = str.split(",");
+            minWidth = Std.parseInt(arr[0]);
+            maxWidth = Std.parseInt(arr[1]);
+            minHeight = Std.parseInt(arr[2]);
+            maxHeight= Std.parseInt(arr[3]);
         }
 
         str = xml.att.opaque;
@@ -1332,7 +1348,16 @@ class GComponent extends GObject
     {
         super.setup_afterAdd(xml);
 
-        var str:String = xml.att.controller;
+        var str:String;
+
+        if(scrollPane != null)
+        {
+            str = xml.att.pageController;
+            if(str != null)
+                scrollPane.pageController = parent.getController(str);
+        }
+
+        str = xml.att.controller;
         if (str != null)
         {
             var arr:Array<String> = str.split(",");

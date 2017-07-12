@@ -25,6 +25,7 @@ class GComboBox extends GComponent
     public var values(get, set):Array<String>;
     public var selectedIndex(get, set):Int;
     public var value(get, set):String;
+    public var selectionController(get, set):Controller;
 
     public var dropdown:GComponent;
 
@@ -42,6 +43,7 @@ class GComboBox extends GComponent
     private var _selectedIndex:Int = 0;
     private var _buttonController:Controller;
     private var _over:Bool = false;
+    private var _selectionController:Controller;
 
     public function new()
     {
@@ -214,6 +216,7 @@ class GComboBox extends GComponent
             if (_icons != null)
                 this.icon = null;
         }
+        updateSelectionController();
         return val;
     }
 
@@ -225,7 +228,22 @@ class GComboBox extends GComponent
     private function set_value(val:String):String
     {
         this.selectedIndex = Lambda.indexOf(_values, val);
+        var index:Int = Lambda.indexOf(_values, val);
+        if (index == -1 && val == null)
+            index = _values.indexOf("");
+        this.selectedIndex = index;
         return val;
+    }
+
+    public function get_selectionController():Controller
+    {
+        return _selectionController;
+    }
+
+    public function set_selectionController(value:Controller):Controller
+    {
+        _selectionController = value;
+        return _selectionController;
     }
 
     private function setState(val:String):Void
@@ -253,6 +271,26 @@ class GComboBox extends GComponent
         }
         else
             super.handleGrayedChanged();
+    }
+
+    override public function handleControllerChanged(c:Controller):Void
+    {
+        super.handleControllerChanged(c);
+
+        if (_selectionController == c)
+            this.selectedIndex = c.selectedIndex;
+    }
+
+    private function updateSelectionController():Void
+    {
+        if (_selectionController != null && !_selectionController.changing
+            && _selectedIndex < _selectionController.pageCount)
+        {
+            var c:Controller = _selectionController;
+            _selectionController = null;
+            c.selectedIndex = _selectedIndex;
+            _selectionController = c;
+        }
     }
 
     override public function dispose():Void
@@ -375,6 +413,10 @@ class GComboBox extends GComponent
                 else if (str == "down")
                     _popupDownward = true;
             }
+
+            str = xml.att.selectionController;
+            if (str != null)
+                _selectionController = parent.getController(str);
         }
     }
 

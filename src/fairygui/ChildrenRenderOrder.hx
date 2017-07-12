@@ -10,4 +10,20 @@ class ChildrenRenderOrder
     public function new()
     {
     }
+
+    public static function parse(value:String):Int
+    {
+        switch (value)
+        {
+            case "ascent":
+                return Ascent;
+            case "descent":
+                return Descent;
+            case "arch":
+                return Arch;
+            default:
+                return Ascent;
+        }
+    }
+
 }

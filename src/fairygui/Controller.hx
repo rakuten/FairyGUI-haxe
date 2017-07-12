@@ -34,6 +34,8 @@ class Controller extends EventDispatcher
     @:allow(fairygui)
     private var _autoRadioGroupDepth:Bool = false;
 
+    public var changing:Bool = false;
+
     private static var _nextPageId:Int = 0;
 
     public function new()
@@ -73,11 +75,15 @@ class Controller extends EventDispatcher
             if (value > this._pageIds.length - 1)
                 throw new Error("index out of bounds: " + value);
 
+            changing = true;
+
             this._previousIndex = this._selectedIndex;
             this._selectedIndex = value;
             _parent.applyController(this);
 
             this.dispatchEvent(new StateChangeEvent(StateChangeEvent.CHANGED));
+
+            changing = false;
 
             if (_playingTransition != null)
             {
@@ -112,9 +118,13 @@ class Controller extends EventDispatcher
             if (value > this._pageIds.length - 1)
                 throw new Error("index out of bounds: " + value);
 
+            changing = true;
+
             this._previousIndex = this._selectedIndex;
             this._selectedIndex = value;
             _parent.applyController(this);
+
+            changing = false;
 
             if (_playingTransition != null)
             {
