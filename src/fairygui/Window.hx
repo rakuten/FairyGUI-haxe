@@ -156,7 +156,7 @@ class Window extends GComponent
 
     public function hideImmediately():Void
     {
-        var r:GRoot = ((Std.is(parent, GRoot))) ? cast((parent), GRoot) : null;
+        var r:GRoot = Std.is(parent, GRoot) ? cast(parent, GRoot) : null;
         if (r == null)
             r = GRoot.inst;
         r.hideWindowImmediately(this);

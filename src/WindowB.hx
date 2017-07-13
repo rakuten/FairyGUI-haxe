@@ -22,18 +22,20 @@ class WindowB extends Window
     override private function doShowAnimation() : Void
     {
         this.setScale(0.1, 0.1);
-        TweenX.to(this, {
-                    scaleX : 1,
-                    scaleY : 1
-        }, 0.3).ease(Easing.quadOut).onFinish(onShown);
+        TweenX.tweenFunc2(setScale,0.1,0.1,1,1).time(0.3).ease(Easing.quadOut).onFinish(onShown);
+//        TweenX.to(this, {
+//                    scaleX : 1,
+//                    scaleY : 1
+//        }, 0.3).ease(Easing.quadOut).onFinish(onShown);
     }
     
     override private function doHideAnimation() : Void
     {
-        TweenX.to(this, {
-                    scaleX : 0.1,
-                    scaleY : 0.1
-                }, 0.3).ease(Easing.quadOut).onFinish(hideImmediately);
+        TweenX.tweenFunc2(setScale,1,1,0.1,0.1).time(0.3).ease(Easing.quadOut).onFinish(hideImmediately);
+//        TweenX.to(this, {
+//                    scaleX : 0.1,
+//                    scaleY : 0.1
+//                }, 0.3).ease(Easing.quadOut).onFinish(hideImmediately);
     }
     
     override private function onShown() : Void
