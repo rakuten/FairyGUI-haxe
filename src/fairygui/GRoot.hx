@@ -6,7 +6,6 @@ import fairygui.utils.ToolSet;
 import fairygui.Window;
 import openfl.display.DisplayObject;
 import openfl.display.Stage;
-import openfl.errors.Error;
 import openfl.events.Event;
 import openfl.events.EventPhase;
 import openfl.events.MouseEvent;
@@ -18,6 +17,7 @@ import openfl.system.TouchscreenType;
 import openfl.text.TextField;
 import openfl.ui.Multitouch;
 import openfl.ui.MultitouchInputMode;
+import openfl.Vector;
 
 @:meta(Event(name = "focusChanged", type = "fairygui.event.FocusChangeEvent"))
 
@@ -30,6 +30,7 @@ class GRoot extends GComponent
     public var hasAnyPopup(get, never):Bool;
     public var focus(get, set):GObject;
     public var volumeScale(get, set):Float;
+    public var modalLayer(get, never):GGraph;
 
     private var _nativeStage:Stage;
     private var _modalLayer:GGraph;
@@ -45,6 +46,8 @@ class GRoot extends GComponent
     private var _designResolutionX:Int = 0;
     private var _designResolutionY:Int = 0;
     private var _screenMatchMode:Int = 0;
+    private var _popupCloseFlags:Vector<Bool>;
+
 
     private static var _inst:GRoot;
 
@@ -76,6 +79,8 @@ class GRoot extends GComponent
         _contextMenuDisabled = Capabilities.playerType == "Desktop";
         _popupStack = new Array<GObject>();
         _justClosedPopups = new Array<GObject>();
+        _popupCloseFlags = new Vector<Bool>();
+
         displayObject.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
     }
 
@@ -241,7 +246,8 @@ class GRoot extends GComponent
         for (i in 0...cnt)
         {
             var g:GObject = arr[i];
-            if (Std.is(g, Window) && !(try cast(g, Window)catch (e:Dynamic) null).modal)
+            if (Std.is(g, Window) && !(try cast(g, Window)
+            catch (e:Dynamic) null).modal)
                 cast(g, Window).hide();
         }
     }
@@ -297,6 +303,11 @@ class GRoot extends GComponent
         return null;
     }
 
+    public function get_modalLayer():GGraph
+    {
+        return _modalLayer;
+    }
+
     private function get_hasModalWindow():Bool
     {
         return _modalLayer.parent != null;
@@ -307,7 +318,7 @@ class GRoot extends GComponent
         return (_modalWaitPane != null && _modalWaitPane.inContainer);
     }
 
-    public function showPopup(popup:GObject, target:GObject = null, downward:Dynamic = null):Void
+    public function showPopup(popup:GObject, target:GObject = null, downward:Dynamic = null, closeUntilMouseUp:Bool = false):Void
     {
         if (_popupStack.length > 0)
         {
@@ -318,11 +329,13 @@ class GRoot extends GComponent
                 while (i >= k)
                 {
                     closePopup(_popupStack.pop());
+                    _popupCloseFlags.pop();
                     i--;
                 }
             }
         }
         _popupStack.push(popup);
+        _popupCloseFlags.push(closeUntilMouseUp);
 
         addChild(popup);
         adjustModalLayer();
@@ -359,12 +372,12 @@ class GRoot extends GComponent
         popup.setXY(Std.int(xx), Std.int(yy));
     }
 
-    public function togglePopup(popup:GObject, target:GObject = null, downward:Dynamic = null):Void
+    public function togglePopup(popup:GObject, target:GObject = null, downward:Dynamic = null, closeUntilMouseUp:Bool = false):Void
     {
         if (Lambda.indexOf(_justClosedPopups, popup) != -1)
             return;
 
-        showPopup(popup, target, downward);
+        showPopup(popup, target, downward, closeUntilMouseUp);
     }
 
     public function hidePopup(popup:GObject = null):Void
@@ -379,6 +392,7 @@ class GRoot extends GComponent
                 while (i >= k)
                 {
                     closePopup(_popupStack.pop());
+                    _popupCloseFlags.pop();
                     i--;
                 }
             }
@@ -393,6 +407,7 @@ class GRoot extends GComponent
                 i--;
             }
             _popupStack.splice(0, _popupStack.length);
+            _popupCloseFlags.splice(0, _popupCloseFlags.length);
         }
     }
 
@@ -507,7 +522,7 @@ class GRoot extends GComponent
     private function set_focus(value:GObject):GObject
     {
         if (value != null && (!value.focusable || !value.onStage))
-            throw new Error("invalid focus target");
+            return null;
 
         setFocus(value);
         if (Std.is(value, GTextInput))
@@ -558,8 +573,7 @@ class GRoot extends GComponent
         while (i >= 0)
         {
             var g:GObject = this.getChildAt(i);
-            if ((Std.is(g, Window)) && (try cast(g, Window)
-            catch (e:Dynamic) null).modal)
+            if ((Std.is(g, Window)) && cast(g, Window).modal)
             {
                 if (_modalLayer.parent == null)
                     addChildAt(_modalLayer, i);
@@ -619,8 +633,7 @@ class GRoot extends GComponent
         buttonDown = true;
         _hitUI = evt.target != _nativeStage;
 
-        var mc:DisplayObject = try cast(evt.target, DisplayObject)
-        catch (e:Dynamic) null;
+        var mc:DisplayObject = try cast(evt.target, DisplayObject)catch (e:Dynamic) null;
         while (mc != _nativeStage && mc != null)
         {
             if (Std.is(mc, UIDisplayObject))
@@ -656,9 +669,14 @@ class GRoot extends GComponent
                         i = _popupStack.length - 1;
                         while (i > pindex)
                         {
-                            popup = _popupStack.pop();
-                            closePopup(popup);
-                            _justClosedPopups.push(popup);
+                            if (!_popupCloseFlags[i])
+                            {
+                                popup = _popupStack[i];
+                                _popupStack.splice(i, 1);
+                                _popupCloseFlags.splice(i, 1);
+                                closePopup(popup);
+                                _justClosedPopups.push(popup);
+                            }
                             i--;
                         }
                         handled = true;
@@ -674,12 +692,16 @@ class GRoot extends GComponent
                 i = cnt - 1;
                 while (i >= 0)
                 {
-                    popup = _popupStack[i];
-                    closePopup(popup);
-                    _justClosedPopups.push(popup);
+                    if (!_popupCloseFlags[i])
+                    {
+                        popup = _popupStack[i];
+                        _popupStack.splice(i, 1);
+                        _popupCloseFlags.splice(i, 1);
+                        closePopup(popup);
+                        _justClosedPopups.push(popup);
+                    }
                     i--;
                 }
-                _popupStack.splice(0, _popupStack.length);
             }
         }
     }
@@ -696,6 +718,58 @@ class GRoot extends GComponent
     private function __stageMouseUpCapture(evt:MouseEvent):Void
     {
         buttonDown = false;
+        if (_popupStack.length > 0)
+        {
+            var mc:DisplayObject = cast evt.target;
+            var handled:Bool = false;
+            var popup:GObject;
+            var i:Int;
+            while (mc != _nativeStage && mc != null)
+            {
+                if (Std.is(mc, UIDisplayObject))
+                {
+                    var pindex:Int = _popupStack.indexOf(cast(mc, UIDisplayObject).owner);
+                    if (pindex != -1)
+                    {
+                        i = _popupStack.length - 1;
+                        while (i > pindex)
+                        {
+                            if (_popupCloseFlags[i])
+                            {
+                                popup = _popupStack[i];
+                                _popupStack.splice(i, 1);
+                                _popupCloseFlags.splice(i, 1);
+                                closePopup(popup);
+                                _justClosedPopups.push(popup);
+                            }
+                            i--;
+                        }
+                        handled = true;
+                        break;
+                    }
+                }
+                mc = mc.parent;
+            }
+
+            if (!handled)
+            {
+                var cnt:Int = _popupStack.length;
+                i = cnt - 1;
+                while (i >= 0)
+                {
+                    if (_popupCloseFlags[i])
+                    {
+                        popup = _popupStack[i];
+                        _popupStack.splice(i, 1);
+                        _popupCloseFlags.splice(i, 1);
+                        closePopup(popup);
+                        _justClosedPopups.push(popup);
+                    }
+                    i--;
+
+                }
+            }
+        }
     }
 
     private function __stageMouseUp(evt:MouseEvent):Void

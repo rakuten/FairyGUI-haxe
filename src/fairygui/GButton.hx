@@ -652,7 +652,7 @@ class GButton extends GComponent
         }
         else
         {
-            if (_relatedController)
+            if (_relatedController != null)
                 _relatedController.selectedPageId = _pageOption.id;
         }
     }

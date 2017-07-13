@@ -22,6 +22,7 @@ class TreeView
     public function new(list:GList)
     {
         _list = list;
+        _list.removeChildrenToPool();
         _list.addEventListener(ItemEvent.CLICK, __clickItem);
 
         _root = new TreeNode(true);
@@ -67,7 +68,7 @@ class TreeView
     public function getSelectedNode():TreeNode
     {
         if (_list.selectedIndex != -1)
-            return cast((_list.getChildAt(_list.selectedIndex).data), TreeNode)
+            return cast((_list.getChildAt(_list.selectedIndex).data), TreeNode);
         else
             return null;
     }
@@ -242,7 +243,7 @@ class TreeView
         {
             _listener.treeNodeRender(node, node.cell);
 
-            var expandButton:GButton = cast((node.cell.getChild("expandButton")), GButton);
+            var expandButton:GButton = cast(node.cell.getChild("expandButton"), GButton);
             if (expandButton != null)
                 expandButton.selected = true;
         }
@@ -264,7 +265,7 @@ class TreeView
         {
             _listener.treeNodeRender(node, node.cell);
 
-            var expandButton:GButton = cast((node.cell.getChild("expandButton")), GButton);
+            var expandButton:GButton = cast(node.cell.getChild("expandButton"), GButton);
             if (expandButton != null)
                 expandButton.selected = false;
         }
@@ -277,7 +278,7 @@ class TreeView
     private function afterMoved(node:TreeNode):Void
     {
         if (!node.isFolder)
-            _list.removeChild(node.cell)
+            _list.removeChild(node.cell);
         else
             hideFolderNode(node);
 
@@ -345,13 +346,15 @@ class TreeView
 
     private function __clickExpandButton(evt:Event):Void
     {
-        var expandButton:GButton = cast((evt.currentTarget), GButton);
-        var node:TreeNode = cast((expandButton.parent.data), TreeNode);
+        evt.stopPropagation();
+
+        var expandButton:GButton = cast(evt.currentTarget, GButton);
+        var node:TreeNode = cast(expandButton.parent.data, TreeNode);
         if (_list.scrollPane != null)
         {
             var posY:Float = _list.scrollPane.posY;
             if (expandButton.selected)
-                node.expanded = true
+                node.expanded = true;
             else
                 node.expanded = false;
             _list.scrollPane.posY = posY;
@@ -360,7 +363,7 @@ class TreeView
         else
         {
             if (expandButton.selected)
-                node.expanded = true
+                node.expanded = true;
             else
                 node.expanded = false;
         }

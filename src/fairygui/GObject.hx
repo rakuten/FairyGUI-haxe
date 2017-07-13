@@ -1156,7 +1156,7 @@ class GObject extends EventDispatcher
             else
             {
                 if (type == "rightClick" && (Std.is(this, GComponent)))
-                    cast((this), GComponent).opaque = true;
+                    cast(this, GComponent).opaque = true;
 
                 _displayObject.addEventListener(type, _reDispatch, useCapture, priority, useWeakReference);
             }

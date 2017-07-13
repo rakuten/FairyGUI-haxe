@@ -162,7 +162,7 @@ class GGroup extends GObject
 
         if (_layout == GroupLayoutType.Horizontal)
         {
-            var curX:Float;
+            var curX:Float = Math.NaN;
             cnt = parent.numChildren;
             for (i in 0...cnt)
             {
@@ -182,7 +182,7 @@ class GGroup extends GObject
         }
         else if (_layout == GroupLayoutType.Vertical)
         {
-            var curY:Float;
+            var curY:Float = Math.NaN;
             cnt = parent.numChildren;
             for (i in 0...cnt)
             {
@@ -316,7 +316,7 @@ class GGroup extends GObject
         if (_layout == GroupLayoutType.Horizontal)
         {
             remainSize = lineSize = this.width - (numChildren - 1) * _columnGap;
-            var curX:Float;
+            var curX:Float = Math.NaN;
             var nw:Float;
             for (i in 0...cnt)
             {
@@ -328,6 +328,7 @@ class GGroup extends GObject
                     curX = Std.int(child.x);
                 else
                     child.x = curX;
+
                 if (last == i)
                     nw = remainSize;
                 else
@@ -366,7 +367,7 @@ class GGroup extends GObject
         else if (_layout == GroupLayoutType.Vertical)
         {
             remainSize = lineSize = this.height - (numChildren - 1) * _lineGap;
-            var curY:Float;
+            var curY:Float = Math.NaN;
             var nh:Float;
             for (i in 0...cnt)
             {

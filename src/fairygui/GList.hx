@@ -22,7 +22,6 @@ import openfl.geom.Rectangle;
 class GList extends GComponent
 {
     public var layout(get, set):Int;
-    public var lineItemCount(get, set):Int;
     public var lineGap(get, set):Int;
     public var columnGap(get, set):Int;
     public var align(get, set):Int;
@@ -34,6 +33,9 @@ class GList extends GComponent
     public var itemPool(get, never):GObjectPool;
     public var selectedIndex(get, set):Int;
     public var numItems(get, set):Int;
+    public var lineCount(get, set):Int;
+    public var columnCount(get, set):Int;
+    public var selectionController(get, set):Controller;
 
     /**
      * itemRenderer(index:int, item:GObject);
@@ -47,7 +49,8 @@ class GList extends GComponent
     public var foldInvisibleItems:Bool = false;
 
     private var _layout:Int = 0;
-    private var _lineItemCount:Int = 0;
+    private var _lineCount:Int;
+    private var _columnCount:Int;
     private var _lineGap:Int = 0;
     private var _columnGap:Int = 0;
     private var _defaultItem:String;
@@ -55,6 +58,7 @@ class GList extends GComponent
     private var _selectionMode:Int = 0;
     private var _align:Int = 0;
     private var _verticalAlign:Int = 0;
+    private var _selectionController:Controller;
 
     private var _lastSelectedIndex:Int = 0;
     private var _pool:GObjectPool;
@@ -113,22 +117,46 @@ class GList extends GComponent
         return value;
     }
 
-    @:final private function get_lineItemCount():Int
+    @:final public function get_lineCount():Int
     {
-        return _lineItemCount;
+        return _lineCount;
     }
 
-    @:final private function set_lineItemCount(value:Int):Int
+    @:final public function set_lineCount(value:Int):Int
     {
-        if (_lineItemCount != value)
+        if (_lineCount != value)
         {
-            _lineItemCount = value;
-            setBoundsChangedFlag();
-            if (_virtual)
-                setVirtualListChangedFlag(true);
+            _lineCount = value;
+            if (_layout == ListLayoutType.FlowVertical || _layout == ListLayoutType.Pagination)
+            {
+                setBoundsChangedFlag();
+                if (_virtual)
+                    setVirtualListChangedFlag(true);
+            }
         }
         return value;
     }
+
+    @:final public function get_columnCount():Int
+    {
+        return _columnCount;
+    }
+
+    @:final public function set_columnCount(value:Int):Int
+    {
+        if (_columnCount != value)
+        {
+            _columnCount = value;
+            if (_layout == ListLayoutType.FlowHorizontal || _layout == ListLayoutType.Pagination)
+            {
+                setBoundsChangedFlag();
+                if (_virtual)
+                    setVirtualListChangedFlag(true);
+            }
+        }
+        return value;
+    }
+
 
     @:final private function get_lineGap():Int
     {
@@ -233,7 +261,14 @@ class GList extends GComponent
 
     @:final private function set_autoResizeItem(value:Bool):Bool
     {
-        _autoResizeItem = value;
+        if (_autoResizeItem != value)
+        {
+            _autoResizeItem = value;
+            setBoundsChangedFlag();
+            if (_virtual)
+                setVirtualListChangedFlag(true);
+        }
+
         return value;
     }
 
@@ -245,6 +280,17 @@ class GList extends GComponent
     @:final private function set_selectionMode(value:Int):Int
     {
         _selectionMode = value;
+        return value;
+    }
+
+    @:final public function get_selectionController():Controller
+    {
+        return _selectionController;
+    }
+
+    @:final public function set_selectionController(value:Controller):Controller
+    {
+        _selectionController = value;
         return value;
     }
 
@@ -391,7 +437,10 @@ class GList extends GComponent
 
         var obj:GButton = getChildAt(index).asButton;
         if (obj != null && !obj.selected)
+        {
             obj.selected = true;
+            updateSelectionController(index);
+        }
     }
 
     public function removeSelection(index:Int):Void
@@ -424,12 +473,19 @@ class GList extends GComponent
         checkVirtualList();
 
         var cnt:Int = _children.length;
+        var last:Int = -1;
         for (i in 0...cnt)
         {
             var obj:GButton = _children[i].asButton;
             if (obj != null)
+            {
                 obj.selected = true;
+                last = i;
+            }
         }
+
+        if (last != -1)
+            updateSelectionController(last);
     }
 
     public function selectNone():Void
@@ -448,12 +504,20 @@ class GList extends GComponent
         checkVirtualList();
 
         var cnt:Int = _children.length;
+        var last:Int = -1;
         for (i in 0...cnt)
         {
             var obj:GButton = _children[i].asButton;
             if (obj != null)
+            {
                 obj.selected = !obj.selected;
+                if (obj.selected)
+                    last = i;
+            }
         }
+
+        if (last != -1)
+            updateSelectionController(last);
     }
 
     public function handleArrowKey(dir:Int):Void
@@ -749,6 +813,9 @@ class GList extends GComponent
 
         if (!dontChangeLastIndex)
             _lastSelectedIndex = index;
+
+        if (button.selected)
+            updateSelectionController(index);
     }
 
     private function clearSelectionExcept(obj:GObject):Void
@@ -841,40 +908,28 @@ class GList extends GComponent
     {
         super.handleSizeChanged();
 
-        if (_autoResizeItem)
-            adjustItemsSize();
-
-        if (_layout == ListLayoutType.FlowHorizontal || _layout == ListLayoutType.FlowVertical)
-        {
-            setBoundsChangedFlag();
-            if (_virtual)
-                setVirtualListChangedFlag(true);
-        }
+        setBoundsChangedFlag();
+        if (_virtual)
+            setVirtualListChangedFlag(true);
     }
 
-    public function adjustItemsSize():Void
+    override public function handleControllerChanged(c:Controller):Void
     {
-        var child:GObject;
-        var cnt:Int;
-        if (_layout == ListLayoutType.SingleColumn)
+        super.handleControllerChanged(c);
+
+        if (_selectionController == c)
+            this.selectedIndex = c.selectedIndex;
+    }
+
+    private function updateSelectionController(index:Int):Void
+    {
+        if (_selectionController != null && !_selectionController.changing
+            && index < _selectionController.pageCount)
         {
-            cnt = _children.length;
-            var cw:Int = this.viewWidth;
-            for (i in 0...cnt)
-            {
-                child = getChildAt(i);
-                child.width = cw;
-            }
-        }
-        else if (_layout == ListLayoutType.SingleRow)
-        {
-            cnt = _children.length;
-            var ch:Int = this.viewHeight;
-            for (i in 0...cnt)
-            {
-                child = getChildAt(i);
-                child.height = ch;
-            }
+            var c:Controller = _selectionController;
+            _selectionController = null;
+            c.selectedIndex = index;
+            _selectionController = c;
         }
     }
 
@@ -1220,32 +1275,48 @@ class GList extends GComponent
         {
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.SingleRow)
                 _curLineItemCount = 1;
-            else if (_lineItemCount != 0)
-                _curLineItemCount = _lineItemCount;
             else if (_layout == ListLayoutType.FlowHorizontal)
             {
-                _curLineItemCount = Math.floor((_scrollPane.viewWidth + _columnGap) / (_itemSize.x + _columnGap));
-                if (_curLineItemCount <= 0)
-                    _curLineItemCount = 1;
+                if (_columnCount > 0)
+                    _curLineItemCount = _columnCount;
+                else
+                {
+                    _curLineItemCount = Math.floor((_scrollPane.viewWidth + _columnGap) / (_itemSize.x + _columnGap));
+                    if (_curLineItemCount <= 0)
+                        _curLineItemCount = 1;
+                }
             }
             else if (_layout == ListLayoutType.FlowVertical)
             {
-                _curLineItemCount = Math.floor((_scrollPane.viewHeight + _lineGap) / (_itemSize.y + _lineGap));
-                if (_curLineItemCount <= 0)
-                    _curLineItemCount = 1;
+                if (_lineCount > 0)
+                    _curLineItemCount = _lineCount;
+                else
+                {
+                    _curLineItemCount = Math.floor((_scrollPane.viewHeight + _lineGap) / (_itemSize.y + _lineGap));
+                    if (_curLineItemCount <= 0)
+                        _curLineItemCount = 1;
+                }
             }
             else //pagination
             {
-                _curLineItemCount = Math.floor((_scrollPane.viewWidth + _columnGap) / (_itemSize.x + _columnGap));
-                if (_curLineItemCount <= 0)
-                    _curLineItemCount = 1;
-            }
+                if (_columnCount > 0)
+                    _curLineItemCount = _columnCount;
+                else
+                {
+                    _curLineItemCount = Math.floor((_scrollPane.viewWidth + _columnGap) / (_itemSize.x + _columnGap));
+                    if (_curLineItemCount <= 0)
+                        _curLineItemCount = 1;
+                }
 
-            if (_layout == ListLayoutType.Pagination)
-            {
-                _curLineItemCount2 = Math.floor((_scrollPane.viewHeight + _lineGap) / (_itemSize.y + _lineGap));
-                if (_curLineItemCount2 <= 0)
-                    _curLineItemCount2 = 1;
+                if (_lineCount > 0)
+                    _curLineItemCount2 = _lineCount;
+                else
+                {
+                    _curLineItemCount2 = Math.floor((_scrollPane.viewHeight + _lineGap) / (_itemSize.y + _lineGap));
+                    if (_curLineItemCount2 <= 0)
+                        _curLineItemCount2 = 1;
+                }
+
             }
         }
 
@@ -1255,6 +1326,7 @@ class GList extends GComponent
         {
             var i:Int;
             var len:Int = Math.ceil(_realNumItems / _curLineItemCount) * _curLineItemCount;
+            var len2:Int = Std.int(Math.min(_curLineItemCount, _realNumItems));
             if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal)
             {
                 i = 0;
@@ -1265,7 +1337,16 @@ class GList extends GComponent
                 }
                 if (ch > 0)
                     ch -= _lineGap;
-                cw = _scrollPane.contentWidth;
+
+                if (_autoResizeItem)
+                    cw = scrollPane.viewWidth;
+                else
+                {
+                    for (i in 0...len2)
+                        cw += _virtualItems[i].width + _columnGap;
+                    if (cw > 0)
+                        cw -= _columnGap;
+                }
             }
             else if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.FlowVertical)
             {
@@ -1277,7 +1358,16 @@ class GList extends GComponent
                 }
                 if (cw > 0)
                     cw -= _columnGap;
-                ch = _scrollPane.contentHeight;
+
+                if (_autoResizeItem)
+                    ch = this.scrollPane.viewHeight;
+                else
+                {
+                    for (i in 0...len2)
+                        ch += _virtualItems[i].height + _lineGap;
+                    if (ch > 0)
+                        ch -= _lineGap;
+                }
             }
             else
             {
@@ -1561,6 +1651,7 @@ class GList extends GComponent
         var ii2:ItemInfo;
         var i:Int;
         var j:Int;
+        var partSize:Int = Std.int((scrollPane.viewWidth - _columnGap * (_curLineItemCount - 1)) / _curLineItemCount);
 
         itemInfoVer++;
 
@@ -1643,6 +1734,9 @@ class GList extends GComponent
 
             if (needRender)
             {
+                if (_autoResizeItem && (_layout == ListLayoutType.SingleColumn || _columnCount > 0))
+                    ii.obj.setSize(partSize, ii.obj.height, true);
+
                 itemRenderer(curIndex % _numItems, ii.obj);
                 if (curIndex % _curLineItemCount == 0)
                 {
@@ -1728,6 +1822,7 @@ class GList extends GComponent
         var ii2:ItemInfo;
         var i:Int;
         var j:Int;
+        var partSize:Int = Std.int((scrollPane.viewHeight - _lineGap * (_curLineItemCount - 1)) / _curLineItemCount);
 
         itemInfoVer++;
 
@@ -1809,6 +1904,9 @@ class GList extends GComponent
 
             if (needRender)
             {
+                if (_autoResizeItem && (_layout == ListLayoutType.SingleRow || _lineCount > 0))
+                    ii.obj.setSize(ii.obj.width, partSize, true);
+
                 itemRenderer(curIndex % _numItems, ii.obj);
                 if (curIndex % _curLineItemCount == 0)
                 {
@@ -1887,6 +1985,8 @@ class GList extends GComponent
         var ii2:ItemInfo;
         var col:Int;
         var url:String = _defaultItem;
+        var partWidth:Int = Std.int((scrollPane.viewWidth - _columnGap * (_curLineItemCount - 1)) / _curLineItemCount);
+        var partHeight:Int = Std.int((scrollPane.viewHeight - _lineGap * (_curLineItemCount2 - 1)) / _curLineItemCount2);
 
         itemInfoVer++;
 
@@ -1919,19 +2019,10 @@ class GList extends GComponent
             if (i >= _realNumItems)
                 continue;
 
-            col = i % _curLineItemCount;
-            if (i - startIndex < pageSize)
-            {
-                if (col < startCol)
-                    continue;
-            }
-            else
-            {
-                if (col > startCol)
-                    continue;
-            }
-
             ii = _virtualItems[i];
+            if (ii.updateFlag != itemInfoVer)
+                continue;
+
             if (ii.obj == null)
             {
                 //寻找看有没有可重用的
@@ -1982,14 +2073,58 @@ class GList extends GComponent
             }
 
             if (needRender)
+            {
+                if (_autoResizeItem)
+                {
+                    if (_curLineItemCount == _columnCount && _curLineItemCount2 == _lineCount)
+                        ii.obj.setSize(partWidth, partHeight, true);
+                    else if (_curLineItemCount == _columnCount)
+                        ii.obj.setSize(partWidth, ii.obj.height, true);
+                    else if (_curLineItemCount2 == _lineCount)
+                        ii.obj.setSize(ii.obj.width, partHeight, true);
+                }
+
                 itemRenderer(i % _numItems, ii.obj);
+                ii.width = Math.ceil(ii.obj.width);
+                ii.height = Math.ceil(ii.obj.height);
+            }
+        }
 
-            ii.obj.setXY(Std.int((i / pageSize) * viewWidth + col * (ii.width + _columnGap)),
-            Std.int(i / _curLineItemCount) % _curLineItemCount2 * (ii.height + _lineGap));
+        //排列item
+        var borderX:Int = Std.int((startIndex / pageSize) * viewWidth);
+        var xx:Int = borderX;
+        var yy:Int = 0;
+        var lineHeight:Int = 0;
+        for (i in startIndex...lastIndex)
+        {
+            if (i >= _realNumItems)
+                continue;
 
-        } //释放未使用的
+            ii = _virtualItems[i];
+            if (ii.updateFlag == itemInfoVer)
+                ii.obj.setXY(xx, yy);
 
+            if (ii.height > lineHeight)
+                lineHeight = Std.int(ii.height);
+            if (i % _curLineItemCount == _curLineItemCount - 1)
+            {
+                xx = borderX;
+                yy += lineHeight + _lineGap;
+                lineHeight = 0;
 
+                if (i == startIndex + pageSize - 1)
+                {
+                    borderX += Std.int(viewWidth);
+                    xx = borderX;
+                    yy = 0;
+                }
+            }
+            else
+                xx += Std.int(ii.width + _columnGap);
+
+        }
+
+        //释放未使用的
         for (i in reuseIndex...virtualItemCount)
         {
             ii = _virtualItems[i];
@@ -2057,25 +2192,21 @@ class GList extends GComponent
     {
         var newOffsetX:Float = 0;
         var newOffsetY:Float = 0;
-        if (_layout == ListLayoutType.SingleColumn || _layout == ListLayoutType.FlowHorizontal || _layout == ListLayoutType.Pagination)
+
+        if (contentHeight < viewHeight)
         {
-            if (contentHeight < viewHeight)
-            {
-                if (_verticalAlign == VertAlignType.Middle)
-                    newOffsetY = Std.int((viewHeight - contentHeight) / 2);
-                else if (_verticalAlign == VertAlignType.Bottom)
-                    newOffsetY = viewHeight - contentHeight;
-            }
+            if (_verticalAlign == VertAlignType.Middle)
+                newOffsetY = Std.int((viewHeight - contentHeight) / 2);
+            else if (_verticalAlign == VertAlignType.Bottom)
+                newOffsetY = viewHeight - contentHeight;
         }
-        else
+
+        if (contentWidth < this.viewWidth)
         {
-            if (contentWidth < this.viewWidth)
-            {
-                if (_align == AlignType.Center)
-                    newOffsetX = Std.int((viewWidth - contentWidth) / 2);
-                else if (_align == AlignType.Right)
-                    newOffsetX = viewWidth - contentWidth;
-            }
+            if (_align == AlignType.Center)
+                newOffsetX = Std.int((viewWidth - contentWidth) / 2);
+            else if (_align == AlignType.Right)
+                newOffsetX = viewWidth - contentWidth;
         }
 
         if (newOffsetX != _alignOffset.x || newOffsetY != _alignOffset.y)
@@ -2105,18 +2236,16 @@ class GList extends GComponent
         var maxHeight:Int = 0;
         var cw:Int = 0;
         var ch:Int = 0;
-        var sw:Int = 0;
-        var sh:Int = 0;
-        var p:Int = 0;
+        var j:Int = 0;
+        var page:Int = 0;
+        var k:Int = 0;
         var cnt:Int = _children.length;
         var viewWidth:Float = this.viewWidth;
         var viewHeight:Float = this.viewHeight;
+        var lineSize:Float = 0;
+        var lineStart:Int = 0;
+        var ratio:Float;
 
-        for (i in 0...cnt)
-        {
-            child = getChildAt(i);
-            child.ensureSizeCorrect();
-        }
         if (_layout == ListLayoutType.SingleColumn)
         {
             for (i in 0...cnt)
@@ -2125,17 +2254,16 @@ class GList extends GComponent
                 if (foldInvisibleItems && !child.visible)
                     continue;
 
-                sw = Math.ceil(child.width);
-                sh = Math.ceil(child.height);
-
                 if (curY != 0)
                     curY += _lineGap;
                 child.y = curY;
-                curY += sh;
-                if (sw > maxWidth)
+                if (_autoResizeItem)
+                    child.setSize(viewWidth, child.height, true);
+                curY += Math.ceil(child.height);
+                if (child.width > maxWidth)
                     maxWidth = Std.int(child.width);
             }
-            cw = curX + maxWidth;
+            cw = Math.ceil(maxWidth);
             ch = curY;
         }
         else if (_layout == ListLayoutType.SingleRow)
@@ -2146,127 +2274,280 @@ class GList extends GComponent
                 if (foldInvisibleItems && !child.visible)
                     continue;
 
-                sw = Math.ceil(child.width);
-                sh = Math.ceil(child.height);
-
                 if (curX != 0)
                     curX += _columnGap;
                 child.x = curX;
-                curX += sw;
-                if (sh > maxHeight)
-                    maxHeight = sh;
+                if (_autoResizeItem)
+                    child.setSize(child.width, viewHeight, true);
+                curX += Math.ceil(child.width);
+                if (child.height > maxHeight)
+                    maxHeight = Std.int(child.height);
             }
             cw = curX;
-            ch = curY + maxHeight;
+            ch = Math.ceil(maxHeight);
         }
         else if (_layout == ListLayoutType.FlowHorizontal)
         {
-            j = 0;
-            for (i in 0...cnt)
+            if (_autoResizeItem && _columnCount > 0)
             {
-                child = getChildAt(i);
-                if (foldInvisibleItems && !child.visible)
-                    continue;
-
-                sw = Math.ceil(child.width);
-                sh = Math.ceil(child.height);
-
-                if (curX != 0)
-                    curX += _columnGap;
-
-                if (_lineItemCount != 0 && j >= _lineItemCount || _lineItemCount == 0 && curX + sw > viewWidth && maxHeight != 0)
+                for (i in 0...cnt)
                 {
-                    //new line
-                    curX -= _columnGap;
+                    child = getChildAt(i);
+                    if (foldInvisibleItems && !child.visible)
+                        continue;
+
+                    lineSize += child.sourceWidth;
+                    j++;
+                    if (j == _columnCount || i == cnt - 1)
+                    {
+                        ratio = (viewWidth - lineSize - (j - 1) * _columnGap) / lineSize;
+                        curX = 0;
+                        for (j in lineStart...i + 1)
+                        {
+                            child = getChildAt(j);
+                            if (foldInvisibleItems && !child.visible)
+                                continue;
+
+                            child.setXY(curX, curY);
+
+                            if (j < i)
+                            {
+                                child.setSize(child.sourceWidth + Math.round(child.sourceWidth * ratio), child.height, true);
+                                curX += Math.ceil(child.width) + _columnGap;
+                            }
+                            else
+                            {
+                                child.setSize(viewWidth - curX, child.height, true);
+                            }
+                            if (child.height > maxHeight)
+                                maxHeight = Std.int(child.height);
+                        }
+                        //new line
+                        curY += Math.ceil(maxHeight) + _lineGap;
+                        maxHeight = 0;
+                        j = 0;
+                        lineStart = i + 1;
+                        lineSize = 0;
+                    }
+                }
+                ch = curY + Math.ceil(maxHeight);
+                cw = Std.int(viewWidth);
+            }
+            else
+            {
+                for (i in 0...cnt)
+                {
+                    child = getChildAt(i);
+                    if (foldInvisibleItems && !child.visible)
+                        continue;
+
+                    if (curX != 0)
+                        curX += _columnGap;
+
+                    if (_columnCount != 0 && j >= _columnCount
+                        || _columnCount == 0 && curX + child.width > viewWidth && maxHeight != 0)
+                    {
+                        //new line
+                        curX = 0;
+                        curY += Math.ceil(maxHeight) + _lineGap;
+                        maxHeight = 0;
+                        j = 0;
+                    }
+                    child.setXY(curX, curY);
+                    curX += Math.ceil(child.width);
                     if (curX > maxWidth)
                         maxWidth = curX;
-                    curX = 0;
-                    curY += maxHeight + _lineGap;
-                    maxHeight = 0;
-                    j = 0;
+                    if (child.height > maxHeight)
+                        maxHeight = Std.int(child.height);
+                    j++;
                 }
-                child.setXY(curX, curY);
-                curX += sw;
-                if (sh > maxHeight)
-                    maxHeight = sh;
-                j++;
+                ch = curY + Math.ceil(maxHeight);
+                cw = Math.ceil(maxWidth);
             }
-            ch = curY + maxHeight;
-            cw = maxWidth;
+
         }
         else if (_layout == ListLayoutType.FlowVertical)
         {
-            j = 0;
-            for (i in 0...cnt)
+            if (_autoResizeItem && _lineCount > 0)
             {
-                child = getChildAt(i);
-                if (foldInvisibleItems && !child.visible)
-                    continue;
-
-                sw = Math.ceil(child.width);
-                sh = Math.ceil(child.height);
-
-                if (curY != 0)
-                    curY += _lineGap;
-
-                if (_lineItemCount != 0 && j >= _lineItemCount || _lineItemCount == 0 && curY + sh > viewHeight && maxWidth != 0)
+                for (i in 0...cnt)
                 {
-                    curY -= _lineGap;
+                    child = getChildAt(i);
+                    if (foldInvisibleItems && !child.visible)
+                        continue;
+
+                    lineSize += child.sourceHeight;
+                    j++;
+                    if (j == _lineCount || i == cnt - 1)
+                    {
+                        ratio = (viewHeight - lineSize - (j - 1) * _lineGap) / lineSize;
+                        curY = 0;
+                        for (j in lineStart...i + 1)
+                        {
+                            child = getChildAt(j);
+                            if (foldInvisibleItems && !child.visible)
+                                continue;
+
+                            child.setXY(curX, curY);
+
+                            if (j < i)
+                            {
+                                child.setSize(child.width, child.sourceHeight + Math.round(child.sourceHeight * ratio), true);
+                                curY += Math.ceil(child.height) + _lineGap;
+                            }
+                            else
+                            {
+                                child.setSize(child.width, viewHeight - curY, true);
+                            }
+                            if (child.width > maxWidth)
+                                maxWidth = Std.int(child.width);
+                        }
+                        //new line
+                        curX += Math.ceil(maxWidth) + _columnGap;
+                        maxWidth = 0;
+                        j = 0;
+                        lineStart = i + 1;
+                        lineSize = 0;
+                    }
+                }
+                cw = curX + Math.ceil(maxWidth);
+                ch = Std.int(viewHeight);
+            }
+            else
+            {
+                for (i in 0...cnt)
+                {
+                    child = getChildAt(i);
+                    if (foldInvisibleItems && !child.visible)
+                        continue;
+
+                    if (curY != 0)
+                        curY += _lineGap;
+
+                    if (_lineCount != 0 && j >= _lineCount
+                        || _lineCount == 0 && curY + child.height > viewHeight && maxWidth != 0)
+                    {
+                        curY = 0;
+                        curX += Math.ceil(maxWidth) + _columnGap;
+                        maxWidth = 0;
+                        j = 0;
+                    }
+                    child.setXY(curX, curY);
+                    curY += Math.ceil(child.height);
                     if (curY > maxHeight)
                         maxHeight = curY;
-                    curY = 0;
-                    curX += maxWidth + _columnGap;
-                    maxWidth = 0;
-                    j = 0;
+                    if (child.width > maxWidth)
+                        maxWidth = Std.int(child.width);
+                    j++;
                 }
-                child.setXY(curX, curY);
-                curY += sh;
-                if (sw > maxWidth)
-                    maxWidth = sw;
-                j++;
+                cw = curX + Math.ceil(maxWidth);
+                ch = Math.ceil(maxHeight);
             }
-            cw = curX + maxWidth;
-            ch = maxHeight;
+
         }
         else //pagination
         {
-            for (i in 0...cnt)
+            var eachHeight:Int = 0;
+            if (_autoResizeItem && _lineCount > 0)
+                eachHeight = Math.floor((viewHeight - (_lineCount - 1) * _lineGap) / _lineCount);
+
+            if (_autoResizeItem && _columnCount > 0)
             {
-                child = getChildAt(i);
-                if (foldInvisibleItems && !child.visible)
-                    continue;
-
-                sw = Math.ceil(child.width);
-                sh = Math.ceil(child.height);
-
-                if (curX != 0)
-                    curX += _columnGap;
-
-                if (_lineItemCount != 0 && j >= _lineItemCount || _lineItemCount == 0 && curX + sw > viewWidth && maxHeight != 0)
+                for (i in 0...cnt)
                 {
-                    //new line
-                    curX -= _columnGap;
-                    if (curX > maxWidth)
-                        maxWidth = curX;
-                    curX = 0;
-                    curY += maxHeight + _lineGap;
-                    maxHeight = 0;
-                    j = 0;
+                    child = getChildAt(i);
+                    if (foldInvisibleItems && !child.visible)
+                        continue;
 
-                    if (curY + sh > viewHeight && maxWidth != 0) //new page
+                    lineSize += child.sourceWidth;
+                    j++;
+                    if (j == _columnCount || i == cnt - 1)
                     {
-                        p++;
-                        curY = 0;
+                        ratio = (viewWidth - lineSize - (j - 1) * _columnGap) / lineSize;
+                        curX = 0;
+                        for (j in lineStart...i + 1)
+                        {
+                            child = getChildAt(j);
+                            if (foldInvisibleItems && !child.visible)
+                                continue;
+
+                            child.setXY(page * viewWidth + curX, curY);
+
+                            if (j < i)
+                            {
+                                child.setSize(child.sourceWidth + Math.round(child.sourceWidth * ratio),
+                                _lineCount > 0 ? eachHeight : child.height, true);
+                                curX += Math.ceil(child.width) + _columnGap;
+                            }
+                            else
+                            {
+                                child.setSize(viewWidth - curX, _lineCount > 0 ? eachHeight : child.height, true);
+                            }
+                            if (child.height > maxHeight)
+                                maxHeight = Std.int(child.height);
+                        }
+                        //new line
+                        curY += Math.ceil(maxHeight) + _lineGap;
+                        maxHeight = 0;
+                        j = 0;
+                        lineStart = i + 1;
+                        lineSize = 0;
+
+                        k++;
+
+                        if (_lineCount != 0 && k >= _lineCount
+                            || _lineCount == 0 && curY + child.height > viewHeight)
+                        {
+                            //new page
+                            page++;
+                            curY = 0;
+                            k = 0;
+                        }
                     }
                 }
-                child.setXY(p * viewWidth + curX, curY);
-                curX += sw;
-                if (sh > maxHeight)
-                    maxHeight = sh;
-                j++;
             }
-            ch = curY + maxHeight;
-            cw = Std.int((p + 1) * viewWidth);
+            else
+            {
+                for (i in 0...cnt)
+                {
+                    child = getChildAt(i);
+                    if (foldInvisibleItems && !child.visible)
+                        continue;
+
+                    if (curX != 0)
+                        curX += _columnGap;
+
+                    if (_autoResizeItem && _lineCount > 0)
+                        child.setSize(child.width, eachHeight, true);
+
+                    if (_columnCount != 0 && j >= _columnCount
+                        || _columnCount == 0 && curX + child.width > viewWidth && maxHeight != 0)
+                    {
+                        //new line
+                        curX = 0;
+                        curY += Math.ceil(maxHeight) + _lineGap;
+                        maxHeight = 0;
+                        j = 0;
+                        k++;
+
+                        if (_lineCount != 0 && k >= _lineCount
+                            || _lineCount == 0 && curY + child.height > viewHeight && maxWidth != 0)//new page
+                        {
+                            page++;
+                            curY = 0;
+                            k = 0;
+                        }
+                    }
+                    child.setXY(page * viewWidth + curX, curY);
+                    curX += Math.ceil(child.width);
+                    if (child.height > maxHeight)
+                        maxHeight = Std.int(child.height);
+                    j++;
+                }
+            }
+            ch = page > 0 ? Std.int(viewHeight) : curY + Math.ceil(maxHeight);
+            cw = (page + 1) * Std.int(viewWidth);
+
         }
 
         handleAlign(cw, ch);
@@ -2349,7 +2630,16 @@ class GList extends GComponent
 
         str = xml.att.lineItemCount;
         if (str != null)
-            _lineItemCount = Std.parseInt(str);
+        {
+            if (_layout == ListLayoutType.FlowHorizontal || _layout == ListLayoutType.Pagination)
+                _columnCount = Std.parseInt(str);
+            else if (_layout == ListLayoutType.FlowVertical)
+                _lineCount = Std.parseInt(str);
+        }
+
+        str = xml.att.lineItemCount2;
+        if (str != null)
+            _lineCount = Std.parseInt(str);
 
         str = xml.att.selectionMode;
         if (str != null)
@@ -2360,7 +2650,22 @@ class GList extends GComponent
             _defaultItem = str;
 
         str = xml.att.autoItemSize;
-        _autoResizeItem = str != "false";
+        if (_layout == ListLayoutType.SingleRow || _layout == ListLayoutType.SingleColumn)
+            _autoResizeItem = str != "false";
+        else
+            _autoResizeItem = str == "true";
+
+        str = xml.att.renderOrder;
+        if (str != null)
+        {
+            _childrenRenderOrder = ChildrenRenderOrder.parse(str);
+            if (_childrenRenderOrder == ChildrenRenderOrder.Arch)
+            {
+                str = xml.att.apex;
+                if (str != null)
+                    _apexIndex = Std.parseInt(str);
+            }
+        }
 
         var col:FastXMLList = xml.nodes.item;
         for (cxml in col.iterator())
@@ -2386,6 +2691,15 @@ class GList extends GComponent
                     obj.name = str;
             }
         }
+    }
+
+    override public function setup_afterAdd(xml:FastXML):Void
+    {
+        super.setup_afterAdd(xml);
+
+        var str:String = xml.att.selectionController;
+        if (str != null)
+            _selectionController = parent.getController(str);
     }
 }
 
