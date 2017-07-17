@@ -873,7 +873,7 @@ class GObject extends EventDispatcher
     @:allow(fairygui)
     private function addDisplayLock():UInt
     {
-        var gearDisplay:GearDisplay = cast(_gears[0], GearDisplay);
+        var gearDisplay:GearDisplay = cast(this._gears[0], GearDisplay);
         if (gearDisplay != null && gearDisplay.controller != null)
         {
             var ret:UInt = gearDisplay.addLock();
@@ -888,7 +888,8 @@ class GObject extends EventDispatcher
     @:allow(fairygui)
     private function releaseDisplayLock(token:UInt):Void
     {
-        var gearDisplay:GearDisplay = cast(_gears[0], GearDisplay);
+        trace(this._gears.length);
+        var gearDisplay:GearDisplay = cast(this._gears[0], GearDisplay);
         if (gearDisplay != null && gearDisplay.controller != null)
         {
             gearDisplay.releaseLock(token);
