@@ -88,15 +88,16 @@ class Transition
         _play(onComplete, onCompleteParam, 1, delay, true);
     }
 
+    public function changeRepeat(value:Int):Void
+    {
+        _totalTimes = value;
+    }
+
     private function _play(onComplete:Dynamic = null, onCompleteParam:Dynamic = null,
                            times:Int = 1, delay:Float = 0, reversed:Bool = false):Void
     {
         stop();
 
-        if (times < 0)
-            times = CompatUtil.INT_MAX_VALUE;
-        else if (times == 0)
-            times = 1;
         _totalTimes = times;
         _reversed = reversed;
         internalPlay(delay);
@@ -808,7 +809,7 @@ class Transition
                     if (value.i == 0)
                         trans.stop(false, true);
                     else if (trans.playing)
-                        trans._totalTimes = value.i == -(1) ? CompatUtil.INT_MAX_VALUE : value.i
+                        trans._totalTimes = value.i;
                     else
                     {
                         item.completed = false;

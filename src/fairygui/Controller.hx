@@ -1,10 +1,13 @@
 package fairygui;
 
+import fairygui.action.ControllerAction;
+import fairygui.action.PlayTransitionAction;
 import fairygui.event.StateChangeEvent;
 import fairygui.GComponent;
-import fairygui.Transition;
+import FastXMLList;
 import openfl.errors.Error;
 import openfl.events.EventDispatcher;
+import openfl.Vector;
 
 @:meta(Event(name = "stateChanged", type = "fairygui.event.StateChangeEvent"))
 
@@ -26,8 +29,7 @@ class Controller extends EventDispatcher
     private var _previousIndex:Int = 0;
     private var _pageIds:Array<Dynamic>;
     private var _pageNames:Array<Dynamic>;
-    private var _pageTransitions:Array<PageTransition>;
-    private var _playingTransition:Transition;
+    private var _actions:Vector<ControllerAction>;
 
     @:allow(fairygui)
     private var _parent:GComponent;
@@ -84,28 +86,6 @@ class Controller extends EventDispatcher
             this.dispatchEvent(new StateChangeEvent(StateChangeEvent.CHANGED));
 
             changing = false;
-
-            if (_playingTransition != null)
-            {
-                _playingTransition.stop();
-                _playingTransition = null;
-            }
-
-            if (_pageTransitions != null)
-            {
-                for (pt in _pageTransitions)
-                {
-                    if (pt.toIndex == this._selectedIndex && (pt.fromIndex == -1 || pt.fromIndex == this._previousIndex))
-                    {
-                        _playingTransition = parent.getTransition(pt.transitionName);
-                        break;
-                    }
-                }
-
-                if (_playingTransition != null)
-                    _playingTransition.play(function():Void
-                    {_playingTransition = null;});
-            }
         }
         return value;
     }
@@ -125,12 +105,6 @@ class Controller extends EventDispatcher
             _parent.applyController(this);
 
             changing = false;
-
-            if (_playingTransition != null)
-            {
-                _playingTransition.stop();
-                _playingTransition = null;
-            }
         }
     }
 
@@ -303,6 +277,18 @@ class Controller extends EventDispatcher
             return this._pageIds[this._previousIndex];
     }
 
+    public function runActions():Void
+    {
+        if (_actions != null)
+        {
+            var cnt:Int = _actions.length;
+            for (i in 0...cnt)
+            {
+                _actions[i].run(this, previousPageId, selectedPageId);
+            }
+        }
+    }
+
     public function setup(xml:FastXML):Void
     {
         _name = xml.att.name;
@@ -326,30 +312,51 @@ class Controller extends EventDispatcher
             }
         }
 
+        var col:FastXMLList = xml.nodes.action;
+        if (col.length() > 0)
+        {
+            _actions = new Vector<ControllerAction>();
+
+            for (cxml in col.iterator())
+            {
+                var action:ControllerAction = ControllerAction.createAction(cxml.att.type);
+                action.setup(cxml);
+                _actions.push(action);
+            }
+        }
+
         str = xml.att.transitions;
         if (str != null)
         {
-            _pageTransitions = new Array<PageTransition>();
+            if (_actions == null)
+                _actions = new Vector<ControllerAction>();
+
             arr = str.split(",");
             cnt = arr.length;
+
             for (i in 0...cnt)
             {
                 str = arr[i];
                 if (str == null)
                     continue;
 
-                var pt:PageTransition = new PageTransition();
+                var taction:PlayTransitionAction = new PlayTransitionAction();
                 k = str.indexOf("=");
-                pt.transitionName = str.substr(k + 1);
+                taction.transitionName = str.substr(k + 1);
                 str = str.substring(0, k);
                 k = str.indexOf("-");
-                pt.toIndex = Std.parseInt(str.substring(k + 1));
+                var ii:Int = Std.parseInt(str.substring(k + 1));
+                if (ii < _pageIds.length)
+                    taction.toPage = [_pageIds[ii]];
                 str = str.substring(0, k);
-                if (str == "*")
-                    pt.fromIndex = -1;
-                else
-                    pt.fromIndex = Std.parseInt(str);
-                _pageTransitions.push(pt);
+                if (str != "*")
+                {
+                    ii = Std.parseInt(str);
+                    if (ii < _pageIds.length)
+                        taction.fromPage = [_pageIds[ii]];
+                }
+                taction.stopOnExit = true;
+                _actions.push(taction);
             }
         }
 
@@ -357,17 +364,5 @@ class Controller extends EventDispatcher
             this._selectedIndex = 0;
         else
             this._selectedIndex = -1;
-    }
-}
-
-
-class PageTransition
-{
-    public var transitionName:String;
-    public var fromIndex:Int;
-    public var toIndex:Int;
-
-    public function new()
-    {
     }
 }

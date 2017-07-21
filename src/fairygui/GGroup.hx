@@ -70,7 +70,7 @@ class GGroup extends GObject
 
     public function setBoundsChangedFlag(childSizeChanged:Bool = false):Void
     {
-        if (_updating == 0 && parent != null && !_underConstruct)
+        if (_updating == 0 && parent != null)
         {
             if (childSizeChanged)
                 _percentReady = false;
@@ -339,7 +339,7 @@ class GGroup extends GObject
                 {
                     if (remainSize >= 1) //可能由于有些元件有宽度限制，导致无法铺满
                     {
-                        for (j in 0...i+1)
+                        for (j in 0...i + 1)
                         {
                             child = parent.getChildAt(j);
                             if (child.group != this)
@@ -349,7 +349,7 @@ class GGroup extends GObject
                             {
                                 nw = child.width + remainSize;
                                 if ((child.maxWidth == 0 || nw < child.maxWidth)
-                                && (child.minWidth == 0 || nw > child.minWidth))
+                                    && (child.minWidth == 0 || nw > child.minWidth))
                                 {
                                     child.setSize(nw, child.height, true);
                                     found = true;
@@ -389,7 +389,7 @@ class GGroup extends GObject
                 {
                     if (remainSize >= 1) //可能由于有些元件有宽度限制，导致无法铺满
                     {
-                        for (j in 0...i+1)
+                        for (j in 0...i + 1)
                         {
                             child = parent.getChildAt(j);
                             if (child.group != this)
@@ -399,14 +399,14 @@ class GGroup extends GObject
                             {
                                 nh = child.height + remainSize;
                                 if ((child.maxHeight == 0 || nh < child.maxHeight)
-                                && (child.minHeight == 0 || nh > child.minHeight))
+                                    && (child.minHeight == 0 || nh > child.minHeight))
                                 {
                                     child.setSize(child.width, nh, true);
                                     found = true;
                                 }
                             }
                             else
-                            child.y += remainSize;
+                                child.y += remainSize;
                         }
                     }
                 }

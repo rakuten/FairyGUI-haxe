@@ -281,8 +281,7 @@ class GComponent extends GObject
         return null;
     }
 
-    @:allow(fairygui)
-    private function getChildById(id:String):GObject
+    public function getChildById(id:String):GObject
     {
         var cnt:Int = _children.length;
         for (i in 0...cnt)
@@ -444,7 +443,7 @@ class GComponent extends GObject
     {
         _controllers.push(controller);
         controller._parent = this;
-        applyController(controller);
+        (controller);
     }
 
     public function getControllerAt(index:Int):Controller
@@ -619,6 +618,7 @@ class GComponent extends GObject
         {
             child.handleControllerChanged(c);
         }
+        c.runActions();
     }
 
     @:allow(fairygui)
@@ -1196,13 +1196,13 @@ class GComponent extends GObject
         }
 
         str = xml.att.restrictSize;
-        if(str != null)
+        if (str != null)
         {
             arr = str.split(",");
             minWidth = Std.parseInt(arr[0]);
             maxWidth = Std.parseInt(arr[1]);
             minHeight = Std.parseInt(arr[2]);
-            maxHeight= Std.parseInt(arr[3]);
+            maxHeight = Std.parseInt(arr[3]);
         }
 
         str = xml.att.opaque;
@@ -1350,10 +1350,10 @@ class GComponent extends GObject
 
         var str:String;
 
-        if(scrollPane != null)
+        if (scrollPane != null)
         {
             str = xml.att.pageController;
-            if(str != null)
+            if (str != null)
                 scrollPane.pageController = parent.getController(str);
         }
 

@@ -1,219 +1,226 @@
 package fairygui;
 
-import openfl.errors.Error;
-
-import openfl.events.Event;
-
 import fairygui.event.ItemEvent;
 import fairygui.utils.CompatUtil;
+import openfl.errors.Error;
+import openfl.events.Event;
 
 class PopupMenu
 {
-    public var itemCount(get, never) : Int;
-    public var contentPane(get, never) : GComponent;
-    public var list(get, never) : GList;
+    public var itemCount(get, never):Int;
+    public var contentPane(get, never):GComponent;
+    public var list(get, never):GList;
 
-    private var _contentPane : GComponent;
-    private var _list : GList;
-    
-    public function new(resourceURL : String = null)
+    private var _contentPane:GComponent;
+    private var _list:GList;
+
+    public var visibleItemCount:Int = CompatUtil.INT_MAX_VALUE;
+    public var hideOnClickItem:Bool = true;
+
+    public function new(resourceURL:String = null)
     {
-        if (resourceURL == null) 
+        if (resourceURL == null)
         {
             resourceURL = UIConfig.popupMenu;
-            if (resourceURL == null) 
+            if (resourceURL == null)
                 throw new Error("UIConfig.popupMenu not defined");
         }
-        
+
         _contentPane = cast(UIPackage.createObjectFromURL(resourceURL), GComponent);
         _contentPane.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
-        
+
         _list = cast(_contentPane.getChild("list"), GList);
         _list.removeChildrenToPool();
-        
+
         _list.addRelation(_contentPane, RelationType.Width);
         _list.removeRelation(_contentPane, RelationType.Height);
         _contentPane.addRelation(_list, RelationType.Height);
-        
+
         _list.addEventListener(ItemEvent.CLICK, __clickItem);
     }
-    
-    public function dispose() : Void
+
+    public function dispose():Void
     {
         _contentPane.dispose();
     }
-    
-    public function addItem(caption : String, callback : Dynamic = null) : GButton
+
+    public function addItem(caption:String, callback:Dynamic = null):GButton
     {
-        var item : GButton = _list.addItemFromPool().asButton;
+        var item:GButton = _list.addItemFromPool().asButton;
         item.title = caption;
         item.data = callback;
         item.grayed = false;
         item.useHandCursor = false;
-        var c : Controller = item.getController("checked");
-        if (c != null) 
+        var c:Controller = item.getController("checked");
+        if (c != null)
             c.selectedIndex = 0;
         return item;
     }
-    
-    public function addItemAt(caption : String, index : Int, callback : Dynamic = null) : GButton
+
+    public function addItemAt(caption:String, index:Int, callback:Dynamic = null):GButton
     {
-        var item : GButton = _list.getFromPool().asButton;
+        var item:GButton = _list.getFromPool().asButton;
         _list.addChildAt(item, index);
         item.title = caption;
         item.data = callback;
         item.grayed = false;
         item.useHandCursor = false;
-        var c : Controller = item.getController("checked");
-        if (c != null) 
+        var c:Controller = item.getController("checked");
+        if (c != null)
             c.selectedIndex = 0;
         return item;
     }
-    
-    public function addSeperator() : Void
+
+    public function addSeperator():Void
     {
-        if (UIConfig.popupMenu_seperator == null) 
+        if (UIConfig.popupMenu_seperator == null)
             throw new Error("UIConfig.popupMenu_seperator not defined");
-        
+
         list.addItemFromPool(UIConfig.popupMenu_seperator);
     }
-    
-    public function getItemName(index : Int) : String
+
+    public function getItemName(index:Int):String
     {
-        var item : GButton = cast(_list.getChildAt(index), GButton);
+        var item:GButton = cast(_list.getChildAt(index), GButton);
         return item.name;
     }
-    
-    public function setItemText(name : String, caption : String) : Void
+
+    public function setItemText(name:String, caption:String):Void
     {
-        var item : GButton = _list.getChild(name).asButton;
+        var item:GButton = _list.getChild(name).asButton;
         item.title = caption;
     }
-    
-    public function setItemVisible(name : String, visible : Bool) : Void
+
+    public function setItemVisible(name:String, visible:Bool):Void
     {
-        var item : GButton = _list.getChild(name).asButton;
-        if (item.visible != visible) 
+        var item:GButton = _list.getChild(name).asButton;
+        if (item.visible != visible)
         {
             item.visible = visible;
             _list.setBoundsChangedFlag();
         }
     }
-    
-    public function setItemGrayed(name : String, grayed : Bool) : Void
+
+    public function setItemGrayed(name:String, grayed:Bool):Void
     {
-        var item : GButton = _list.getChild(name).asButton;
+        var item:GButton = _list.getChild(name).asButton;
         item.grayed = grayed;
     }
-    
-    public function setItemCheckable(name : String, checkable : Bool) : Void
+
+    public function setItemCheckable(name:String, checkable:Bool):Void
     {
-        var item : GButton = _list.getChild(name).asButton;
-        var c : Controller = item.getController("checked");
-        if (c != null) 
+        var item:GButton = _list.getChild(name).asButton;
+        var c:Controller = item.getController("checked");
+        if (c != null)
         {
-            if (checkable) 
+            if (checkable)
             {
-                if (c.selectedIndex == 0) 
+                if (c.selectedIndex == 0)
                     c.selectedIndex = 1;
             }
-            else 
-            c.selectedIndex = 0;
+            else
+                c.selectedIndex = 0;
         }
     }
-    
-    public function setItemChecked(name : String, checked : Bool) : Void
+
+    public function setItemChecked(name:String, checked:Bool):Void
     {
-        var item : GButton = _list.getChild(name).asButton;
-        var c : Controller = item.getController("checked");
-        if (c != null) 
+        var item:GButton = _list.getChild(name).asButton;
+        var c:Controller = item.getController("checked");
+        if (c != null)
             c.selectedIndex = (checked) ? 2 : 1;
     }
-    
-    public function isItemChecked(name : String) : Bool
+
+    public function isItemChecked(name:String):Bool
     {
-        var item : GButton = _list.getChild(name).asButton;
-        var c : Controller = item.getController("checked");
-        if (c != null) 
-            return c.selectedIndex == 2
-        else 
-        return false;
+        var item:GButton = _list.getChild(name).asButton;
+        var c:Controller = item.getController("checked");
+        if (c != null)
+            return c.selectedIndex == 2;
+        else
+            return false;
     }
-    
-    public function removeItem(name : String) : Bool
+
+    public function removeItem(name:String):Bool
     {
-        var item : GButton = cast(_list.getChild(name), GButton);
-        if (item != null) 
+        var item:GButton = cast(_list.getChild(name), GButton);
+        if (item != null)
         {
-            var index : Int = _list.getChildIndex(item);
+            var index:Int = _list.getChildIndex(item);
             _list.removeChildToPoolAt(index);
             return true;
         }
-        else 
-        return false;
+        else
+            return false;
     }
-    
-    public function clearItems() : Void
+
+    public function clearItems():Void
     {
         _list.removeChildrenToPool();
     }
-    
-    private function get_itemCount() : Int
+
+    private function get_itemCount():Int
     {
         return _list.numChildren;
     }
-    
-    private function get_contentPane() : GComponent
+
+    private function get_contentPane():GComponent
     {
         return _contentPane;
     }
-    
-    private function get_list() : GList
+
+    private function get_list():GList
     {
         return _list;
     }
-    
-    public function show(target : GObject = null, downward : Dynamic = null) : Void
+
+    public function show(target:GObject = null, downward:Dynamic = null):Void
     {
-        var r : GRoot = (target != null) ? target.root : GRoot.inst;
+        var r:GRoot = (target != null) ? target.root : GRoot.inst;
         r.showPopup(this.contentPane, Std.is(target, GRoot) ? null : target, downward);
     }
-    
-    private function __clickItem(evt : ItemEvent) : Void
+
+    public function hide():Void
     {
-        var item : GButton = evt.itemObject.asButton;
-        if (item == null) 
+        if (contentPane.parent != null)
+            cast(contentPane.parent, GRoot).hidePopup(contentPane);
+    }
+
+    private function __clickItem(evt:ItemEvent):Void
+    {
+        var item:GButton = evt.itemObject.asButton;
+        if (item == null)
             return;
-        
-        if (item.grayed) 
+
+        if (item.grayed)
         {
             _list.selectedIndex = -1;
             return;
         }
-        
-        var c : Controller = item.getController("checked");
-        if (c != null && c.selectedIndex != 0) 
+
+        var c:Controller = item.getController("checked");
+        if (c != null && c.selectedIndex != 0)
         {
-            if (c.selectedIndex == 1) 
-                c.selectedIndex = 2
-            else 
-            c.selectedIndex = 1;
+            if (c.selectedIndex == 1)
+                c.selectedIndex = 2;
+            else
+                c.selectedIndex = 1;
         }
-        
-        var r : GRoot = cast(_contentPane.parent, GRoot);
-        r.hidePopup(this.contentPane);
-        if (item.data != null) 
+
+        if (hideOnClickItem)
+            hide();
+        if (item.data != null)
         {
-            if (item.data.length == 1) 
-                item.data(evt)
-            else 
-            item.data();
+            if (item.data.length == 1)
+                item.data(evt);
+            else
+                item.data();
         }
     }
-    
-    private function __addedToStage(evt : Event) : Void
+
+    private function __addedToStage(evt:Event):Void
     {
         _list.selectedIndex = -1;
-        _list.resizeToFit(CompatUtil.INT_MAX_VALUE, 10);
+        _list.resizeToFit(visibleItemCount, 10);
     }
 }

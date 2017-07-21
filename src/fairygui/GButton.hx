@@ -473,9 +473,12 @@ class GButton extends GComponent
         str = xml.att.downEffect;
         if (str != null)
         {
-            _downEffect = (str == "dark") ? 1 : ((str == "scale") ? 2 : 0);
+            _downEffect = (str == "dark") ? 1 : (str == "scale" ? 2 : 0);
             str = xml.att.downEffectValue;
             _downEffectValue = Std.parseFloat(str);
+
+            if (_downEffect == 2)
+                this.setPivot(0.5, 0.5);
         }
 
         _buttonController = getController("button");
@@ -504,9 +507,6 @@ class GButton extends GComponent
     override public function setup_afterAdd(xml:FastXML):Void
     {
         super.setup_afterAdd(xml);
-
-        if (_downEffect == 2)
-            this.setPivot(0.5, 0.5);
 
         xml = xml.nodes.Button.get(0);
         if (xml != null)
