@@ -317,14 +317,6 @@ class GList extends GComponent
 
     override public function addChildAt(child:GObject, index:Int):GObject
     {
-        if (_autoResizeItem)
-        {
-            if (_layout == ListLayoutType.SingleColumn)
-                child.width = this.viewWidth;
-            else if (_layout == ListLayoutType.SingleRow)
-                child.height = this.viewHeight;
-        }
-
         super.addChildAt(child, index);
 
         if (Std.is(child, GButton))
