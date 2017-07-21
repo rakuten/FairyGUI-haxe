@@ -29,7 +29,7 @@ class GearLook extends GearBase
         if (value == "-")
             return;
 
-        var arr:Array<Dynamic> = value.split(",");
+        var arr:Array<String> = value.split(",");
         var gv:GearLookValue;
         if (pageId == null)
             gv = _default

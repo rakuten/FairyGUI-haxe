@@ -29,7 +29,7 @@ class GearXY extends GearBase
         if (value == "-")
             return;
 
-        var arr:Array<Dynamic> = value.split(",");
+        var arr:Array<String> = value.split(",");
         var pt:Point;
         if (pageId == null)
             pt = _default;

@@ -223,7 +223,7 @@ class GObject extends EventDispatcher
 
         _relations = new Relations(this);
         _dispatcher = new SimpleDispatcher();
-        _gears = new Array<GearBase>();
+        this._gears = new Array<GearBase>();
     }
 
     @:final private function get_id():String
@@ -818,7 +818,7 @@ class GObject extends EventDispatcher
 
     @:final public function getGear(index:Int):GearBase
     {
-        var gear:GearBase = _gears[index];
+        var gear:GearBase = this._gears[index];
         if (gear == null)
         {
             switch (index)
@@ -842,7 +842,7 @@ class GObject extends EventDispatcher
                 default:
                     throw new Error("FairyGUI: invalid gear index!");
             }
-            _gears[index] = gear;
+            this._gears[index] = gear;
         }
         return gear;
     }
@@ -852,7 +852,7 @@ class GObject extends EventDispatcher
         if (_underConstruct || _gearLocked)
             return;
 
-        var gear:GearBase = _gears[index];
+        var gear:GearBase = this._gears[index];
         if (gear != null && gear.controller != null)
             gear.updateState();
     }
@@ -860,14 +860,14 @@ class GObject extends EventDispatcher
     @:allow(fairygui)
     private function checkGearController(index:Int, c:Controller):Bool
     {
-        return _gears[index] != null && _gears[index].controller == c;
+        return this._gears[index] != null && this._gears[index].controller == c;
     }
 
     @:allow(fairygui)
     private function updateGearFromRelations(index:Int, dx:Float, dy:Float):Void
     {
-        if (_gears[index] != null)
-            _gears[index].updateFromRelations(dx, dy);
+        if (this._gears[index] != null)
+            this._gears[index].updateFromRelations(dx, dy);
     }
 
     @:allow(fairygui)
@@ -888,7 +888,10 @@ class GObject extends EventDispatcher
     @:allow(fairygui)
     private function releaseDisplayLock(token:UInt):Void
     {
-        trace(this._gears.length);
+        if (this._gears[0] == null)
+        {
+            return;
+        }
         var gearDisplay:GearDisplay = cast(this._gears[0], GearDisplay);
         if (gearDisplay != null && gearDisplay.controller != null)
         {
@@ -902,7 +905,7 @@ class GObject extends EventDispatcher
         if (_handlingController)
             return;
 
-        var connected:Bool = _gears[0] == null || cast(_gears[0], GearDisplay).connected;
+        var connected:Bool = this._gears[0] == null || cast(this._gears[0], GearDisplay).connected;
         if (connected != _internalVisible)
         {
             _internalVisible = connected;
@@ -1399,7 +1402,7 @@ class GObject extends EventDispatcher
         _handlingController = true;
         for (i in 0...8)
         {
-            var gear:GearBase = _gears[i];
+            var gear:GearBase = this._gears[i];
             if (gear != null && gear.controller == c)
                 gear.apply();
         }
@@ -1426,7 +1429,7 @@ class GObject extends EventDispatcher
     public function setup_beforeAdd(xml:FastXML):Void
     {
         var str:String;
-        var arr:Array<Dynamic>;
+        var arr:Array<String>;
 
         _id = xml.att.id;
         _name = xml.att.name;
@@ -1472,6 +1475,8 @@ class GObject extends EventDispatcher
         str = xml.att.pivot;
         if (str != null)
         {
+            arr = str.split(",");
+            str = xml.att.anchor;
             this.setPivot(Std.parseFloat(arr[0]), Std.parseFloat(arr[1]), str == "true");
         }
 
@@ -1521,13 +1526,12 @@ class GObject extends EventDispatcher
     {
         var s:String = xml.att.group;
         if (s != null)
-            _group = try cast(_parent.getChildById(s), GGroup)
-            catch (e:Dynamic) null;
+            _group = try cast(_parent.getChildById(s), GGroup)catch (e:Dynamic) null;
 
         var col:FastXMLList = xml.descendants();
         for (cxml in col.iterator())
         {
-            var index:Null<Int> = Reflect.field(GearXMLKeys, cxml.name);
+            var index:Null<Int> = Reflect.field(GearXMLKeys, cxml.x.nodeName);
             if (index != null)
                 getGear(index).setup(cxml);
         }
