@@ -20,7 +20,7 @@ class GearLook extends GearBase
 
     override private function init():Void
     {
-        _default = new GearLookValue(_owner.alpha, _owner.rotation, _owner.grayed);
+        _default = new GearLookValue(_owner.alpha, _owner.rotation, _owner.grayed, _owner.touchable);
         _storage = new Map<String, GearLookValue>();
     }
 
@@ -40,7 +40,11 @@ class GearLook extends GearBase
         }
         gv.alpha = Std.parseFloat(arr[0]);
         gv.rotation = Std.parseInt(arr[1]);
-        gv.grayed = (arr[2] == "1") ? true : false;
+        gv.grayed = (arr[2] == "1");
+        if (arr.length < 4)
+            gv.touchable = _owner.touchable;
+        else
+            gv.touchable = (arr[3] == "1");
     }
     private var a:Bool;
     private var b:Bool;
@@ -55,6 +59,7 @@ class GearLook extends GearBase
         {
             _owner._gearLocked = true;
             _owner.grayed = gv.grayed;
+            _owner.touchable = gv.touchable;
             _owner._gearLocked = false;
 
 //            var a : Bool;
@@ -110,6 +115,7 @@ class GearLook extends GearBase
             _owner.alpha = gv.alpha;
             _owner.rotation = gv.rotation;
             _owner.grayed = gv.grayed;
+            _owner.touchable = gv.touchable;
             _owner._gearLocked = false;
         }
     }
@@ -146,6 +152,7 @@ class GearLook extends GearBase
         gv.alpha = _owner.alpha;
         gv.rotation = _owner.rotation;
         gv.grayed = _owner.grayed;
+        gv.touchable = _owner.touchable;
     }
 }
 
@@ -155,11 +162,13 @@ class GearLookValue
     public var alpha:Float;
     public var rotation:Float;
     public var grayed:Bool;
+    public var touchable:Bool;
 
-    public function new(alpha:Float = 0, rotation:Float = 0, grayed:Bool = false)
+    public function new(alpha:Float = 0, rotation:Float = 0, grayed:Bool = false, touchable:Bool = true)
     {
         this.alpha = alpha;
         this.rotation = rotation;
         this.grayed = grayed;
+        this.touchable = touchable;
     }
 }

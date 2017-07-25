@@ -2,17 +2,25 @@ package fairygui;
 
 import fairygui.event.ItemEvent;
 import fairygui.utils.CompatUtil;
+import fairygui.utils.GTimers;
 import openfl.errors.Error;
 import openfl.events.Event;
+import openfl.events.MouseEvent;
+import openfl.geom.Point;
+import openfl.ui.Mouse;
 
 class PopupMenu
 {
-    public var itemCount(get, never):Int;
-    public var contentPane(get, never):GComponent;
-    public var list(get, never):GList;
-
     private var _contentPane:GComponent;
     private var _list:GList;
+    public var itemCount(get, never):Int;
+    public var contentPane(get, never):GComponent;
+
+    public var list(get, never):GList;
+
+    private var _expandingItem:GObject;
+
+    private var _parentMenu:PopupMenu;
 
     public var visibleItemCount:Int = CompatUtil.INT_MAX_VALUE;
     public var hideOnClickItem:Bool = true;
@@ -28,6 +36,7 @@ class PopupMenu
 
         _contentPane = cast(UIPackage.createObjectFromURL(resourceURL), GComponent);
         _contentPane.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
+        _contentPane.addEventListener(Event.REMOVED_FROM_STAGE, __removeFromStage);
 
         _list = cast(_contentPane.getChild("list"), GList);
         _list.removeChildrenToPool();
@@ -54,6 +63,11 @@ class PopupMenu
         var c:Controller = item.getController("checked");
         if (c != null)
             c.selectedIndex = 0;
+        if (Mouse.supportsCursor)
+        {
+            item.addEventListener(MouseEvent.ROLL_OVER, __rollOver);
+            item.addEventListener(MouseEvent.ROLL_OUT, __rollOut);
+        }
         return item;
     }
 
@@ -68,6 +82,11 @@ class PopupMenu
         var c:Controller = item.getController("checked");
         if (c != null)
             c.selectedIndex = 0;
+        if (Mouse.supportsCursor)
+        {
+            item.addEventListener(MouseEvent.ROLL_OVER, __rollOver);
+            item.addEventListener(MouseEvent.ROLL_OUT, __rollOut);
+        }
         return item;
     }
 
@@ -76,7 +95,12 @@ class PopupMenu
         if (UIConfig.popupMenu_seperator == null)
             throw new Error("UIConfig.popupMenu_seperator not defined");
 
-        list.addItemFromPool(UIConfig.popupMenu_seperator);
+        var item:GObject = list.addItemFromPool(UIConfig.popupMenu_seperator);
+        if (Mouse.supportsCursor)
+        {
+            item.addEventListener(MouseEvent.ROLL_OVER, __rollOver);
+            item.addEventListener(MouseEvent.ROLL_OUT, __rollOut);
+        }
     }
 
     public function getItemName(index:Int):String
@@ -174,16 +198,39 @@ class PopupMenu
         return _list;
     }
 
-    public function show(target:GObject = null, downward:Dynamic = null):Void
+    public function show(target:GObject = null, downward:Dynamic = null, parentMenu:PopupMenu = null):Void
     {
         var r:GRoot = (target != null) ? target.root : GRoot.inst;
         r.showPopup(this.contentPane, Std.is(target, GRoot) ? null : target, downward);
+        _parentMenu = parentMenu;
     }
 
     public function hide():Void
     {
         if (contentPane.parent != null)
             cast(contentPane.parent, GRoot).hidePopup(contentPane);
+    }
+
+    private function showSecondLevelMenu(item:GObject):Void
+    {
+        _expandingItem = item;
+
+        var popup:PopupMenu = cast(item.data, PopupMenu);
+        if (Std.is(item, GButton))
+            cast(item, GButton).selected = true;
+        popup.show(item, null, this);
+
+        var pt:Point = contentPane.localToRoot(item.x + item.width - 5, item.y - 5);
+        popup.contentPane.setXY(pt.x, pt.y);
+    }
+
+    private function closeSecondLevelMenu():Void
+    {
+        if (Std.is(_expandingItem, GButton))
+            cast(_expandingItem, GButton).selected = false;
+        var popup:PopupMenu = cast(_expandingItem.data, PopupMenu);
+        _expandingItem = null;
+        popup.hide();
     }
 
     private function __clickItem(evt:ItemEvent):Void
@@ -208,8 +255,13 @@ class PopupMenu
         }
 
         if (hideOnClickItem)
+        {
+            if (_parentMenu != null)
+                _parentMenu.hide();
             hide();
-        if (item.data != null)
+        }
+
+        if ((item.data != null) && !Std.is(item.data, PopupMenu))
         {
             if (item.data.length == 1)
                 item.data(evt);
@@ -222,5 +274,59 @@ class PopupMenu
     {
         _list.selectedIndex = -1;
         _list.resizeToFit(visibleItemCount, 10);
+    }
+
+    private function __removeFromStage(evt:Event):Void
+    {
+        _parentMenu = null;
+
+        if (_expandingItem != null)
+            closeSecondLevelMenu();
+    }
+
+    private function __rollOver(evt:MouseEvent):Void
+    {
+        var item:GObject = cast(evt.currentTarget, GObject);
+        if (Std.is(item.data, PopupMenu) || _expandingItem != null)
+            GTimers.inst.callDelay(100, __showSubMenu, item);
+    }
+
+    private function __showSubMenu(item:GObject):Void
+    {
+        var r:GRoot = contentPane.root;
+        if (r == null)
+            return;
+
+        if (_expandingItem != null)
+        {
+            if (_expandingItem == item)
+                return;
+
+            closeSecondLevelMenu();
+        }
+
+        var popup:PopupMenu = cast(item.data, PopupMenu);
+        if (popup == null)
+            return;
+
+        showSecondLevelMenu(item);
+    }
+
+    private function __rollOut(evt:MouseEvent):Void
+    {
+        if (_expandingItem == null)
+            return;
+
+        GTimers.inst.remove(__showSubMenu);
+        var r:GRoot = contentPane.root;
+        if (r != null)
+        {
+            var popup:PopupMenu = cast(_expandingItem.data, PopupMenu);
+            var pt:Point = popup.contentPane.globalToLocal(r.nativeStage.mouseX, r.nativeStage.mouseY);
+            if (pt.x >= 0 && pt.y >= 0 && pt.x < popup.contentPane.width && pt.y < popup.contentPane.height)
+                return;
+        }
+
+        closeSecondLevelMenu();
     }
 }

@@ -550,22 +550,27 @@ class GObject extends EventDispatcher
 
     private function set_touchable(value:Bool):Bool
     {
-        _touchable = value;
-        if (Std.is(this, GImage) || Std.is(this, GMovieClip) || Std.is(this, GTextField) && !Std.is(this, GTextInput) && !Std.is(this, GRichTextField))
+        if (_touchable != value)
         {
-            //Touch is not supported by GImage/GMovieClip/GTextField
-            return false;
-        }
+            _touchable = value;
+            updateGear(3);
 
-        if (Std.is(_displayObject, InteractiveObject))
-        {
-            if (Std.is(this, GComponent))
-                cast(this, GComponent).handleTouchable(_touchable);
-            else
+            //Touch is not supported by GImage/GMovieClip/GTextField
+            if (Std.is(this, GImage) || Std.is(this, GMovieClip) || Std.is(this, GTextField) && !Std.is(this, GTextInput) && !Std.is(this, GRichTextField))
+                return false;
+
+            if (Std.is(_displayObject, InteractiveObject))
             {
-                cast(_displayObject, InteractiveObject).mouseEnabled = _touchable;
-                if (Std.is(_displayObject, DisplayObjectContainer))
-                    cast(_displayObject, DisplayObjectContainer).mouseChildren = _touchable;
+                if (Std.is(this, GComponent))
+                {
+                    cast(this, GComponent).handleTouchable(_touchable);
+                }
+                else
+                {
+                    cast(_displayObject, InteractiveObject).mouseEnabled = _touchable;
+                    if (Std.is(_displayObject, DisplayObjectContainer))
+                        cast(_displayObject, DisplayObjectContainer).mouseChildren = _touchable;
+                }
             }
         }
         return value;
@@ -747,9 +752,11 @@ class GObject extends EventDispatcher
         GTimers.inst.callDelay(100, __doShowTooltips);
     }
 
-    private function __doShowTooltips(r:GRoot):Void
+    private function __doShowTooltips():Void
     {
-        this.root.showTooltips(_tooltips);
+        var r:GRoot = this.root;
+        if (r != null)
+            this.root.showTooltips(_tooltips);
     }
 
     private function __rollOut(evt:Event):Void
@@ -1526,7 +1533,8 @@ class GObject extends EventDispatcher
     {
         var s:String = xml.att.group;
         if (s != null)
-            _group = try cast(_parent.getChildById(s), GGroup)catch (e:Dynamic) null;
+            _group = try cast(_parent.getChildById(s), GGroup)
+            catch (e:Dynamic) null;
 
         var col:FastXMLList = xml.descendants();
         for (cxml in col.iterator())

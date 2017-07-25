@@ -12,14 +12,13 @@ class GSlider extends GComponent
     public var titleType(get, set):Int;
     public var max(get, set):Int;
     public var value(get, set):Int;
-    public var canDrag(get, set):Bool;
 
     private var _max:Int = 0;
     private var _value:Int = 0;
     private var _titleType:Int = 0;
+    private var _reverse:Bool = false;
 
     private var _titleObject:GTextField;
-    private var _aniObject:GObject;
     private var _barObjectH:GObject;
     private var _barObjectV:GObject;
     private var _barMaxWidth:Int = 0;
@@ -29,22 +28,13 @@ class GSlider extends GComponent
     private var _gripObject:GObject;
     private var _clickPos:Point;
     private var _clickPercent:Float = 0;
+    private var _barStartX:Int;
+    private var _barStartY:Int;
 
-    public var changeOnClick:Bool = false;
+    public var changeOnClick:Bool = true;
 
     /**是否可拖动开关**/
-    private var _canDrag:Bool = true;
-
-    @:final public function get_canDrag():Bool
-    {
-        return _canDrag;
-    }
-
-    @:final public function set_canDrag(value:Bool):Bool
-    {
-        _canDrag = value;
-        return value;
-    }
+    public var canDrag:Bool = true;
 
     public function new()
     {
@@ -123,15 +113,28 @@ class GSlider extends GComponent
             }
         }
 
-        if (_barObjectH != null)
-            _barObjectH.width = (this.width - _barMaxWidthDelta) * percent;
-        if (_barObjectV != null)
-            _barObjectV.height = (this.height - _barMaxHeightDelta) * percent;
-
-        if (Std.is(_aniObject, GMovieClip))
-            cast(_aniObject, GMovieClip).frame = Math.round(percent * 100)
-        else if (Std.is(_aniObject, GSwfObject))
-            cast(_aniObject, GSwfObject).frame = Math.round(percent * 100);
+        var fullWidth:Int = Std.int(this.width - this._barMaxWidthDelta);
+        var fullHeight:Int = Std.int(this.height - this._barMaxHeightDelta);
+        if (!_reverse)
+        {
+            if (_barObjectH != null)
+                _barObjectH.width = fullWidth * percent;
+            if (_barObjectV != null)
+                _barObjectV.height = fullHeight * percent;
+        }
+        else
+        {
+            if (_barObjectH != null)
+            {
+                _barObjectH.width = Math.round(fullWidth * percent);
+                _barObjectH.x = _barStartX + (fullWidth - _barObjectH.width);
+            }
+            if (_barObjectV != null)
+            {
+                _barObjectV.height = Math.round(fullHeight * percent);
+                _barObjectV.y = _barStartY + (fullHeight - _barObjectV.height);
+            }
+        }
     }
 
     override private function constructFromXML(xml:FastXML):Void
@@ -145,28 +148,30 @@ class GSlider extends GComponent
         if (str != null)
             _titleType = ProgressTitleType.parse(str);
 
+        _reverse = xml.att.reverse == "true";
+
         _titleObject = try cast(getChild("title"), GTextField)
         catch (e:Dynamic) null;
         _barObjectH = getChild("bar");
         _barObjectV = getChild("bar_v");
-        _aniObject = getChild("ani");
         _gripObject = getChild("grip");
 
         if (_barObjectH != null)
         {
             _barMaxWidth = Std.int(_barObjectH.width);
             _barMaxWidthDelta = Std.int(this.width - _barMaxWidth);
+            _barStartX = Std.int(_barObjectH.x);
         }
         if (_barObjectV != null)
         {
             _barMaxHeight = Std.int(_barObjectV.height);
             _barMaxHeightDelta = Std.int(this.height - _barMaxHeight);
+            _barStartY = Std.int(_barObjectV.y);
         }
         if (_gripObject != null)
         {
             _gripObject.addEventListener(GTouchEvent.BEGIN, __gripMouseDown);
             _gripObject.addEventListener(GTouchEvent.DRAG, __gripMouseMove);
-            _gripObject.addEventListener(GTouchEvent.END, __gripMouseUp);
         }
 
         addEventListener(GTouchEvent.BEGIN, __barMouseDown);
@@ -218,6 +223,11 @@ class GSlider extends GComponent
         var pt:Point = this.globalToLocal(evt.stageX, evt.stageY);
         var deltaX:Int = Std.int(pt.x - _clickPos.x);
         var deltaY:Int = Std.int(pt.y - _clickPos.y);
+        if (_reverse)
+        {
+            deltaX = -deltaX;
+            deltaY = -deltaY;
+        }
 
         var percent:Float;
         if (_barObjectH != null)
@@ -239,12 +249,6 @@ class GSlider extends GComponent
         updateWidthPercent(percent);
     }
 
-    private function __gripMouseUp(evt:GTouchEvent):Void
-    {
-        var percent:Float = _value / _max;
-        updateWidthPercent(percent);
-    }
-
     private function __barMouseDown(evt:GTouchEvent):Void
     {
         if (!changeOnClick)
@@ -252,10 +256,17 @@ class GSlider extends GComponent
 
         var pt:Point = _gripObject.globalToLocal(evt.stageX, evt.stageY);
         var percent:Float = _value / _max;
+        var delta:Float = 0;
         if (_barObjectH != null)
-            percent += pt.x / _barMaxWidth;
+            delta = (pt.x - _gripObject.width / 2) / _barMaxWidth;
         if (_barObjectV != null)
-            percent += pt.y / _barMaxHeight;
+            delta = (pt.y - _gripObject.height / 2) / _barMaxHeight;
+
+        if (_reverse)
+            percent -= delta;
+        else
+            percent += delta;
+
         if (percent > 1)
             percent = 1;
         else if (percent < 0)
