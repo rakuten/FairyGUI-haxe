@@ -2532,6 +2532,8 @@ class GList extends GComponent
                     }
                     child.setXY(page * viewWidth + curX, curY);
                     curX += Math.ceil(child.width);
+                    if (curX > maxWidth)
+                        maxWidth = curX;
                     if (child.height > maxHeight)
                         maxHeight = Std.int(child.height);
                     j++;
