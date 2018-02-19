@@ -443,7 +443,7 @@ class GComponent extends GObject
     {
         _controllers.push(controller);
         controller._parent = this;
-        (controller);
+        applyController(controller);
     }
 
     public function getControllerAt(index:Int):Controller

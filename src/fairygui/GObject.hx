@@ -1166,7 +1166,7 @@ class GObject extends EventDispatcher
                 initMTouch();
             else
             {
-                if (type == "rightClick" && (Std.is(this, GComponent)))
+                if (type == MouseEvent.RIGHT_CLICK && Std.is(this, GComponent))
                     cast(this, GComponent).opaque = true;
 
                 _displayObject.addEventListener(type, _reDispatch, useCapture, priority, useWeakReference);
@@ -1189,7 +1189,7 @@ class GObject extends EventDispatcher
     {
         var nevt:Event = evt.clone();
         this.dispatchEvent(nevt);
-        if (evt.bubbles && (Std.is(nevt, IBubbleEvent)) && cast((nevt), IBubbleEvent).propagationStopped)
+        if (evt.bubbles && Std.is(nevt, IBubbleEvent) && cast(nevt, IBubbleEvent).propagationStopped)
             evt.stopPropagation();
     }
 
@@ -1348,7 +1348,7 @@ class GObject extends EventDispatcher
         _displayObject.scaleY = old.scaleY;
         _displayObject.filters = old.filters;
         old.filters = null;
-        if ((Std.is(_displayObject, InteractiveObject)) && (Std.is(old, InteractiveObject)))
+        if (Std.is(_displayObject, InteractiveObject) && Std.is(old, InteractiveObject))
         {
             cast(_displayObject, InteractiveObject).mouseEnabled = cast(old, InteractiveObject).mouseEnabled;
             if (Std.is(_displayObject, DisplayObjectContainer))
@@ -1665,16 +1665,16 @@ class GObject extends EventDispatcher
     {
         if (!GRoot.touchPointInput)
         {
-            evt.currentTarget.removeEventListener(MouseEvent.MOUSE_UP, __stageMouseup);
-            evt.currentTarget.removeEventListener(MouseEvent.MOUSE_MOVE, __mousemove);
+            cast(evt.currentTarget, Stage).removeEventListener(MouseEvent.MOUSE_UP, __stageMouseup);
+            cast(evt.currentTarget, Stage).removeEventListener(MouseEvent.MOUSE_MOVE, __mousemove);
         }
         else
         {
             if (_touchPointId != cast(evt, TouchEvent).touchPointID)
                 return;
 
-            evt.currentTarget.removeEventListener(TouchEvent.TOUCH_END, __stageMouseup);
-            evt.currentTarget.removeEventListener(TouchEvent.TOUCH_MOVE, __mousemove);
+            cast(evt.currentTarget, Stage).removeEventListener(TouchEvent.TOUCH_END, __stageMouseup);
+            cast(evt.currentTarget, Stage).removeEventListener(TouchEvent.TOUCH_MOVE, __mousemove);
         }
 
         var devt:GTouchEvent;
@@ -1781,7 +1781,7 @@ class GObject extends EventDispatcher
 
     private function __begin(evt:GTouchEvent):Void
     {
-        if ((Std.is(evt.realTarget, TextField)) && cast(evt.realTarget, TextField).type == TextFieldType.INPUT)
+        if (Std.is(evt.realTarget, TextField) && cast(evt.realTarget, TextField).type == TextFieldType.INPUT)
             return;
 
         addEventListener(GTouchEvent.DRAG, p__dragStart);
@@ -1791,7 +1791,7 @@ class GObject extends EventDispatcher
     {
         removeEventListener(GTouchEvent.DRAG, p__dragStart);
 
-        if ((Std.is(evt.realTarget, TextField)) && cast(evt.realTarget, TextField).type == TextFieldType.INPUT)
+        if (Std.is(evt.realTarget, TextField) && cast(evt.realTarget, TextField).type == TextFieldType.INPUT)
             return;
 
         var dragEvent:DragEvent = new DragEvent(DragEvent.DRAG_START);

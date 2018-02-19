@@ -327,7 +327,7 @@ class GList extends GComponent
             button.useHandCursor = false;
         }
         child.addEventListener(GTouchEvent.CLICK, __clickItem);
-        child.addEventListener("rightClick", __rightClickItem);
+        child.addEventListener(MouseEvent.RIGHT_CLICK, __rightClickItem);
 
         return child;
     }
@@ -349,7 +349,7 @@ class GList extends GComponent
     {
         var child:GObject = super.removeChildAt(index, dispose);
         child.removeEventListener(GTouchEvent.CLICK, __clickItem);
-        child.removeEventListener("rightClick", __rightClickItem);
+        child.removeEventListener(MouseEvent.RIGHT_CLICK, __rightClickItem);
 
         return child;
     }

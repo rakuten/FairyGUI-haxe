@@ -154,13 +154,13 @@ class GRoot extends GComponent
         {
             if (_contextMenuDisabled)
             {
-                _nativeStage.addEventListener("rightMouseDown" /*MouseEvent.RIGHT_MOUSE_DOWN*/, __stageMouseDownCapture, true);
-                _nativeStage.addEventListener("rightMouseUp" /*MouseEvent.RIGHT_MOUSE_UP*/, __stageMouseUpCapture, true);
+                _nativeStage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, __stageMouseDownCapture, true);
+                _nativeStage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, __stageMouseUpCapture, true);
             }
             else
             {
-                _nativeStage.removeEventListener("rightMouseDown" /*MouseEvent.RIGHT_MOUSE_DOWN*/, __stageMouseDownCapture, true);
-                _nativeStage.removeEventListener("rightMouseUp" /*MouseEvent.RIGHT_MOUSE_UP*/, __stageMouseUpCapture, true);
+                _nativeStage.removeEventListener(MouseEvent.RIGHT_MOUSE_DOWN, __stageMouseDownCapture, true);
+                _nativeStage.removeEventListener(MouseEvent.RIGHT_MOUSE_UP, __stageMouseUpCapture, true);
             }
         }
     }
@@ -609,8 +609,8 @@ class GRoot extends GComponent
         _nativeStage.addEventListener(MouseEvent.MOUSE_UP, __stageMouseUp, false, 1);
         if (_contextMenuDisabled)
         {
-            _nativeStage.addEventListener("rightMouseDown" /*MouseEvent.RIGHT_MOUSE_DOWN*/, __stageMouseDownCapture, true);
-            _nativeStage.addEventListener("rightMouseUp" /*MouseEvent.RIGHT_MOUSE_UP*/, __stageMouseUpCapture, true);
+            _nativeStage.addEventListener(MouseEvent.RIGHT_MOUSE_DOWN, __stageMouseDownCapture, true);
+            _nativeStage.addEventListener(MouseEvent.RIGHT_MOUSE_UP, __stageMouseUpCapture, true);
         }
 
         _modalLayer = new GGraph();
@@ -631,7 +631,7 @@ class GRoot extends GComponent
         ctrlKeyDown = evt.ctrlKey;
         shiftKeyDown = evt.shiftKey;
         buttonDown = true;
-        _hitUI = evt.target != _nativeStage;
+        _hitUI = !Std.is(evt.target, _nativeStage);
 
         var mc:DisplayObject = try cast(evt.target, DisplayObject)catch (e:Dynamic) null;
         while (mc != _nativeStage && mc != null)
