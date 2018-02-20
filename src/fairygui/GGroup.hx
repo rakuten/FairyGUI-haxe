@@ -418,10 +418,8 @@ class GGroup extends GObject
         _updating &= 1;
     }
 
-    override private function updateAlpha():Void
+    override private function handleAlphaChanged():Void
     {
-        super.updateAlpha();
-
         if (this._underConstruct)
             return;
 
@@ -431,6 +429,21 @@ class GGroup extends GObject
             var child:GObject = _parent.getChildAt(i);
             if (child.group == this)
                 child.alpha = this.alpha;
+        }
+    }
+
+    @:allow(fairygui)
+    override private function handleVisibleChanged():Void
+    {
+        if(this._parent == null)
+            return;
+
+        var cnt:Int = _parent.numChildren;
+        for(i in 0...cnt)
+        {
+            var child:GObject = _parent.getChildAt(i);
+            if(child.group==this)
+                child.handleVisibleChanged();
         }
     }
 
@@ -451,5 +464,13 @@ class GGroup extends GObject
             if (str != null)
                 _columnGap = Std.parseInt(str);
         }
+    }
+
+    override public function setup_afterAdd(xml:FastXML):Void
+    {
+        super.setup_afterAdd(xml);
+
+        if(!this.visible)
+            handleVisibleChanged();
     }
 }

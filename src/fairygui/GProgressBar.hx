@@ -1,9 +1,8 @@
 package fairygui;
 
-import openfl.system.System;
-import tweenxcore.Tools.Easing;
-import tweenx909.TweenX;
 import fairygui.GTextField;
+import tweenx909.TweenX;
+import tweenxcore.Tools.Easing;
 
 
 class GProgressBar extends GComponent
@@ -143,20 +142,20 @@ class GProgressBar extends GComponent
         if (!_reverse) 
         {
             if (_barObjectH != null) 
-                _barObjectH.width = fullWidth * percent;
+                _barObjectH.width = Math.round(fullWidth * percent);
             if (_barObjectV != null) 
-                _barObjectV.height = fullHeight * percent;
+                _barObjectV.height = Math.round(fullHeight * percent);
         }
         else 
         {
             if (_barObjectH != null) 
             {
-                _barObjectH.width = fullWidth * percent;
+                _barObjectH.width = Math.round(fullWidth * percent);
                 _barObjectH.x = _barStartX + (fullWidth - _barObjectH.width);
             }
             if (_barObjectV != null) 
             {
-                _barObjectV.height = fullHeight * percent;
+                _barObjectV.height = Math.round(fullHeight * percent);
                 _barObjectV.y = _barStartY + (fullHeight - _barObjectV.height);
             }
         }

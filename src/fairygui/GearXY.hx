@@ -26,7 +26,7 @@ class GearXY extends GearBase
 
     override private function addStatus(pageId:String, value:String):Void
     {
-        if (value == "-")
+        if (value == "-" || value.length == 0)
             return;
 
         var arr:Array<String> = value.split(",");

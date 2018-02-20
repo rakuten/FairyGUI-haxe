@@ -366,6 +366,8 @@ class GRoot extends GComponent
             {
                 yy = 0;
                 xx += sizeW / 2;
+                if (xx+popup.width > this.width)
+                    xx = this.width - popup.width;
             }
         }
 
@@ -439,6 +441,7 @@ class GRoot extends GComponent
             }
 
             _defaultTooltipWin = UIPackage.createObjectFromURL(resourceURL);
+            _defaultTooltipWin.touchable = false;
         }
 
         _defaultTooltipWin.text = msg;

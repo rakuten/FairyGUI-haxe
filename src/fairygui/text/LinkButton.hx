@@ -11,9 +11,13 @@ class LinkButton extends Sprite
     private function new()
     {
         super();
+    }
+
+    public function setSize(w:Float, h:Float):Void
+    {
         buttonMode = true;
         graphics.beginFill(0, 0);
-        graphics.drawRect(0, 0, 10, 10);
+        graphics.drawRect(0, 0, w, h);
         graphics.endFill();
     }
 }

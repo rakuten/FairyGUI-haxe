@@ -211,7 +211,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         {
             _frame = value;
             if (Std.is(_content, fairygui.display.MovieClip))
-                cast(_content, fairygui.display.MovieClip).currentFrame = value
+                cast(_content, fairygui.display.MovieClip).currentFrame = value;
             else if (Std.is(_content, openfl.display.MovieClip))
             {
                 if (_playing)
@@ -413,7 +413,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         if (_content != null && (Std.is(_content, openfl.display.MovieClip)))
         {
             if (_playing)
-                cast(_content, openfl.display.MovieClip).gotoAndPlay(_frame + 1)
+                cast(_content, openfl.display.MovieClip).gotoAndPlay(_frame + 1);
             else
                 cast(_content, openfl.display.MovieClip).gotoAndStop(_frame + 1);
         }
@@ -576,11 +576,11 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         }
 
         if (_align == AlignType.Center)
-            _content.x = Std.int((this.width - _contentWidth) / 2)
+            _content.x = Std.int((this.width - _contentWidth) / 2);
         else if (_align == AlignType.Right)
             _content.x = this.width - _contentWidth;
         if (_verticalAlign == VertAlignType.Middle)
-            _content.y = Std.int((this.height - _contentHeight) / 2)
+            _content.y = Std.int((this.height - _contentHeight) / 2);
         else if (_verticalAlign == VertAlignType.Bottom)
             _content.y = this.height - _contentHeight;
 
@@ -596,7 +596,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
         if (_contentItem != null)
         {
             if (_loading == 1)
-                _contentItem.owner.removeItemCallback(_contentItem, __imageLoaded)
+                _contentItem.owner.removeItemCallback(_contentItem, __imageLoaded);
             else if (_loading == 2)
                 _contentItem.owner.removeItemCallback(_contentItem, __movieClipLoaded);
         }
@@ -632,9 +632,9 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
             oldBmd = cast(_content, Bitmap).bitmapData;
 
             if (source.width == _contentWidth && source.height == _contentHeight)
-                newBmd = source
+                newBmd = source;
             else if (_contentWidth == 0 || _contentHeight == 0)
-                newBmd = null
+                newBmd = null;
             else
                 newBmd = ToolSet.scaleBitmapWith9Grid(source,
                 _contentItem.scale9Grid, _contentWidth, _contentHeight, _contentItem.smoothing, _contentItem.tileGridIndice);
@@ -643,7 +643,7 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
             {
                 if (oldBmd != null && oldBmd != source)
                     oldBmd.dispose();
-                cast((_content), Bitmap).bitmapData = newBmd;
+                cast(_content, Bitmap).bitmapData = newBmd;
             }
         }
         else if (_contentItem.scaleByTile)
@@ -654,9 +654,9 @@ class GLoader extends GObject implements IColorGear implements IAnimationGear
             oldBmd = cast((_content), Bitmap).bitmapData;
 
             if (source.width == _contentWidth && source.height == _contentHeight)
-                newBmd = source
+                newBmd = source;
             else if (_contentWidth == 0 || _contentHeight == 0)
-                newBmd = null
+                newBmd = null;
             else
                 newBmd = ToolSet.tileBitmap(source, source.rect, _contentWidth, _contentHeight);
 

@@ -36,6 +36,7 @@ class GComponent extends GObject
     public var viewWidth(get, set):Int;
     public var viewHeight(get, set):Int;
     public var hitArea(get, set):PixelHitTest;
+    private var _applyingController:Controller;
 
     private var _sortingChildCount:Int = 0;
     private var _opaque:Bool = false;
@@ -261,7 +262,7 @@ class GComponent extends GObject
         for (i in 0...cnt)
         {
             var child:GObject = _children[i];
-            if (child.finalVisible && child.name == name)
+            if (child.internalVisible && child.internalVisible2 && child.name==name)
                 return child;
         }
 
@@ -506,7 +507,7 @@ class GComponent extends GObject
         if (child.displayObject == null)
             return;
 
-        if (child.finalVisible)
+        if (child.internalVisible)
         {
             if (child.displayObject.parent == null)
             {
@@ -575,7 +576,7 @@ class GComponent extends GObject
                     for (i in 0...cnt)
                     {
                         child = _children[i];
-                        if (child.displayObject != null && child.finalVisible)
+                        if (child.displayObject != null && child.internalVisible)
                             _container.addChild(child.displayObject);
                     }
                 }
@@ -585,7 +586,7 @@ class GComponent extends GObject
                     while (i >= 0)
                     {
                         child = _children[i];
-                        if (child.displayObject != null && child.finalVisible)
+                        if (child.displayObject != null && child.internalVisible)
                             _container.addChild(child.displayObject);
                         i--;
                     }
@@ -596,14 +597,14 @@ class GComponent extends GObject
                     for (i in 0..._apexIndex)
                     {
                         child = _children[i];
-                        if (child.displayObject != null && child.finalVisible)
+                        if (child.displayObject != null && child.internalVisible)
                             _container.addChild(child.displayObject);
                     }
                     i = cnt - 1;
                     while (i >= _apexIndex)
                     {
                         child = _children[i];
-                        if (child.displayObject != null && child.finalVisible)
+                        if (child.displayObject != null && child.internalVisible)
                             _container.addChild(child.displayObject);
                         i--;
                     }
@@ -614,10 +615,12 @@ class GComponent extends GObject
     @:allow(fairygui)
     private function applyController(c:Controller):Void
     {
+        _applyingController = c;
         for (child in _children)
         {
             child.handleControllerChanged(c);
         }
+        _applyingController = null;
         c.runActions();
     }
 
@@ -654,7 +657,14 @@ class GComponent extends GObject
             }
         }
         if (myIndex < maxIndex)
+        {
+            //如果正在applyingController，此时修改显示列表是危险的，但真正排除危险只能用显示列表的副本去做，这样性能可能损耗较大，
+            //这里取个巧，让可能漏过的child补一下handleControllerChanged，反正重复执行是无害的。
+            if(_applyingController != null)
+                _children[maxIndex].handleControllerChanged(_applyingController);
+
             this.swapChildrenAt(myIndex, maxIndex);
+        }
     }
 
     public function getTransitionAt(index:Int):Transition
@@ -921,6 +931,14 @@ class GComponent extends GObject
         {
             _children[i].grayed = v;
         }
+    }
+
+    override public function handleControllerChanged(c:Controller):Void
+    {
+        super.handleControllerChanged(c);
+
+        if (_scrollPane != null)
+            _scrollPane.handleControllerChanged(c);
     }
 
     public function setBoundsChangedFlag():Void

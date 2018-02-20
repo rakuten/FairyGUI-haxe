@@ -17,6 +17,7 @@ class MovieClip extends Sprite
     public var boundsRect(get, set) : Rectangle;
     public var currentFrame(get, set) : Int;
     public var playing(get, set) : Bool;
+    public var smoothing(get, set) : Bool;
 
     public var interval : Int;
     public var swing : Bool;
@@ -35,6 +36,7 @@ class MovieClip extends Sprite
     private var _endAt : Int;
     private var _status : Int;  //0-none, 1-next loop, 2-ending, 3-ended  
     private var _callback : Dynamic;
+    private var _smoothing:Bool;
     
     public function new()
     {
@@ -44,6 +46,8 @@ class MovieClip extends Sprite
         _playState = new PlayState();
         _playing = true;
         setPlaySettings();
+
+        _smoothing = true;
         
         this.addEventListener(Event.ADDED_TO_STAGE, __addedToStage);
         this.addEventListener(Event.REMOVED_FROM_STAGE, __removedFromStage);
@@ -136,6 +140,18 @@ class MovieClip extends Sprite
             GTimers.inst.remove(update);
         return value;
     }
+
+    private function get_smoothing():Bool
+    {
+        return _smoothing;
+    }
+
+    private function set_smoothing(value:Bool):Bool
+    {
+        _smoothing = value;
+        _bitmap.smoothing = _smoothing;
+        return value;
+    }
     
     //从start帧开始，播放到end帧（-1表示结尾），重复times次（0表示无限循环），循环结束后，停止在endAt帧（-1表示参数end）
     public function setPlaySettings(start : Int = 0, end : Int = -1, times : Int = 0, endAt : Int = -1, endCallback : Dynamic = null) : Void
@@ -197,6 +213,8 @@ class MovieClip extends Sprite
                             else 
                                 _status = 1;
                         }
+                        else if(_start != 0)
+                            _status = 1;
                     }
                 }
 
@@ -210,6 +228,8 @@ class MovieClip extends Sprite
         if (frame != null) 
         {
             _bitmap.bitmapData = frame.image;
+            if(_bitmap.smoothing != _smoothing)
+                _bitmap.smoothing = _smoothing;
             _bitmap.x = frame.rect.x;
             _bitmap.y = frame.rect.y;
         }

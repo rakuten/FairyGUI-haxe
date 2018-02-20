@@ -1,10 +1,10 @@
 {
-  "name": "fgui",
+  "name": "fairygui",
   "url": "https://github.com/rakuten/FairyGUI-haxe",
   "license": "MIT",
   "tags": [ "fairygui", "openfl", "ui", "flash", "js", "cpp", "desktop", "web"],
   "description": "A flexible UI framework for Haxe",
-  "version": "1.1.0",
+  "version": "1.4.0",
   "classPath": "src",
   "releasenote": "0",
   "contributors": [ "Rakutens" ],

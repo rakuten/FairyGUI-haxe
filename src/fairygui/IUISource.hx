@@ -3,8 +3,6 @@ package fairygui;
 
 interface IUISource
 {
-    
-    
     var fileName(get, set) : String;    
     
     var loaded(get, never) : Bool;

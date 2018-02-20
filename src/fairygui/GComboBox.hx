@@ -59,7 +59,7 @@ class GComboBox extends GComponent
     @:final override private function get_text():String
     {
         if (_titleObject != null)
-            return _titleObject.text
+            return _titleObject.text;
         else
             return null;
     }

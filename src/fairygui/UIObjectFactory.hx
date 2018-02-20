@@ -38,9 +38,7 @@ class UIObjectFactory
     
     public static function newObject(pi : PackageItem) : GObject
     {
-        var _sw7_ = pi.type;
-
-        switch (_sw7_)
+        switch (pi.type)
         {
             case PackageItemType.Image:
                 return new GImage();
@@ -86,7 +84,7 @@ class UIObjectFactory
                     }
                 }
                 else 
-                return new GComponent();
+                    return new GComponent();
             }
         }
         return null;

@@ -26,13 +26,13 @@ class GearLook extends GearBase
 
     override private function addStatus(pageId:String, value:String):Void
     {
-        if (value == "-")
+        if (value == "-" || value.length == 0)
             return;
 
         var arr:Array<String> = value.split(",");
         var gv:GearLookValue;
         if (pageId == null)
-            gv = _default
+            gv = _default;
         else
         {
             gv = new GearLookValue();

@@ -23,7 +23,7 @@ class GearAnimation extends GearBase
 
     override private function addStatus(pageId:String, value:String):Void
     {
-        if (value == "-")
+        if (value == "-" || value.length == 0)
             return;
 
         var gv:GearAnimationValue;
@@ -34,7 +34,7 @@ class GearAnimation extends GearBase
             gv = new GearAnimationValue();
             _storage[pageId] = gv;
         }
-        var arr:Array<Dynamic> = value.split(",");
+        var arr:Array<String> = value.split(",");
         gv.frame = Std.parseInt(arr[0]);
         gv.playing = arr[1] == "p";
     }

@@ -803,7 +803,6 @@ class GTextField extends GObject implements ITextColorGear
             return;
 
         _bitmapData = new BitmapData(w, h, true, 0);
-        _bitmap.bitmapData = _bitmapData;
 
         var charX:Int = GUTTER_X;
         var lineIndent:Int;
@@ -851,6 +850,9 @@ class GTextField extends GObject implements ITextColorGear
                 }
             } //text loop
         } //line loop
+
+        _bitmap.bitmapData = _bitmapData;
+        _bitmap.smoothing = true;
     }
 
     override private function handleSizeChanged():Void
@@ -866,7 +868,8 @@ class GTextField extends GObject implements ITextColorGear
 
     override private function handleGrayedChanged():Void
     {
-        super.handleGrayedChanged();
+        if(_bitmapFont != null)
+            super.handleGrayedChanged();
         updateTextFormat();
     }
 

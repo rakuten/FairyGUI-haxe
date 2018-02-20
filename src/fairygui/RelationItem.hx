@@ -297,7 +297,7 @@ class RelationItem
                 if (info.percent)
                     v = v / _targetWidth * _target._width;
                 if (_target == _owner.parent)
-                    _owner.setSize(_target._width + v, _owner._rawHeight, true)
+                    _owner.setSize(_target._width + v, _owner._rawHeight, true);
                 else
                     _owner.width = _target._width + v;
             case RelationType.Height:
@@ -325,7 +325,7 @@ class RelationItem
 
             case RelationType.RightExt_Right:
                 if (_owner._underConstruct && _owner == _target.parent)
-                    v = _owner.sourceWidth - (targetX + _target.initWidth)
+                    v = _owner.sourceWidth - (targetX + _target.initWidth);
                 else
                     v = _owner._rawWidth - (targetX + _targetWidth);
                 if (_owner != _target.parent)

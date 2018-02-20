@@ -46,7 +46,7 @@ class GSwfObject extends GObject implements IAnimationGear
         if (_playing != value)
         {
             _playing = value;
-            if (_content != null && (Std.is(_content, MovieClip)))
+            if (_content != null && Std.is(_content, MovieClip))
             {
                 if (_playing)
                     cast(_content, MovieClip).gotoAndPlay(_frame + 1);
@@ -68,7 +68,7 @@ class GSwfObject extends GObject implements IAnimationGear
         if (_frame != value)
         {
             _frame = value;
-            if (_content != null && (Std.is(_content, MovieClip)))
+            if (_content != null && Std.is(_content, MovieClip))
             {
                 if (_playing)
                     cast(_content, MovieClip).gotoAndPlay(_frame + 1);
@@ -116,7 +116,7 @@ class GSwfObject extends GObject implements IAnimationGear
             }
         }
 
-        if (_content != null && (Std.is(_content, MovieClip)))
+        if (_content != null && Std.is(_content, MovieClip))
         {
             if (_playing)
                 cast(_content, MovieClip).gotoAndPlay(_frame + 1);

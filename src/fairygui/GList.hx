@@ -1,5 +1,6 @@
 package fairygui;
 
+import openfl.Vector;
 import fairygui.display.UIDisplayObject;
 import fairygui.event.GTouchEvent;
 import fairygui.event.ItemEvent;
@@ -9,6 +10,7 @@ import fairygui.GRoot;
 import fairygui.Margin;
 import fairygui.utils.CompatUtil;
 import fairygui.utils.GTimers;
+import openfl.display.DisplayObject;
 import openfl.display.Sprite;
 import openfl.display.Stage;
 import openfl.errors.Error;
@@ -97,6 +99,7 @@ class GList extends GComponent
     override public function dispose():Void
     {
         _pool.clear();
+        scrollItemToViewOnClick = false;
         super.dispose();
     }
 
@@ -379,33 +382,83 @@ class GList extends GComponent
 
     private function get_selectedIndex():Int
     {
-        var cnt:Int = _children.length;
-        for (i in 0...cnt)
+        var i:Int;
+        if (_virtual)
         {
-            var obj:GButton = _children[i].asButton;
-            if (obj != null && obj.selected)
-                return childIndexToItemIndex(i);
+            for (i in 0..._realNumItems)
+            {
+                var ii:ItemInfo = _virtualItems[i];
+                if (Std.is(ii.obj, GButton) && cast(ii.obj, GButton).selected || ii.obj == null && ii.selected)
+                {
+                    if (_loop)
+                        return i % _numItems;
+                    else
+                        return i;
+                }
+            }
         }
+        else
+        {
+            var cnt:Int = _children.length;
+            for (i in 0...cnt)
+            {
+                var obj:GButton = _children[i].asButton;
+                if (obj != null && obj.selected)
+                    return i;
+            }
+        }
+
         return -1;
     }
 
     private function set_selectedIndex(value:Int):Int
     {
-        clearSelection();
-        if (value >= 0 && value < this.numItems)
+        if (value >= 0 && value < numItems)
+        {
+            if(_selectionMode!=ListSelectionMode.Single)
+                clearSelection();
             addSelection(value);
+        }
+        else
+            clearSelection();
+
         return value;
     }
 
     public function getSelection():Array<Int>
     {
         var ret:Array<Int> = new Array<Int>();
-        var cnt:Int = _children.length;
-        for (i in 0...cnt)
+        var i:Int;
+        if (_virtual)
         {
-            var obj:GButton = _children[i].asButton;
-            if (obj != null && obj.selected)
-                ret.push(childIndexToItemIndex(i));
+            i = 0;
+            while(i<_realNumItems)
+            {
+                var ii:ItemInfo = _virtualItems[i];
+                if (Std.is(ii.obj, GButton) && cast(ii.obj, GButton).selected || ii.obj == null && ii.selected)
+                {
+                    if (_loop)
+                    {
+                        i = i % _numItems;
+                        if (ret.indexOf(i) != -1)
+                        {
+                            continue;
+                        }
+                    }
+                    ret.push(i);
+                }
+                i++;
+            }
+        }
+        else
+        {
+            var cnt:Int = _children.length;
+            for (i in 0...cnt)
+            {
+                var obj:GButton = _children[i].asButton;
+                if (obj != null && obj.selected)
+                    ret.push(i);
+            }
         }
         return ret;
     }
@@ -423,11 +476,18 @@ class GList extends GComponent
         if (scrollItToView)
             scrollToView(index);
 
-        index = itemIndexToChildIndex(index);
-        if (index < 0 || index >= _children.length)
-            return;
+        _lastSelectedIndex = index;
+        var obj:GButton = null;
+        if (_virtual)
+        {
+            var ii:ItemInfo = _virtualItems[index];
+            if (ii.obj != null)
+                obj = ii.obj.asButton;
+            ii.selected = true;
+        }
+        else
+            obj = getChildAt(index).asButton;
 
-        var obj:GButton = getChildAt(index).asButton;
         if (obj != null && !obj.selected)
         {
             obj.selected = true;
@@ -437,26 +497,74 @@ class GList extends GComponent
 
     public function removeSelection(index:Int):Void
     {
-        if (_selectionMode == ListSelectionMode.None)
+        if(_selectionMode == ListSelectionMode.None)
             return;
 
-        index = itemIndexToChildIndex(index);
-        if (index < 0 || index >= _children.length)
-            return;
+        var obj:GButton = null;
+        if (_virtual)
+        {
+            var ii:ItemInfo = _virtualItems[index];
+            if (ii.obj != null)
+                obj = ii.obj.asButton;
+            ii.selected = false;
+        }
+        else
+            obj = getChildAt(index).asButton;
 
-        var obj:GButton = getChildAt(index).asButton;
-        if (obj != null && obj.selected)
+        if (obj != null)
             obj.selected = false;
     }
 
     public function clearSelection():Void
     {
-        var cnt:Int = _children.length;
-        for (i in 0...cnt)
+        var i:Int;
+        if (_virtual)
         {
-            var obj:GButton = _children[i].asButton;
-            if (obj != null)
-                obj.selected = false;
+            for (i in 0..._realNumItems)
+            {
+                var ii:ItemInfo = _virtualItems[i];
+                if (Std.is(ii.obj, GButton))
+                    cast(ii.obj, GButton).selected = false;
+                ii.selected = false;
+            }
+        }
+        else
+        {
+            var cnt:Int = _children.length;
+            for (i in 0...cnt)
+            {
+                var obj:GButton = _children[i].asButton;
+                if (obj != null)
+                    obj.selected = false;
+            }
+        }
+    }
+
+    private function clearSelectionExcept(g:GObject):Void
+    {
+        var i:Int;
+        if (_virtual)
+        {
+            for (i in 0..._realNumItems)
+            {
+                var ii:ItemInfo = _virtualItems[i];
+                if (ii.obj != g)
+                {
+                    if (Std.is(ii.obj, GButton))
+                        cast(ii.obj, GButton).selected = false;
+                    ii.selected = false;
+                }
+            }
+        }
+        else
+        {
+            var cnt:Int = _children.length;
+            for (i in 0...cnt)
+            {
+                var obj:GButton = _children[i].asButton;
+                if (obj != null && obj != g)
+                    obj.selected = false;
+            }
         }
     }
 
@@ -464,15 +572,32 @@ class GList extends GComponent
     {
         checkVirtualList();
 
-        var cnt:Int = _children.length;
         var last:Int = -1;
-        for (i in 0...cnt)
+        var i:Int;
+        if (_virtual)
         {
-            var obj:GButton = _children[i].asButton;
-            if (obj != null)
+            for (i in 0..._realNumItems)
             {
-                obj.selected = true;
-                last = i;
+                var ii:ItemInfo = _virtualItems[i];
+                if (Std.is(ii.obj, GButton) && !cast(ii.obj, GButton).selected)
+                {
+                    cast(ii.obj, GButton).selected = true;
+                    last = i;
+                }
+                ii.selected = true;
+            }
+        }
+        else
+        {
+            var cnt:Int = _children.length;
+            for (i in 0...cnt)
+            {
+                var obj:GButton = _children[i].asButton;
+                if (obj != null && !obj.selected)
+                {
+                    obj.selected = true;
+                    last = i;
+                }
             }
         }
 
@@ -482,29 +607,41 @@ class GList extends GComponent
 
     public function selectNone():Void
     {
-        var cnt:Int = _children.length;
-        for (i in 0...cnt)
-        {
-            var obj:GButton = _children[i].asButton;
-            if (obj != null)
-                obj.selected = false;
-        }
+        clearSelection();
     }
 
     public function selectReverse():Void
     {
         checkVirtualList();
 
-        var cnt:Int = _children.length;
         var last:Int = -1;
-        for (i in 0...cnt)
+        var i:Int;
+        if (_virtual)
         {
-            var obj:GButton = _children[i].asButton;
-            if (obj != null)
+            for (i in 0..._realNumItems)
             {
-                obj.selected = !obj.selected;
-                if (obj.selected)
-                    last = i;
+                var ii:ItemInfo = _virtualItems[i];
+                if (Std.is(ii.obj, GButton))
+                {
+                    cast(ii.obj, GButton).selected = !cast(ii.obj, GButton).selected;
+                    if (cast(ii.obj, GButton).selected)
+                        last = i;
+                }
+                ii.selected = !ii.selected;
+            }
+        }
+        else
+        {
+            var cnt:Int = _children.length;
+            for (i in 0...cnt)
+            {
+                var obj:GButton = _children[i].asButton;
+                if (obj != null)
+                {
+                    obj.selected = !obj.selected;
+                    if (obj.selected)
+                        last = i;
+                }
             }
         }
 
@@ -685,7 +822,7 @@ class GList extends GComponent
     {
         ensureBoundsCorrect();
 
-        var objs:Array<Dynamic> = root.nativeStage.getObjectsUnderPoint(new Point(globalX, globalY));
+        var objs:Array<DisplayObject> = root.nativeStage.getObjectsUnderPoint(new Point(globalX, globalY));
         if (objs == null || objs.length == 0)
             return null;
 
@@ -749,8 +886,8 @@ class GList extends GComponent
             return;
 
         var dontChangeLastIndex:Bool = false;
-        var button:GButton = cast((item), GButton);
-        var index:Int = getChildIndex(item);
+        var button:GButton = cast(item, GButton);
+        var index:Int = childIndexToItemIndex(getChildIndex(item));
 
         if (_selectionMode == ListSelectionMode.Single)
         {
@@ -771,12 +908,26 @@ class GList extends GComponent
                     {
                         var min:Int = Std.int(Math.min(_lastSelectedIndex, index));
                         var max:Int = Std.int(Math.max(_lastSelectedIndex, index));
-                        max = Std.int(Math.min(max, _children.length - 1));
-                        for (i in min...max + 1)
+                        max = Std.int(Math.min(max, this.numItems-1));
+                        var i:Int;
+                        if (_virtual)
                         {
-                            var obj:GButton = getChildAt(i).asButton;
-                            if (obj != null && !obj.selected)
-                                obj.selected = true;
+                            for (i in min...max+1)
+                            {
+                                var ii:ItemInfo = _virtualItems[i];
+                                if (Std.is(ii.obj, GButton))
+                                    cast(ii.obj, GButton).selected = true;
+                                ii.selected = true;
+                            }
+                        }
+                        else
+                        {
+                            for(i in min...max+1)
+                            {
+                                var obj:GButton = getChildAt(i).asButton;
+                                if(obj!=null)
+                                    obj.selected = true;
+                            }
                         }
 
                         dontChangeLastIndex = true;
@@ -808,17 +959,6 @@ class GList extends GComponent
 
         if (button.selected)
             updateSelectionController(index);
-    }
-
-    private function clearSelectionExcept(obj:GObject):Void
-    {
-        var cnt:Int = _children.length;
-        for (i in 0...cnt)
-        {
-            var button:GButton = _children[i].asButton;
-            if (button != null && button != obj && button.selected)
-                button.selected = false;
-        }
     }
 
     public function resizeToFit(itemCount:Int = 2147483647, minSize:Int = 0):Void
@@ -1196,6 +1336,11 @@ class GList extends GComponent
 
                     _virtualItems.push(ii);
                 }
+            }
+            else
+            {
+                for (i in _realNumItems...oldCount)
+                    _virtualItems[i].selected = false;
             }
 
             if (this._virtualListChanged != 0)
@@ -1663,6 +1808,8 @@ class GList extends GComponent
 
                 if (ii.obj != null && ii.obj.resourceURL != url)
                 {
+                    if (Std.is(ii.obj, GButton))
+                        ii.selected = cast(ii.obj, GButton).selected;
                     removeChildToPool(ii.obj);
                     ii.obj = null;
                 }
@@ -1679,6 +1826,8 @@ class GList extends GComponent
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
+                            if (Std.is(ii2.obj, GButton))
+                                ii2.selected = cast(ii2.obj, GButton).selected;
                             ii.obj = ii2.obj;
                             ii2.obj = null;
                             if (j == reuseIndex)
@@ -1690,11 +1839,13 @@ class GList extends GComponent
                 }
                 else
                 {
-                    for (j in reuseIndex...lastIndex + 1)
+                    for (j in reuseIndex...lastIndex+1)
                     {
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
+                            if (Std.is(ii2.obj, GButton))
+                                ii2.selected = cast(ii2.obj, GButton).selected;
                             ii.obj = ii2.obj;
                             ii2.obj = null;
                             if (j == reuseIndex)
@@ -1717,7 +1868,7 @@ class GList extends GComponent
                         this.addChild(ii.obj);
                 }
                 if (Std.is(ii.obj, GButton))
-                    cast(ii.obj, GButton).selected = false;
+                    cast(ii.obj, GButton).selected = ii.selected;
 
                 needRender = true;
             }
@@ -1763,6 +1914,8 @@ class GList extends GComponent
             ii = _virtualItems[oldFirstIndex + i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
+                if (Std.is(ii.obj, GButton))
+                    ii.selected = cast(ii.obj, GButton).selected;
                 removeChildToPool(ii.obj);
                 ii.obj = null;
             }
@@ -1834,6 +1987,8 @@ class GList extends GComponent
 
                 if (ii.obj != null && ii.obj.resourceURL != url)
                 {
+                    if (Std.is(ii.obj, GButton))
+                        ii.selected = cast(ii.obj, GButton).selected;
                     removeChildToPool(ii.obj);
                     ii.obj = null;
                 }
@@ -1849,6 +2004,8 @@ class GList extends GComponent
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
+                            if (Std.is(ii2.obj, GButton))
+                                ii2.selected = cast(ii2.obj, GButton).selected;
                             ii.obj = ii2.obj;
                             ii2.obj = null;
                             if (j == reuseIndex)
@@ -1860,11 +2017,13 @@ class GList extends GComponent
                 }
                 else
                 {
-                    for (j in reuseIndex...lastIndex + 1)
+                    for (j in reuseIndex...lastIndex+1)
                     {
                         ii2 = _virtualItems[j];
                         if (ii2.obj != null && ii2.updateFlag != itemInfoVer && ii2.obj.resourceURL == url)
                         {
+                            if (Std.is(ii2.obj, GButton))
+                                ii2.selected = cast(ii2.obj, GButton).selected;
                             ii.obj = ii2.obj;
                             ii2.obj = null;
                             if (j == reuseIndex)
@@ -1887,7 +2046,7 @@ class GList extends GComponent
                         this.addChild(ii.obj);
                 }
                 if (Std.is(ii.obj, GButton))
-                    cast(ii.obj, GButton).selected = false;
+                    cast(ii.obj, GButton).selected = ii.selected;
 
                 needRender = true;
             }
@@ -1933,6 +2092,8 @@ class GList extends GComponent
             ii = _virtualItems[oldFirstIndex + i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
+                if (Std.is(ii.obj, GButton))
+                    ii.selected = cast(ii.obj, GButton).selected;
                 removeChildToPool(ii.obj);
                 ii.obj = null;
             }
@@ -2023,6 +2184,8 @@ class GList extends GComponent
                     ii2 = _virtualItems[reuseIndex];
                     if (ii2.obj != null && ii2.updateFlag != itemInfoVer)
                     {
+                        if (Std.is(ii2.obj, GButton))
+                            ii2.selected = cast(ii2.obj, GButton).selected;
                         ii.obj = ii2.obj;
                         ii2.obj = null;
                         break;
@@ -2053,7 +2216,7 @@ class GList extends GComponent
                 insertIndex++;
 
                 if (Std.is(ii.obj, GButton))
-                    cast(ii.obj, GButton).selected = false;
+                    cast(ii.obj, GButton).selected = ii.selected;
 
                 needRender = true;
             }
@@ -2122,6 +2285,8 @@ class GList extends GComponent
             ii = _virtualItems[i];
             if (ii.updateFlag != itemInfoVer && ii.obj != null)
             {
+                if (Std.is(ii.obj, GButton))
+                    ii.selected = cast(ii.obj, GButton).selected;
                 removeChildToPool(ii.obj);
                 ii.obj = null;
             }
@@ -2704,6 +2869,7 @@ class ItemInfo
     public var height:Float = 0;
     public var obj:GObject;
     public var updateFlag:Int = 0;
+    public var selected:Bool;
 
     public function new()
     {

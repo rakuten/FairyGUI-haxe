@@ -117,10 +117,10 @@ class Relations
                     cnt--;
                 }
                 else 
-                i++;
+                    i++;
             }
             else 
-            i++;
+                i++;
         }
     }
     
@@ -148,7 +148,7 @@ class Relations
                 cnt--;
             }
             else 
-            i++;
+                i++;
         }
     }
     

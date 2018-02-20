@@ -27,7 +27,7 @@ class GearColor extends GearBase
 
     override private function addStatus(pageId:String, value:String):Void
     {
-        if (value == "-")
+        if (value == "-" || value.length == 0)
             return;
 
         var pos:Int = value.indexOf(",");

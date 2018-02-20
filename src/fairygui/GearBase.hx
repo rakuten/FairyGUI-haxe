@@ -152,7 +152,10 @@ class GearBase
 
                 for (i in 0...pages.length)
                 {
-                    addStatus(pages[i], values[i]);
+                    str = values[i];
+                    if(str == null)
+                        str = "";
+                    addStatus(pages[i], str);
                 }
             }
 

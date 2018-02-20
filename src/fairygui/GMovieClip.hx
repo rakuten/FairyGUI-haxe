@@ -122,6 +122,7 @@ class GMovieClip extends GObject implements IAnimationGear implements IColorGear
         _movieClip.repeatDelay = Std.int(packageItem.repeatDelay);
         _movieClip.frames = packageItem.frames;
         _movieClip.boundsRect = new Rectangle(0, 0, sourceWidth, sourceHeight);
+        _movieClip.smoothing = packageItem.smoothing;
     }
 
     override public function setup_beforeAdd(xml:FastXML):Void

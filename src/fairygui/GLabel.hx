@@ -23,7 +23,7 @@ class GLabel extends GComponent implements IColorGear
     override private function get_icon() : String
     {
         if (_iconObject != null) 
-            return _iconObject.icon
+            return _iconObject.icon;
         else 
             return null;
     }
@@ -39,7 +39,7 @@ class GLabel extends GComponent implements IColorGear
     @:final private function get_title() : String
     {
         if (_titleObject != null) 
-            return _titleObject.text
+            return _titleObject.text;
         else 
         return null;
     }

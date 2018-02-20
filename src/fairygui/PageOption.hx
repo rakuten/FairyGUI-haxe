@@ -36,7 +36,7 @@ class PageOption
     private function get_index() : Int
     {
         if (_id != null) 
-            return _controller.getPageIndexById(_id)
+            return _controller.getPageIndexById(_id);
         else 
         return -1;
     }
@@ -44,7 +44,7 @@ class PageOption
     private function get_name() : String
     {
         if (_id != null) 
-            return _controller.getPageNameById(_id)
+            return _controller.getPageNameById(_id);
         else 
         return null;
     }

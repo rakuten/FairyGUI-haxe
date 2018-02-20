@@ -142,7 +142,7 @@ class GTextInput extends GTextField
         w = this.width;
         if(w!=_textField.width)
             _textField.width = w;
-        h = this.height+_fontAdjustment;
+        h = this.height+_fontAdjustment+1;
 
         if(h!=_textField.height)
             _textField.height = h;

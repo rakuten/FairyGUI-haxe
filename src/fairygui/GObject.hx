@@ -69,7 +69,9 @@ class GObject extends EventDispatcher
     public var normalizeRotation(get, never):Float;
     @:isVar public var alpha(get, set):Float;
     @:isVar public var visible(get, set):Bool;
-    public var finalVisible(get, never):Bool;
+//    public var finalVisible(get, never):Bool;
+    public var internalVisible(get, never):Bool;
+    public var internalVisible2(get, never):Bool;
     public var sortingOrder(get, set):Int;
     public var focusable(get, set):Bool;
     public var focused(get, never):Bool;
@@ -109,7 +111,8 @@ class GObject extends EventDispatcher
     public var dragging(get, never):Bool;
     public var isDown(get, never):Bool;
 
-    public var data:Dynamic;
+    @:isVar public var data(get, set):Dynamic;
+    private var _data:Dynamic;
 
     public var packageItem:PackageItem;
     public static var draggingObject:GObject;
@@ -240,6 +243,17 @@ class GObject extends EventDispatcher
     {
         _name = value;
         return value;
+    }
+
+    @:final private function set_data(value:Dynamic):Dynamic
+    {
+        _data = value;
+        return value;
+    }
+
+    @:final private function get_data():Dynamic
+    {
+        return _data;
     }
 
     @:final private function get_x():Float
@@ -643,16 +657,10 @@ class GObject extends EventDispatcher
         if (_alpha != value)
         {
             _alpha = value;
-            updateAlpha();
+            handleAlphaChanged();
+            updateGear(3);
         }
         return value;
-    }
-
-    private function updateAlpha():Void
-    {
-        if (_displayObject != null)
-            _displayObject.alpha = _alpha;
-        updateGear(3);
     }
 
     @:final private function get_visible():Bool
@@ -662,23 +670,24 @@ class GObject extends EventDispatcher
 
     private function set_visible(value:Bool):Bool
     {
-        if (_visible != value)
+        if(_visible!=value)
         {
             _visible = value;
-            if (_displayObject != null)
-                _displayObject.visible = _visible;
-            if (_parent != null)
-            {
-                _parent.childStateChanged(this);
+            handleVisibleChanged();
+            if(_parent != null)
                 _parent.setBoundsChangedFlag();
-            }
         }
         return value;
     }
 
-    private function get_finalVisible():Bool
+    private function get_internalVisible():Bool
     {
-        return _visible && _internalVisible && (_group == null || _group.finalVisible);
+        return _internalVisible && (_group == null || _group.internalVisible);
+    }
+
+    private function get_internalVisible2():Bool
+    {
+        return _visible && (_group == null || _group.internalVisible2);
     }
 
     @:final private function get_sortingOrder():Int
@@ -814,6 +823,9 @@ class GObject extends EventDispatcher
             _group = value;
             if (_group != null)
                 _group.setBoundsChangedFlag(true);
+            handleVisibleChanged();
+            if (_parent != null)
+                _parent.childStateChanged(this);
         }
         return value;
     }
@@ -1429,6 +1441,20 @@ class GObject extends EventDispatcher
         }
     }
 
+    @:allow(fairygui)
+    private function handleAlphaChanged():Void
+    {
+        if (_displayObject != null)
+            _displayObject.alpha = _alpha;
+    }
+
+    @:allow(fairygui)
+    private function handleVisibleChanged():Void
+    {
+        if (_displayObject != null)
+            _displayObject.visible = internalVisible2;
+    }
+
     public function constructFromResource():Void
     {
     }
@@ -1516,6 +1542,10 @@ class GObject extends EventDispatcher
                     this.filters = [cf];
             }
         }
+
+        str = xml.att.customData;
+        if (str != null)
+        this.data = str;
     }
 
     private static var GearXMLKeys:Dynamic = {

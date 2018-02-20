@@ -263,9 +263,8 @@ class UIPackage
                 pi.width = Std.parseInt(arr[0]);
                 pi.height = Std.parseInt(arr[1]);
             }
-            var _sw8_ = (pi.type);            
 
-            switch (_sw8_)
+            switch (pi.type)
             {
                 case PackageItemType.Image:
                 {
@@ -291,6 +290,9 @@ class UIPackage
                     str = try cxml.att.smoothing catch(e:Dynamic) null;
                     pi.smoothing = str != "false";
                 }
+                case PackageItemType.MovieClip:
+                    str = try cxml.att.smoothing catch(e:Dynamic) null;
+                    pi.smoothing = str != "false";
                 case PackageItemType.Component:
                     UIObjectFactory.resolvePackageItemExtension(pi);
             }
@@ -338,11 +340,12 @@ class UIPackage
     public function dispose() : Void
     {
         var cnt : Int = _items.length;
-        for (i in 0...cnt){
+        for (i in 0...cnt)
+        {
             var pi : PackageItem = _items[i];
             var image : BitmapData = pi.image;
             if (image != null) 
-                image.dispose()
+                image.dispose();
             else if (pi.frames != null) 
             {
                 var frameCount : Int = pi.frames.length;
@@ -408,13 +411,13 @@ class UIPackage
                 if (Std.is(userClass, Class)) 
                     g = cast(Type.createInstance(userClass, []), GObject);
                 else 
-                g = cast(userClass, GObject);
+                    g = cast(userClass, GObject);
             }
             else 
-            g = UIObjectFactory.newObject(item);
+                g = UIObjectFactory.newObject(item);
         }
         else 
-        g = UIObjectFactory.newObject(item);
+            g = UIObjectFactory.newObject(item);
         
         if (g == null) 
             return null;
@@ -485,7 +488,8 @@ class UIPackage
 //            var dcnt : Int = col.length();
             item.displayList = new Array<DisplayListItem>();
             var di : DisplayListItem;
-            for (cxml in col){
+            for (cxml in col)
+            {
 //            for (i in 0...dcnt){
 //                var cxml : FastXML = col.get(i);
                 var tagName : String = cxml.name;
@@ -501,9 +505,9 @@ class UIPackage
                     
                     var pi : PackageItem = (pkg != null) ? pkg.getItemById(src) : null;
                     if (pi != null) 
-                        di = new DisplayListItem(pi, null)
+                        di = new DisplayListItem(pi, null);
                     else 
-                    di = new DisplayListItem(null, tagName);
+                        di = new DisplayListItem(null, tagName);
                 }
                 else 
                 {
@@ -774,7 +778,8 @@ class UIPackage
         var frameCount : Int = Std.parseInt(xml.att.frameCount);
         item.frames = new Array<Frame>();
         var frameNodes : FastXMLList = xml.node.resolve("frames").descendants();
-        for (i in 0...frameCount-1){
+        for (i in 0...frameCount-1)
+        {
             var frame : Frame = new Frame();
             var frameNode : FastXML = frameNodes.get(i);
             str = frameNode.att.rect;
