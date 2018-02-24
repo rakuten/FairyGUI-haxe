@@ -1,3 +1,4 @@
+import fairygui.RelationType;
 import fairygui.Controller;
 import fairygui.DragDropManager;
 import fairygui.event.DragEvent;
@@ -33,6 +34,9 @@ class MainPanel
     public function new()
     {
         _view = UIPackage.createObject("Basic", "Main").asCom;
+
+        _view.setSize(GRoot.inst.width, GRoot.inst.height);
+        _view.addRelation(GRoot.inst, RelationType.Size);
         GRoot.inst.addChild(_view);
 
         _backBtn = _view.getChild("btn_Back");

@@ -236,7 +236,7 @@ class UIPackage
         
         var str : String = _reader.readDescFile("package.xml");
         
-        var xml : FastXML = FastXML.parse(str);
+        var xml : FastXML = FastXML.parse(str).firstChild();
 
         _id = xml.att.id;
         _name = xml.att.name;
@@ -441,7 +441,7 @@ class UIPackage
     
     private function getXMLDesc(file : String) : FastXML
     {
-        var ret : FastXML = FastXML.parse(_reader.readDescFile(file));
+        var ret : FastXML = FastXML.parse(_reader.readDescFile(file)).firstChild();
         return ret;
     }
     

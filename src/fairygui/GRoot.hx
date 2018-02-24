@@ -529,7 +529,7 @@ class GRoot extends GComponent
 
         setFocus(value);
         if (Std.is(value, GTextInput))
-            _nativeStage.focus = cast((cast((value), GTextInput).displayObject), TextField);
+            _nativeStage.focus = cast(cast(value, GTextInput).displayObject, TextField);
         return value;
     }
 

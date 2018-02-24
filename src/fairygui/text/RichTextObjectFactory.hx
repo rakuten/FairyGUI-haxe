@@ -23,7 +23,7 @@ class RichTextObjectFactory implements IRichTextObjectFactory
         var loader : GLoader;
         
         if (pool.length > 0) 
-            loader = pool.pop()
+            loader = pool.pop();
         else 
         {
             loader = new GLoader();
@@ -33,24 +33,24 @@ class RichTextObjectFactory implements IRichTextObjectFactory
         
         var pi : PackageItem = UIPackage.getItemByURL(src);
         if (width != 0) 
-            loader.width = width
+            loader.width = width;
         else 
         {
             if (pi != null) 
-                width = pi.width
+                width = pi.width;
             else 
-            width = 20;
+                width = 20;
             loader.width = width;
         }
         
         if (height != 0) 
-            loader.height = height
+            loader.height = height;
         else 
         {
             if (pi != null) 
-                height = pi.height
+                height = pi.height;
             else 
-            height = 20;
+                height = 20;
             loader.height = height;
         }
         
@@ -59,7 +59,7 @@ class RichTextObjectFactory implements IRichTextObjectFactory
     
     public function freeObject(obj : DisplayObject) : Void
     {
-        var loader : GLoader = cast((cast((obj), UIDisplayObject).owner), GLoader);
+        var loader : GLoader = cast(cast(obj, UIDisplayObject).owner, GLoader);
         loader.url = null;
         pool.push(loader);
     }

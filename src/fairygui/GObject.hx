@@ -809,7 +809,7 @@ class GObject extends EventDispatcher
     @:final private function get_resourceURL():String
     {
         if (packageItem != null)
-            return "ui://" + packageItem.owner.id + packageItem.id
+            return "ui://" + packageItem.owner.id + packageItem.id;
         else
             return null;
     }

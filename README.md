@@ -1,5 +1,7 @@
 # FairyGUI-haxe
-A flexible UI framework for Haxe. http://en.fairygui.com
+A flexible UI framework for Haxe, working with the FREE professional Game UI Editor: FairyGUI Editor.
+
+Official website: http://en.fairygui.com
 
 ---
 ### Install

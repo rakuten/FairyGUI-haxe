@@ -395,8 +395,9 @@ class RichTextField extends Sprite
                     e.realWidth = imageWidth;
                 else
                     e.realWidth = e.width;
+
                 if (e.height == 0)
-                    e.realHeight = imageHeight
+                    e.realHeight = imageHeight;
                 else
                     e.realHeight = e.height;
                 e.realWidth += 4;
@@ -416,12 +417,13 @@ class RichTextField extends Sprite
         {
             e = ht.elements[i];
             if (e.type == HtmlElement.LINK)
-                addLink(startPos, e)
+                addLink(startPos, e);
             else if (e.type == HtmlElement.IMAGE)
                 addImage(startPos, e);
-        } //所以这里设了一个标志，等待加到舞台后再刷新    //如果RichTextField不在舞台，那么getCharBoundaries返回的字符的位置会错误（flash 问题），
+        }
 
-
+        //所以这里设了一个标志，等待加到舞台后再刷新
+        //如果RichTextField不在舞台，那么getCharBoundaries返回的字符的位置会错误（flash 问题），
         if (this.stage == null && !_needUpdateNodePos)
         {
             _needUpdateNodePos = true;
@@ -569,8 +571,8 @@ class RichTextField extends Sprite
     private function fixTextSize():Void
     {
         //--for update text field width/height
-        _textField.textWidth;
-        _textField.height;
+        var g = _textField.textWidth;
+        var t = _textField.height;
     }
 
     private function isLineVisible(line:Int):Bool

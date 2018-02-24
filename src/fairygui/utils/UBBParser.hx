@@ -33,31 +33,34 @@ class UBBParser
     }
     
     private function onTag_URL(tagName : String, end : Bool, attr : String) : String{
-        if (!end) {
+        if (!end)
+        {
             if (attr != null) 
-                return "<a href=\"" + attr + "\" target=\"_blank\">"
-            else {
+                return "<a href=\"" + attr + "\" target=\"_blank\">";
+            else
+            {
                 var href : String = getTagText();
                 return "<a href=\"" + href + "\" target=\"_blank\">";
             }
         }
         else 
-        return "</a>";
+            return "</a>";
     }
     
     private function onTag_IMG(tagName : String, end : Bool, attr : String) : String{
-        if (!end) {
+        if (!end)
+        {
             var src : String = getTagText(true);
             if (src == null) 
                 return null;
             
             if (defaultImgWidth != 0) 
-                return "<img src=\"" + src + "\" width=\"" + defaultImgWidth + "\" height=\"" + defaultImgHeight + "\"/>"
+                return "<img src=\"" + src + "\" width=\"" + defaultImgWidth + "\" height=\"" + defaultImgHeight + "\"/>";
             else 
-            return "<img src=\"" + src + "\"/>";
+                return "<img src=\"" + src + "\"/>";
         }
         else 
-        return null;
+            return null;
     }
     
     private function onTag_Simple(tagName : String, end : Bool, attr : String) : String{
@@ -66,28 +69,28 @@ class UBBParser
     
     private function onTag_COLOR(tagName : String, end : Bool, attr : String) : String{
         if (!end) 
-            return "<font color=\"" + attr + "\">"
+            return "<font color=\"" + attr + "\">";
         else 
-        return "</font>";
+            return "</font>";
     }
     
     private function onTag_FONT(tagName : String, end : Bool, attr : String) : String{
         if (!end) 
-            return "<font face=\"" + attr + "\">"
+            return "<font face=\"" + attr + "\">";
         else 
-        return "</font>";
+            return "</font>";
     }
     
     private function onTag_SIZE(tagName : String, end : Bool, attr : String) : String{
         if (!end) {
             if (attr == "normal") 
-                attr = "" + normalFontSize
+                attr = "" + normalFontSize;
             else if (attr == "small") 
-                attr = "" + smallFontSize
+                attr = "" + smallFontSize;
             else if (attr == "large") 
-                attr = "" + largeFontSize
+                attr = "" + largeFontSize;
             else if (attr.length > 0 && attr.charAt(0) == "+")
-                attr = "" + (smallFontSize + Std.parseInt(attr.substr(1)))
+                attr = "" + (smallFontSize + Std.parseInt(attr.substr(1)));
             else if (attr.length > 0 && attr.charAt(0) == "-")
                 attr = "" + (smallFontSize - Std.parseInt(attr.substr(1)));
             return "<font size=\"" + attr + "\">";

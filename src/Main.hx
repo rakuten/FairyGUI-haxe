@@ -1,5 +1,6 @@
 package ;
 
+import fairygui.ScreenMatchMode;
 import openfl.Assets;
 import fairygui.GRoot;
 import fairygui.UIConfig;
@@ -19,7 +20,7 @@ import openfl.display.Sprite;
 class Main extends Sprite {
 
     private var uiLoader:URLLoader;
-    private var path:String = "assets/demo.zip";
+    private var path:String = "assets/Basic.fui";
     public function new() {
         super();
         stage.color=0;
@@ -37,9 +38,9 @@ class Main extends Sprite {
         //new debugger.Local(true);
         #end
 
-        Assets.loadBytes(path).onComplete(assetsCompleteHandler);
+       Assets.loadBytes(path).onComplete(assetsCompleteHandler);
     }
-
+    
     private function assetsCompleteHandler(by:ByteArray):Void
     {
         UIPackage.addPackage(by, null);
@@ -53,8 +54,8 @@ class Main extends Sprite {
         UIConfig.buttonUseHandCursor = true;
 
         //等待图片资源全部解码，也可以选择不等待，这样图片会在用到的时候才解码
-        UIPackage.waitToLoadCompleted(continueInit);
-//        continueInit();
+//        UIPackage.waitToLoadCompleted(continueInit);
+        continueInit();
     }
 
     private var _mainPanel:MainPanel;

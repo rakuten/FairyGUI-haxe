@@ -24,9 +24,11 @@ class PlayState
         var elapsed:Float;
         var frameId:UInt = GTimers.workCount;
         if (frameId - _lastUpdateSeq != 1)
+        {
             //1、如果>1，表示不是连续帧了，说明刚启动（或者停止过），这里不能用流逝的时间了，不然会跳过很多帧
             //2、如果==0，表示在本帧已经处理过了，这通常是因为一个PlayState用于多个MovieClip共享，目的是多个MovieClip同步播放
             elapsed = 0;
+        }
         else
             elapsed = GTimers.deltaTime;
         _lastUpdateSeq = frameId;

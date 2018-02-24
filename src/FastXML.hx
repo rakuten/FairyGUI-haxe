@@ -1,3 +1,4 @@
+import FastXML;
 private class NodeAccess implements Dynamic<FastXML>
 {
 
@@ -13,8 +14,7 @@ private class NodeAccess implements Dynamic<FastXML>
         var x = __x.elementsNamed(name).next();
         if (x == null)
         {
-            var xname = if (__x.nodeType == Xml.Document) "Document"
-            else __x.nodeName;
+            var xname = (__x.nodeType == Xml.Document) ? "Document" : __x.nodeName;
             throw xname + " is missing element " + name;
         }
         return new FastXML(x);
@@ -24,7 +24,6 @@ private class NodeAccess implements Dynamic<FastXML>
 
 private class AttribAccess implements Dynamic<String>
 {
-
     var __x:Xml;
 
     public function new(x:Xml)
@@ -118,7 +117,7 @@ class FastXML
 
     public function new(x:Xml)
     {
-        if (x.nodeType != Xml.Document && x.nodeType != Xml.Element)
+        if (x.nodeType != Xml.Document && x.nodeType != Xml.Element && x.nodeType != Xml.PCData)
             throw "Invalid nodeType " + x.nodeType;
         this.x = x;
         node = new NodeAccess(x);
@@ -138,6 +137,21 @@ class FastXML
         }
         else
             x.addChild(Xml.parse(a).firstChild());
+    }
+
+    public function firstChild() : FastXML
+    {
+        return new FastXML(x.firstChild());
+    }
+
+    public function children():FastXMLList
+    {
+        var a:Array<FastXML> = new Array<FastXML>();
+        for (e in x.iterator())
+        {
+            a.push(new FastXML(e));
+        }
+        return new FastXMLList(a);
     }
 
     public function descendants(name:String = "*"):FastXMLList
@@ -172,8 +186,23 @@ class FastXML
 
     function get_name()
     {
-        return if (x.nodeType == Xml.Document) "Document"
-        else x.nodeName;
+        var ret:String;
+         if (x.nodeType == Xml.Document)
+         {
+             ret = "Document";
+         }
+        else
+         {
+             try
+             {
+                ret = x.nodeName;
+             }
+             catch (e : Dynamic)
+             {
+                 ret = "";
+             }
+         }
+        return ret;
     }
 
     function get_value()
@@ -247,7 +276,7 @@ class FastXML
     public static function parse(s:String):FastXML
     {
         var x = Xml.parse(s);
-        return new FastXML(x.firstChild());
+        return new FastXML(x);
     }
 
     public static function filterNodes(a:FastXMLList, f:FastXML -> Bool):FastXMLList

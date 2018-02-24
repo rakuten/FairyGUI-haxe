@@ -3,7 +3,6 @@ package fairygui;
 import openfl.events.Event;
 import openfl.events.FocusEvent;
 import openfl.events.KeyboardEvent;
-import openfl.system.Capabilities;
 import openfl.text.TextFieldType;
 
 import fairygui.utils.ToolSet;
@@ -211,7 +210,7 @@ class GTextInput extends GTextField
     private function __focusIn(evt : Event) : Void
     {
         #if flash
-        if(disableIME && Capabilities.hasIME)
+        if(disableIME && openfl.system.Capabilities.hasIME)
             flash.system.IME.enabled = false;
         #end
 
@@ -226,7 +225,7 @@ class GTextInput extends GTextField
     private function __focusOut(evt : Event) : Void
     {
         #if flash
-        if(disableIME && Capabilities.hasIME)
+        if(disableIME && openfl.system.Capabilities.hasIME)
             flash.system.IME.enabled = true;
         #end
 

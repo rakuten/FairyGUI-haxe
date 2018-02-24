@@ -13,8 +13,8 @@ class HtmlText
     public function new(val : String)
     {
         elements = new Array<HtmlElement>();
-        try{
-
+        try
+        {
             val = StringTools.replace(val,"\r\n", "\n");
             val = StringTools.replace(val,"\r", "\n");
             var xml : FastXML = FastXML.parse("<dummy>" + val + "</dummy>");
@@ -34,7 +34,8 @@ class HtmlText
         var pos : Int = textField.text.length;
         textField.replaceText(pos, pos, parsedText);
         var i : Int = elements.length - 1;
-        while (i >= 0){
+        while (i >= 0)
+        {
             var e : HtmlElement = elements[i];
             textField.setTextFormat(e.textformat, pos + e.start, pos + e.end + 1);
             i--;
@@ -50,10 +51,12 @@ class HtmlText
         var tf : TextFormat;
         var start : Int;
         var element : HtmlElement;
-        for (i in 0...cnt){
+        for (i in 0...cnt)
+        {
             node = list.get(i);
             tag = node.name;
-            if (tag == "font") {
+            if (tag == "font")
+            {
                 tf = new TextFormat();
                 attr = node.nodes.resolve("size");
                 if (attr.length() > 0)
@@ -73,9 +76,9 @@ class HtmlText
                 
                 start = parsedText.length;
                 if (node.descendants().length()==0)
-                    parsedText += node.att.text;
+                    parsedText += node.value;
                 else 
-                parseXML(node.descendants());
+                    parseXML(node.descendants());
                 if (parsedText.length > start) 
                 {
                     element = new HtmlElement();
@@ -85,16 +88,19 @@ class HtmlText
                     elements.push(element);
                 }
             }
-            else if (tag == "a") {
+            else if (tag == "a")
+            {
                 tf = new TextFormat();
                 tf.underline = true;
                 tf.url = "#";
                 
                 start = parsedText.length;
                 if (node.descendants().length()==0)
-                    parsedText += node.att.text;
+                {
+                    parsedText += node.value;
+                }
                 else 
-                parseXML(node.descendants());
+                    parseXML(node.descendants());
                 if (parsedText.length > start) 
                 {
                     element = new HtmlElement();
@@ -108,7 +114,8 @@ class HtmlText
                     elements.push(element);
                 }
             }
-            else if (tag == "img") {
+            else if (tag == "img")
+            {
                 start = parsedText.length;
                 tf = new TextFormat();
                 parsedText += "　";
@@ -124,14 +131,15 @@ class HtmlText
                 element.textformat = tf;
                 elements.push(element);
             }
-            else if (tag == "b") {
+            else if (tag == "b")
+            {
                 tf = new TextFormat();
                 tf.bold = true;
                 start = parsedText.length;
                 if (node.descendants().length()==0)
-                    parsedText += node.att.text;
+                    parsedText += node.value;
                 else 
-                parseXML(node.descendants());
+                    parseXML(node.descendants());
                 if (parsedText.length > start) 
                 {
                     element = new HtmlElement();
@@ -141,12 +149,13 @@ class HtmlText
                     elements.push(element);
                 }
             }
-            else if (tag == "i") {
+            else if (tag == "i")
+            {
                 tf = new TextFormat();
                 tf.italic = true;
                 start = parsedText.length;
                 if (node.descendants().length()==0)
-                    parsedText += node.att.text;
+                    parsedText += node.value;
                 else 
                 parseXML(node.descendants());
                 if (parsedText.length > start) 
@@ -158,14 +167,15 @@ class HtmlText
                     elements.push(element);
                 }
             }
-            else if (tag == "u") {
+            else if (tag == "u")
+            {
                 tf = new TextFormat();
                 tf.underline = true;
                 start = parsedText.length;
                 if (node.descendants().length()==0)
-                    parsedText += node.att.text;
+                    parsedText += node.value
                 else 
-                parseXML(node.descendants());
+                    parseXML(node.descendants());
                 if (parsedText.length > start) 
                 {
                     element = new HtmlElement();
@@ -175,7 +185,8 @@ class HtmlText
                     elements.push(element);
                 }
             }
-            else if (tag == "br") {
+            else if (tag == "br")
+            {
                 parsedText += "\n";
             }
 //            else if (node.node.nodeKind.innerData() == "text")
@@ -185,8 +196,9 @@ class HtmlText
                 
                 parsedText += str;
             }
-            else {
-                parseXML(node.descendants());
+            else
+            {
+                parseXML(node.children());
             }
         }
     }
